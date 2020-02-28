@@ -1,0 +1,51 @@
+server:
+  port: 9000
+  error:
+    path: /app/error
+spring:
+  application: 
+    name: fly
+  redis: 
+    host: localhost
+    port: 6379
+    database: 1
+    jedis: 
+      pool:
+        max-active: 8
+        max-wait: -1ms
+        max-idle: 8
+        min-idle: 0
+    timeout: 5000ms
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/fly?charset=utf8mb4&useSSL=false
+    username: root
+    password: 123456
+    hikari:
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      maximum-pool-size: 100
+      connection-test-query: SELECT 1
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: com.lt.fly.configuration.MySQL5InnoDBDialectUtf8mb4
+        hbm2ddl:
+          auto: create
+  profiles:
+    active: dev
+test:
+  username: zhaolei
+dubbo: 
+  application: 
+    name: sys
+  scan: 
+    base-packages: com.lt.fly
+  protocol:
+    name: dubbo
+    port: 12345
+  registry: 
+    address: N/A
+
+  

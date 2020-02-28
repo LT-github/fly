@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="e219578a-48eb-44c5-a73d-053c6f922451" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/MavenWrapperDownloader.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HELP.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mvnw" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mvnw.cmd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/FlyApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/Service/IGameGroupService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/Service/IUserService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/Service/impl/GameGroupServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/Service/impl/UserServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/annotation/PassToken.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/annotation/RequiredPermission.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/annotation/SwaggerCustomIgnore.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/annotation/UserLoginToken.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/configuration/MySQL5InnoDBDialectUtf8mb4.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/configuration/TokenInterceptorConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/dao/IAdminRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/dao/IBetGroupRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/dao/IGameGroupRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/dao/IOddGroupRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/dao/IOddRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/dao/IUserRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/Admin.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/AuditFinance.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/Authority.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/BankCard.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/BasicEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/BetGroup.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/Bullent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/DataDictionary.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/Finance.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/GameGroup.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/Handicap.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/Member.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/Odd.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/OddGroup.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/Order.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/Proportion.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/Role.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/Settings.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/User.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/exception/ClientErrorException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/jpa/BaseRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/jpa/BaseRepositoryFactoryBean.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/jpa/BaseRepositoryImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/jpa/support/DataQueryObject.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/jpa/support/DataQueryObjectPage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/jpa/support/DataQueryObjectSort.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/jpa/support/QueryBetween.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/jpa/support/QueryField.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/jpa/support/QueryType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/redis/controller/OrderCacheController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/redis/service/IOrderDTOServiceCache.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/redis/service/impl/OrderDTOServiceRedisCacheImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/BarCodeUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/CommonsUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/ContextHolderUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/DateUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/GlobalConstant.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/GlobalUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/HttpResult.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/IdWorker.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/ListGrouperUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/MyBeanUtils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/ResultCode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/TokenUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/gameUtils/ChineseNumToArabicNumUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/gameUtils/CombineAndArrangement.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/gameUtils/GameProperty.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/gameUtils/GameUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/AdminController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/BaseController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/BetGroupController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/GameGroupController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/HandicapController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/OddController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/OddGroupController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/interceptor/AuthenticationInterceptor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/interceptor/GloablExceptionHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/AdminAdd.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/AdminEdit.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/BetGroupAdd.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/BetsOrderAdd.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/BetsOrderFind.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/BetsOrderPrint.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/GameContentEdit.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/GameContentFind.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/GameContentMultiEdit.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/GameEdit.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/GameFind.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/GameGroupAdd.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/OddAdd.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/OddGroupAdd.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/SettingsAddOrEdit.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/TicketAdd.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/UserLogin.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/resp/PageResp.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/resp/SaveResp.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/resp/UserLoginResp.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/vo/AdminVo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/vo/AuthorityVo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/vo/BetGroupVo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/vo/GameGroupVo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/vo/OddVo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/vo/RoleVo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/com/lt/fly/FlyApplicationTests.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="localRepository" value="C:\Users\Administrator\.m2\repository" />
+        <option name="userSettingsFile" value="C:\Users\Administrator\.m2\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="importAutomatically" value="true" />
+        <option name="vmOptionsForImporter" value="-Xmx768m" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1YPvLmWCE2xr7nymrevVUnNCDdR" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DatabaseDriversLRU" value="mysql" />
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\project\fly\src\main\resources" />
+      <recent name="D:\project\fly\src\main\java\com\lt\fly" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="FlyApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="fly" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.lt.fly.FlyApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand>
+              <path>
+                <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
+                <item name="root:fly@localhost" type="7427dc5b:ServiceModel$ServiceGroupNode" />
+              </path>
+            </expand>
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e219578a-48eb-44c5-a73d-053c6f922451" name="Default Changelist" comment="" />
+      <created>1582856989673</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1582856989673</updated>
+      <workItem from="1582856997901" duration="1360000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="872" y="360" key="#Assign_Data_Sources" timestamp="1582858075215">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="872" y="360" key="#Assign_Data_Sources/0.0.2560.1400@0.0.2560.1400" timestamp="1582858075215" />
+    <state x="872" y="360" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1582858063497">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="872" y="360" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1582858063497" />
+    <state x="850" y="297" key="CommitChangelistDialog2" timestamp="1582858422785">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="850" y="297" key="CommitChangelistDialog2/0.0.2560.1400@0.0.2560.1400" timestamp="1582858422785" />
+    <state x="1038" y="444" key="FileChooserDialogImpl" timestamp="1582858334904">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="1038" y="444" key="FileChooserDialogImpl/0.0.2560.1400@0.0.2560.1400" timestamp="1582858334904" />
+    <state x="1080" y="614" key="Github.CreateGistDialog" timestamp="1582858311840">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="1080" y="614" key="Github.CreateGistDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1582858311840" />
+    <state x="1133" y="594" width="294" height="268" key="Github.ShareDialog" timestamp="1582858273159">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="1133" y="594" width="294" height="268" key="Github.ShareDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1582858273159" />
+    <state width="2504" height="493" key="GridCell.Tab.0.bottom" timestamp="1582858026629">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="2504" height="493" key="GridCell.Tab.0.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1582858026629" />
+    <state width="2504" height="493" key="GridCell.Tab.0.center" timestamp="1582858026629">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="2504" height="493" key="GridCell.Tab.0.center/0.0.2560.1400@0.0.2560.1400" timestamp="1582858026629" />
+    <state width="2504" height="493" key="GridCell.Tab.0.left" timestamp="1582858026629">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="2504" height="493" key="GridCell.Tab.0.left/0.0.2560.1400@0.0.2560.1400" timestamp="1582858026629" />
+    <state width="2504" height="493" key="GridCell.Tab.0.right" timestamp="1582858026629">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="2504" height="493" key="GridCell.Tab.0.right/0.0.2560.1400@0.0.2560.1400" timestamp="1582858026629" />
+    <state width="2504" height="493" key="GridCell.Tab.1.bottom" timestamp="1582858026630">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="2504" height="493" key="GridCell.Tab.1.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1582858026630" />
+    <state width="2504" height="493" key="GridCell.Tab.1.center" timestamp="1582858026629">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="2504" height="493" key="GridCell.Tab.1.center/0.0.2560.1400@0.0.2560.1400" timestamp="1582858026629" />
+    <state width="2504" height="493" key="GridCell.Tab.1.left" timestamp="1582858026629">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="2504" height="493" key="GridCell.Tab.1.left/0.0.2560.1400@0.0.2560.1400" timestamp="1582858026629" />
+    <state width="2504" height="493" key="GridCell.Tab.1.right" timestamp="1582858026630">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="2504" height="493" key="GridCell.Tab.1.right/0.0.2560.1400@0.0.2560.1400" timestamp="1582858026630" />
+    <state x="813" y="331" key="SettingsEditor" timestamp="1582858198140">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="813" y="331" key="SettingsEditor/0.0.2560.1400@0.0.2560.1400" timestamp="1582858198140" />
+  </component>
+</project>
