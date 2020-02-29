@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("handicap")
 public class HandicapController extends BaseController {
 
-    @PostMapping("/add")
+    @PostMapping
     @UserLoginToken
     public HttpResult add() throws ClientErrorException {
 

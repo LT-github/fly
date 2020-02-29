@@ -4,6 +4,9 @@ import com.lt.fly.entity.Odd;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 public class OddVo {
@@ -12,11 +15,6 @@ public class OddVo {
 
     private Double oddValue;
 
-    private String betGroupName;
-
-    private Long betGroupId;
-
-
     public OddVo(){
         super();
     }
@@ -24,7 +22,14 @@ public class OddVo {
     public OddVo(Odd obj){
         this.oddId = obj.getId();
         this.oddValue = obj.getOddValue();
-        this.betGroupId = obj.getBetGroup().getId();
-        this.betGroupName = obj.getBetGroup().getName();
+    }
+
+    public static List<OddVo> tovo(List<Odd> odds){
+        List<OddVo> oddVos = new ArrayList<>();
+        for (Odd item :
+                odds) {
+            oddVos.add(new OddVo(item));
+        }
+     return oddVos;
     }
 }

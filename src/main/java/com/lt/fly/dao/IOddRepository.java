@@ -10,4 +10,5 @@ public interface IOddRepository extends BaseRepository<Odd,Long> {
 
     @Query("select odd from Odd odd where  odd.id in ?1")
     List<Odd> findByIds(List<Long> ids);
+
 }

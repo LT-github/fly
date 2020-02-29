@@ -2,8 +2,12 @@ package com.lt.fly.web.vo;
 
 
 import com.lt.fly.entity.BetGroup;
+import com.lt.fly.entity.Odd;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,8 +17,6 @@ public class BetGroupVo {
     private String gameGroupName;
 
     private String betGrouopName;
-
-    private Double odds;
 
     private Integer status;
 
@@ -38,7 +40,17 @@ public class BetGroupVo {
         this.status = obj.getStatus();
         this.singleBetting = obj.getSingleBetting();
         this.maximumBet = obj.getMaximumBet();
-        this.modifiedUsername = obj.getModifyUser().getUsername();
+        if (null!=obj.getModifyUser())
+            this.modifiedUsername = obj.getModifyUser().getUsername();
         this.modifiedTime = obj.getModifyTime();
+    }
+
+    public static List<BetGroupVo> tovo(List<BetGroup> betGroups){
+        List<BetGroupVo> betGroupVos = new ArrayList<>();
+        for (BetGroup item :
+                betGroups) {
+            betGroupVos.add(new BetGroupVo(item));
+        }
+        return betGroupVos;
     }
 }

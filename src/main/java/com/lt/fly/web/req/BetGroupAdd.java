@@ -16,9 +16,6 @@ public class BetGroupAdd {
     //玩法状态
     private Integer status;
 
-    //玩法赔率
-    private Double odds;
-
     //单次下注金额
     private Integer singleBetting;
 
