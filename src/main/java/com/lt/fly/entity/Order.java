@@ -23,12 +23,11 @@ public class Order extends BasicEntity{
 
 	// 结果类型 0 未开奖 1已开奖
 	@Column(name = "result_type")
-	private Integer resultType = GlobalConstant.ResultType.YET.getCode();
-
+	private Integer resultType;
 
 	// 0 未结算  1 已结算 2已撤销
 	@Column(name = "status")
-	private Integer status = GlobalConstant.BetsStatus.NOTClEARING.getCode();
+	private Integer status;
 
 	// 下注财务记录
 	@OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)

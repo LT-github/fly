@@ -13,6 +13,4 @@ public interface IGameGroupRepository extends BaseRepository<GameGroup, Long> {
 	
 	List<GameGroup> findByType(String type);
 
-	List<GameGroup> findByAddType(Integer addType);
-	
 }

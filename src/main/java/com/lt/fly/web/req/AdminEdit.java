@@ -14,10 +14,7 @@ public class AdminEdit {
 	
 	@NotNull(message = "昵称不能为空")
 	private String nickname;
-	
-	@NotNull(message = "真实姓名不能为空")
-	private String realname;
-	
+
 	@NotNull(message = "电话号码不能为空")
 	private String mobile;
 	

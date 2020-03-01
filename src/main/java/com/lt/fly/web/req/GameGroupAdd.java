@@ -21,4 +21,6 @@ public class GameGroupAdd {
     @NotNull(message = "玩法拼音不能为空")
     private String pingYinName;	//玩法的拼音
 
+    @NotNull(message = "状态不能为空")
+    private Integer status;
 }

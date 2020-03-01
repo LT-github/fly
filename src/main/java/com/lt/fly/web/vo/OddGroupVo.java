@@ -15,8 +15,6 @@ public class OddGroupVo {
 
     private String name;
 
-    private List<OddVo> oddVos;
-
     public OddGroupVo(){
         super();
     }
@@ -24,7 +22,6 @@ public class OddGroupVo {
     public OddGroupVo(OddGroup obj){
         this.oddGroupId = obj.getId();
         this.name = obj.getName();
-        this.oddVos = OddVo.tovo(new ArrayList<>(obj.getOdds()));
     }
 
     public static List<OddGroupVo> tovo(List<OddGroup> oddGroups){

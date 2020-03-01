@@ -2,6 +2,7 @@ package com.lt.fly.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,8 +21,16 @@ public class BankCard extends BasicEntity{
 	//卡号
 	@Column(name = "card")
 	private String card;
-	
-	//属于哪个银行
+
+	//银行卡所属人
+	@Column
+	private String realname;
+
+	//银行卡预留手机号
+	@Column
+	private String phoneNumber;
+
+	//开户行
 	@Column(name = "bank")
 	private String bank;
 	

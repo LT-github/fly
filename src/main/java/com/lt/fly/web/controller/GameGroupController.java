@@ -1,21 +1,35 @@
 package com.lt.fly.web.controller;
 
 import com.lt.fly.annotation.UserLoginToken;
+import com.lt.fly.dao.IBetGroupRepository;
 import com.lt.fly.dao.IGameGroupRepository;
+import com.lt.fly.dao.IOddGroupRepository;
+import com.lt.fly.dao.IOddRepository;
+import com.lt.fly.entity.BetGroup;
 import com.lt.fly.entity.GameGroup;
+import com.lt.fly.entity.Odd;
+import com.lt.fly.entity.OddGroup;
 import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.utils.GlobalConstant;
 import com.lt.fly.utils.HttpResult;
 import com.lt.fly.utils.IdWorker;
 import com.lt.fly.utils.MyBeanUtils;
-import com.lt.fly.web.req.GameGroupAdd;
+import com.lt.fly.web.req.*;
+import com.lt.fly.web.resp.PageResp;
+import com.lt.fly.web.vo.BetGroupVo;
 import com.lt.fly.web.vo.GameGroupVo;
-import lombok.Getter;
+import com.lt.fly.web.vo.GameTypeVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.*;
+
+/**
+ * 玩法
+ */
 @RestController
 @RequestMapping("/game")
 public class GameGroupController extends BaseController {
@@ -24,9 +38,24 @@ public class GameGroupController extends BaseController {
     private IGameGroupRepository iGameGroupRepository;
 
     @Autowired
+    private IBetGroupRepository iBetGroupRepository;
+
+    @Autowired
     private IdWorker idWorker;
 
-    //只添加玩法组
+    @Autowired
+    private IOddRepository iOddRepository;
+
+    @Autowired
+    private IOddGroupRepository iOddGroupRepository;
+
+    /**
+     * 添加玩法组
+     * @param req
+     * @param bindingResult
+     * @return
+     * @throws ClientErrorException
+     */
     @PostMapping
     @UserLoginToken
     public HttpResult add(@RequestBody @Validated GameGroupAdd req, BindingResult bindingResult) throws ClientErrorException {
@@ -36,15 +65,181 @@ public class GameGroupController extends BaseController {
         gameGroup.setId(idWorker.nextId());
         gameGroup.setCreateTime(System.currentTimeMillis());
         gameGroup.setModifyTime(System.currentTimeMillis());
-        gameGroup.setAddType(GlobalConstant.GameGroupAddType.DEFUALt.getCode());
         iGameGroupRepository.save(gameGroup);
         return HttpResult.success(new GameGroupVo(gameGroup),"添加'"+req.getName()+"'玩法组成功");
     }
 
+    /**
+     * 查询玩法组
+     * @param req
+     * @return
+     * @throws ClientErrorException
+     */
     @GetMapping
     @UserLoginToken
-    public HttpResult find() throws ClientErrorException{
-        return HttpResult.success();
+    public HttpResult gameFind(GameGroupFind req) throws ClientErrorException{
+        List<GameGroup> gameGroups = iGameGroupRepository.findAll(req);
+        return HttpResult.success(GameGroupVo.tovo(gameGroups),"查询玩法组成功");
     }
 
+    /**
+     * 修改玩法组信息
+     * @param id
+     * @param req
+     * @return
+     * @throws ClientErrorException
+     */
+    @PutMapping("/{id}")
+    @UserLoginToken
+    public HttpResult gameEdit(@PathVariable Long id,@RequestBody GameGroupEdit req) throws ClientErrorException{
+        GameGroup gameGroup = isNotNull(iGameGroupRepository.findById(id),"传递的参数没有实体");
+        MyBeanUtils.copyProperties(req,gameGroup);
+        return HttpResult.success(new GameGroupVo(gameGroup),"修改"+ gameGroup.getName()+"信息成功");
+    }
+
+    /**
+     * 彩种列表
+     * @return
+     * @throws ClientErrorException
+     */
+    @GetMapping("/type")
+    @UserLoginToken
+    public HttpResult findGameType() throws ClientErrorException{
+        Map<String,Integer> map = new HashMap<>();
+        List<GameGroup> gameGroups= iGameGroupRepository.findAll();
+        for (GameGroup gameGroup : gameGroups) {
+            //返回值是否为空
+            if(map.isEmpty()) {
+                map.put(gameGroup.getType(), gameGroup.getStatus());
+                continue;
+            }
+            if(map.containsKey(gameGroup.getType()) && map.get(gameGroup.getType()) == GlobalConstant.GameStatus.OPEN.getCode()) {
+                map.put(gameGroup.getType(), GlobalConstant.GameStatus.OPEN.getCode());
+            }else {
+                map.put(gameGroup.getType(), gameGroup.getStatus());
+            }
+        }
+        Set<GameTypeVo> gameTypeVos = new HashSet<>();
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            GameTypeVo gameTypeVo = new GameTypeVo();
+            gameTypeVo.setType(entry.getKey());
+            gameTypeVo.setStatus(entry.getValue());
+            gameTypeVos.add(gameTypeVo);
+        }
+        return HttpResult.success(gameTypeVos,"彩种列表查询成功");
+    }
+
+    @PutMapping("/type")
+    @UserLoginToken
+    public HttpResult editType(GameTypeEdit req) throws ClientErrorException{
+        List<GameGroup> gameGroups = iGameGroupRepository.findByType(req.getType());
+        if(null == gameGroups || 0 == gameGroups.size())
+            throw new ClientErrorException("当前的参数"+req.getType()+"没有实体");
+
+        for (GameGroup item : gameGroups) {
+            MyBeanUtils.copyProperties(req, item);
+            for (BetGroup betGroup : item.getBetGroups()) {
+                //最后修改时间和修改人
+                betGroup.setModifyTime(System.currentTimeMillis());
+                betGroup.setModifyUser(getLoginUser());
+                betGroup.setStatus(req.getStatus());
+            }
+        }
+        iGameGroupRepository.saveAll(gameGroups);
+        return HttpResult.success(null,"修改彩种状态成功");
+    }
+
+    /**
+     * 添加下注组
+     * @param req
+     * @return
+     * @throws ClientErrorException
+     */
+    @PostMapping("/bet")
+    @UserLoginToken
+    public HttpResult add(@RequestBody BetGroupAdd req) throws ClientErrorException {
+        GameGroup gameGroup = isNotNull(iGameGroupRepository.findById(req.getGameGroupId()),"传递的参数没有实体");
+        BetGroup betGroup = new BetGroup();
+        betGroup.setId(idWorker.nextId());
+        betGroup.setCreateTime(System.currentTimeMillis());
+        betGroup.setModifyTime(System.currentTimeMillis());
+        betGroup.setCreateUser(getLoginUser());
+        betGroup.setModifyUser(getLoginUser());
+        betGroup.setGameGroup(gameGroup);
+        MyBeanUtils.copyProperties(req,betGroup);
+        iBetGroupRepository.save(betGroup);
+        return HttpResult.success(new BetGroupVo(betGroup),"添加'"+req.getName()+"'成功");
+    }
+
+    /**
+     * 查询下注组
+     * @param req
+     * @return
+     * @throws ClientErrorException
+     */
+    @GetMapping("/bet")
+    @UserLoginToken
+    public HttpResult find(BetGroupFind req) throws ClientErrorException{
+        Page<BetGroup> page = iBetGroupRepository.findAll(req);
+        PageResp<BetGroupVo,BetGroup> resp = new PageResp<BetGroupVo,BetGroup>(page).getPageVo(new PageResp.PageGenerator<BetGroupVo,BetGroup>(){
+
+            @Override
+            public List<BetGroupVo> generator(List<BetGroup> content) {
+                return BetGroupVo.tovo(content);
+            }
+        });
+        return HttpResult.success(resp,"获取下注组列表成功");
+    }
+
+    /**
+     * 修改下注组,如果oddId不为null则修改赔率
+     * @param id
+     * @param req
+     * @return
+     * @throws ClientErrorException
+     */
+    @PutMapping("/bet/{id}")
+    @UserLoginToken
+    public HttpResult edit(@PathVariable Long id , @RequestBody BetGroupEdit req) throws ClientErrorException{
+        BetGroup betGroup = isNotNull(iBetGroupRepository.findById(id),"传递的参数没有实体");
+        MyBeanUtils.copyProperties(req,betGroup);
+        iBetGroupRepository.save(betGroup);
+        if(null != req.getOddId()){
+            OddGroup oddGroup = isNotNull(iOddGroupRepository.findById(req.getOddGroupId()),"传递的参数没有实体");
+            Set<Odd> odds = new HashSet<>();
+            //找到该下注组的所有赔率并且循环
+            for (Odd odd :
+                    oddGroup.getOdds()) {
+                if(!odd.getBetGroup().getId().equals(id)){
+                    odds.add(odd);
+                }
+            }
+            oddGroup.setOdds(odds);
+            iOddGroupRepository.save(oddGroup);
+        }
+        return HttpResult.success(new BetGroupVo(betGroup),"修改"+betGroup.getName()+"信息成功");
+    }
+
+    /**
+     * 多选修改下注组
+     * @param req
+     * @return
+     * @throws ClientErrorException
+     */
+    @PostMapping("/bet/mul")
+    @UserLoginToken
+    public HttpResult editMulti(@RequestBody BetGroupEditMulti req) throws ClientErrorException{
+        List<BetGroup> betGroups = iBetGroupRepository.findByIds(req.getIds());
+        if(null == betGroups || 0 == betGroups.size())
+            throw new ClientErrorException("当前没有玩法在使用!请联系管理员!");
+
+        for (BetGroup item : betGroups) {
+            MyBeanUtils.copyProperties(req, item);
+            //最后修改时间和修改人
+            item.setModifyTime(System.currentTimeMillis());
+            item.setModifyUser(getLoginUser());
+        }
+        iBetGroupRepository.saveAll(betGroups);
+        return HttpResult.success(BetGroupVo.tovo(betGroups),"多选修改下注组成功!");
+    }
 }

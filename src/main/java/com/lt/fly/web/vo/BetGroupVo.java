@@ -2,7 +2,7 @@ package com.lt.fly.web.vo;
 
 
 import com.lt.fly.entity.BetGroup;
-import com.lt.fly.entity.Odd;
+import com.lt.fly.utils.GlobalConstant;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,7 +37,10 @@ public class BetGroupVo {
         this.id = obj.getId();
         this.gameGroupName = obj.getGameGroup().getName();
         this.betGrouopName = obj.getName();
-        this.status = obj.getStatus();
+        if(GlobalConstant.GameStatus.CLOSE.getCode() == obj.getGameGroup().getStatus())
+            this.status = GlobalConstant.GameStatus.CLOSE.getCode();
+        else
+            this.status = obj.getStatus();
         this.singleBetting = obj.getSingleBetting();
         this.maximumBet = obj.getMaximumBet();
         if (null!=obj.getModifyUser())

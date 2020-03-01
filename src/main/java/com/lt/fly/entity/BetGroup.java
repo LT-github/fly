@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -36,6 +37,6 @@ public class BetGroup extends BasicEntity{
     private GameGroup gameGroup;
 
     @OneToMany(mappedBy = "betGroup",cascade=CascadeType.ALL,fetch=FetchType.EAGER)
-    private Set<Odd> odds;
+    private Set<Odd> odds = new HashSet<>();
 
 }

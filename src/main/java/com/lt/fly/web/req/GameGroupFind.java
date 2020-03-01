@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class GameFind implements DataQueryObject {
+public class GameGroupFind implements DataQueryObject {
     @QueryField(name = "name" , type = QueryType.FULL_LIKE)
     private String name;
 

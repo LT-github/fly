@@ -5,9 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class GameEdit {
+public class GameTypeEdit {
+
     private String type;
-    private String pingYinName;
+
     private Integer status;
-    private String description;
 }

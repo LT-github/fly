@@ -23,7 +23,7 @@ public class GameGroup extends BasicEntity {
     private String pingYinName;
 
     @Column
-    // 玩法状态 0 正常 1禁用
+    // 玩法状态 0关闭 1开启
     private Integer status;
 
     // 玩法描述
@@ -37,9 +37,6 @@ public class GameGroup extends BasicEntity {
     @Column
     private String type;
 
-    //玩法组类型
-    @Column
-    private Integer addType;
 
 
 }

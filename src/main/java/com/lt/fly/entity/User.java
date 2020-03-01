@@ -27,14 +27,6 @@ public class User extends BasicEntity{
 	@Column(name = "nickname",length = 32)
 	private String nickname;
 	
-	// 用户真实姓名
-	@Column(name = "realname",length = 32)
-	private String realname;
-	
-	// 身份证号
-	@Column(name = "idcard",length = 32)
-	private String idcard;
-	
 	// 用户手机号
 	@Column(name = "mobile",length = 32)
 	private String mobile;
@@ -43,7 +35,7 @@ public class User extends BasicEntity{
 	@Column(name = "ip_add",length = 32)
 	private String ip;
 	
-	// 用户状态
+	// 用户状态 0禁用,1活动
 	@Column(name = "status",length = 32)
 	private Integer status;
 	

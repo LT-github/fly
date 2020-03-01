@@ -26,7 +26,6 @@ public class AdminVo {
 	public AdminVo(Admin admin) {
 		this.id = admin.getId();
 		this.username = admin.getUsername();
-		this.realname = admin.getRealname();
 		this.nickname = admin.getNickname();
 		this.mobile = admin.getMobile();
 		this.status = admin.getStatus();

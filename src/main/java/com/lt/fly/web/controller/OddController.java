@@ -53,15 +53,30 @@ public class OddController extends BaseController {
         return HttpResult.success(new OddVo(odd),"添加下注组'"+betGroup.getName()+"'的赔率成功");
     }
 
-    @GetMapping("/{id}")
+    /**
+     * 查找指定下注组和赔率组的赔率
+     * @param req
+     * @return
+     * @throws ClientErrorException
+     */
+    @GetMapping()
     @UserLoginToken
-    public HttpResult findOne(OddFind req) throws ClientErrorException{
-        req.getBetGroupId();
-        req.getOddGroupId();
-        return HttpResult.success();
+    public HttpResult findOne(@Validated OddFind req,BindingResult bindingResult) throws ClientErrorException{
+        this.paramsValid(bindingResult);
+        if(null == req.getOddGroupId()){
+            List<Odd> odds = iOddRepository.findByBetGroupId(req.getBetGroupId());
+            if (null != odds)
+                return HttpResult.success(OddVo.tovo(odds),"获取赔率成功");
+        }else{
+            Odd odd = iOddRepository.findOne(req.getBetGroupId(),req.getOddGroupId());
+            if(null != odd) {
+                return HttpResult.success(new OddVo(odd),"获取赔率成功");
+            }
+        }
+        return HttpResult.success(null,"该下注组没有赔率,请添加");
+
     }
 
-    @PutMapping("/{id}")
 
 
     /**
@@ -87,8 +102,11 @@ public class OddController extends BaseController {
         return HttpResult.success(new OddGroupVo(oddGroup),"添加'"+req.getName()+"'成功");
     }
 
-    public HttpResult findOddGroup() throws ClientErrorException{
-        return HttpResult.success();
+    @GetMapping("/group")
+    @UserLoginToken
+    public HttpResult findOddGroups() throws ClientErrorException{
+        List<OddGroup> oddGroups = iOddGroupRepository.findAll();
+        return HttpResult.success(OddGroupVo.tovo(oddGroups),"查询赔率组成功");
     }
 
 }
