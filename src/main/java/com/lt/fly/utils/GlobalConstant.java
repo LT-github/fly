@@ -1,6 +1,7 @@
 package com.lt.fly.utils;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.regex.Pattern;
 
@@ -81,28 +82,31 @@ public class GlobalConstant {
 			this.message = message;
 		}
 	}
-	
-	/**
-	 * 最新的开奖数据
-	 * @author Administrator
-	 *
-	 */
+
+	//封盘开关
+	@Getter
+	public enum Bet{
+		SWITCH(true);
+
+		@Setter
+		private boolean flag;
+
+		private Bet(boolean flag) {
+			this.flag = flag;
+		}
+	}
+
+	//最新开奖数据
+	@Getter
 	public enum NewData{
 		ISSUE_NUMBER(1l),
 		OPEN_TIME(1l);
 
+		@Setter
 		private Long data;
 
 		private NewData(long data) {
 			this.data = data;
 		}
-		public Long getData() {
-			return data;
-		}
-		public void setData(Long data) {
-			this.data = data;
-		}
-		
-		
 	}
 }

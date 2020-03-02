@@ -1,9 +1,7 @@
 package com.lt.fly.web.controller;
 
 import java.util.List;
-import java.util.Optional;
 
-import com.lt.fly.annotation.RequiredPermission;
 import com.lt.fly.annotation.UserLoginToken;
 import com.lt.fly.dao.IHandicapRepository;
 import com.lt.fly.dao.IMemberRepository;
@@ -18,7 +16,6 @@ import com.lt.fly.web.req.MemberEdit;
 import com.lt.fly.web.req.MemberFind;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.vo.MemberVo;
-import org.apache.catalina.Store;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
