@@ -229,7 +229,7 @@ public class GameGroupController extends BaseController {
     @PostMapping("/bet/mul")
     @UserLoginToken
     public HttpResult editMulti(@RequestBody BetGroupEditMulti req) throws ClientErrorException{
-        List<BetGroup> betGroups = iBetGroupRepository.findByIds(req.getIds());
+        List<BetGroup> betGroups = iBetGroupRepository.findAllById(req.getIds());
         if(null == betGroups || 0 == betGroups.size())
             throw new ClientErrorException("当前没有玩法在使用!请联系管理员!");
 

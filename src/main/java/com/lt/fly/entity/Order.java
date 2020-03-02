@@ -66,5 +66,9 @@ public class Order extends BasicEntity{
 	@OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="bet_group_id")
 	private BetGroup betGroup;
+
+	//这个注单的赔率
+	@Column
+	private Double betOdd;
 	
 }

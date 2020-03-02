@@ -17,11 +17,13 @@ public class Member extends User{
     private Set<Finance> finances;
 
     // 该会员属于哪一个盘口
-    @ManyToOne(cascade={CascadeType.MERGE,CascadeType.REFRESH})
+    @ManyToOne(cascade={CascadeType.MERGE,CascadeType.REFRESH,CascadeType.PERSIST})
     @JoinColumn(name="handicap_id")
     private Handicap handicap;
 
     // 备注
     @Column(length = 255)
     private String remark;
+
+
 }
