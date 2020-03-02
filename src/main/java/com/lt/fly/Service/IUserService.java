@@ -6,5 +6,5 @@ import com.lt.fly.web.resp.UserLoginResp;
 
 public interface IUserService {
 
-    UserLoginResp login(UserLogin req);
+    UserLoginResp login(UserLogin req);  
 }

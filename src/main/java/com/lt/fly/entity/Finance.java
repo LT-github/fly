@@ -7,6 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "t_finance")
 @Getter
@@ -37,7 +39,7 @@ public class Finance extends BasicEntity{
 	@Column(name = "audit_type")
 	private Integer auditType;
 
-	//计数类型
+	//计数类型(1加 2减)
 	@Column(name = "count_type")
 	private Integer countType;
 
