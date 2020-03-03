@@ -109,4 +109,23 @@ public class GlobalConstant {
 			this.data = data;
 		}
 	}
+
+	//财务类型
+	@Getter
+	public enum FananceType{
+		RECHARGE(1,"充值"),
+		BET(2,"投注"),
+		CANCLE(3,"撤销"),
+		TIMELY_LIUSHUI(4,"实时流水返点"),
+		RANGE_LIUSHUI(5,"区间流水返点"),
+		RANGE_YINGLI(6,"区间盈利返点");
+
+		private int code;
+		private String msg;
+
+		FananceType(int code, String msg) {
+			this.code = code;
+			this.msg = msg;
+		}
+	}
 }
