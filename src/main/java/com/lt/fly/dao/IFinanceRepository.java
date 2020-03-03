@@ -17,4 +17,5 @@ public interface IFinanceRepository extends BaseRepository<Finance, Long>{
    List<Finance> findAllByCreateUser(User user);
    //查找用户流水，某个时间段
    List<Finance> findByCreateTimeBetweenAndCreateUserAndType(Long before,Long after,User user,Integer type);
+   
 }

@@ -49,31 +49,8 @@ public class FinanceController extends BaseController{
 	 */	
 	@PostMapping("/addFinance")
 	public HttpResult<Object> addOrderFinance(@RequestBody @Validated FinanceAddReq req) throws ClientErrorException{
+		financeService.addOrderFinance(req);
 		
-		Finance finance = new Finance();
-		BeanUtils.copyProperties(req, finance);
-		finance.setStatus(0);
-		finance.setCreateTime(System.currentTimeMillis());
-		finance.setModifyTime(System.currentTimeMillis());
-		finance.setModifyUser(this.getLoginUser());
-		finance.setId(idWorker.nextId());
-		finance.setAuditType(1);
-		if(finance.getMoney()!=null)
-			finance.setMoney(req.getBetsOrder().getTotalMoney());
-		Double balance = financeService.reckonBalance(req.getMemberId());
-		//判断余额是否够、
-		if(balance==null || finance.getMoney()>balance)
-			throw new ClientErrorException("用户余额不足");
-		Optional<User> op = userRepository.findById(req.getMemberId());
-		if(!op.isPresent())
-			throw new ClientErrorException("该用户不存在");		
-		finance.setCreateUser(op.get());
-				
-		if(req.getType()!=3)
-			throw new ClientErrorException("订单类型异常");
-					
-		finance.setCountType(2);
-		financeRepository.save(finance);
 		return HttpResult.success(null,"生成注单财务订单成功！");
 		
 	}

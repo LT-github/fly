@@ -30,7 +30,8 @@ public class IFinanceServiceImpl extends BaseService implements IFinanceService 
 	private IUserRepository userRepository;
 	@Autowired
 	private IFinanceRepository financeRepository;
-	
+	@Autowired
+	IFinanceService financeService;
 	
 	/**
 	 * 添加注单订单财务
@@ -38,6 +39,30 @@ public class IFinanceServiceImpl extends BaseService implements IFinanceService 
 	@Override
 	public void addOrderFinance(FinanceAddReq req) throws ClientErrorException{
 
+		Finance finance = new Finance();
+		BeanUtils.copyProperties(req, finance);
+		finance.setStatus(0);
+		finance.setCreateTime(System.currentTimeMillis());
+		finance.setModifyTime(System.currentTimeMillis());
+		finance.setModifyUser(this.getLoginUser());
+		finance.setId(idWorker.nextId());
+		finance.setAuditType(1);
+		if(finance.getMoney()!=null)
+			finance.setMoney(req.getBetsOrder().getTotalMoney());
+		Double balance = financeService.reckonBalance(req.getMemberId());
+		//判断余额是否够、
+		if(balance==null || finance.getMoney()>balance)
+			throw new ClientErrorException("用户余额不足");
+		Optional<User> op = userRepository.findById(req.getMemberId());
+		if(!op.isPresent())
+			throw new ClientErrorException("该用户不存在");		
+		finance.setCreateUser(op.get());
+				
+		if(req.getType()!=3)
+			throw new ClientErrorException("订单类型异常");
+					
+		finance.setCountType(2);
+		financeRepository.save(finance);
 		
 	}
 	/**
@@ -96,6 +121,9 @@ public class IFinanceServiceImpl extends BaseService implements IFinanceService 
 		// TODO Auto-generated method stub
 		
 	}
+	/**
+	 * 查询某个会员，某个时间段的流水
+	 */
 	@Override
 	public Double findLiushuiMemberByTime(FindLiushuiReq req) throws ClientErrorException {
 		
@@ -109,8 +137,16 @@ public class IFinanceServiceImpl extends BaseService implements IFinanceService 
 			if(finance.getMoney()!=null)
 				liushui+=finance.getMoney();
 		}
-		System.out.println("liushui:"+liushui);
+		
 		return liushui;
+	}
+	/**
+	 * 查询某个会员，某个时间段的盈亏
+	 */
+	@Override
+	public Double findYingkuiMemberByTime(FindLiushuiReq req) throws ClientErrorException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

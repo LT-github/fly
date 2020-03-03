@@ -45,4 +45,8 @@ public interface IFinanceService {
 	 */
 	Double findLiushuiMemberByTime(FindLiushuiReq req) throws ClientErrorException;
 	
+	/**
+	 * 查询某个会员，某个时间段的盈亏
+	 */
+	Double findYingkuiMemberByTime(FindLiushuiReq req) throws ClientErrorException;
 }
