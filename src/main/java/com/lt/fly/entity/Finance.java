@@ -3,9 +3,7 @@ package com.lt.fly.entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -43,7 +41,11 @@ public class Finance extends BasicEntity{
 	@Column(name = "count_type")
 	private Integer countType;
 
-	//财务类型(1:充值,2:返点,3:投注)
+	//财务类型(1:充值,2:投注,3:撤销,4:实时返点,5:区间流水返点,6:区间盈利返点)
 	@Column
 	private Integer type;
+
+	@ManyToOne(cascade={CascadeType.MERGE,CascadeType.REFRESH})
+	@JoinColumn(name="order_id")
+	private Order order;
 }

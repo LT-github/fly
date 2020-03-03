@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "t_order")
@@ -29,10 +30,9 @@ public class Order extends BasicEntity{
 	@Column(name = "status")
 	private Integer status;
 
-	// 下注财务记录
-	@OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-	@JoinColumn(name = "finance_id")
-	private Finance finance;
+	// 财务记录
+	@OneToMany(mappedBy = "order" , cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	private Set<Finance> finances;
 
 	// 玩法下注内容
 	@Column(name = "bets_content")
@@ -70,5 +70,9 @@ public class Order extends BasicEntity{
 	//这个注单的赔率
 	@Column
 	private Double betOdd;
+
+	//某些玩法注单特殊的赔率
+	@Column
+	private String specificOdd;
 	
 }
