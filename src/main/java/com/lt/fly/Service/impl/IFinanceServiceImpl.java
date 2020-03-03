@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.lt.fly.Service.BaseService;
 import com.lt.fly.Service.IFinanceService;
 import com.lt.fly.dao.IFinanceRepository;
+import com.lt.fly.dao.IOrderRepository;
 import com.lt.fly.dao.IUserRepository;
 import com.lt.fly.entity.Finance;
 import com.lt.fly.entity.Member;
@@ -32,6 +33,8 @@ public class IFinanceServiceImpl extends BaseService implements IFinanceService 
 	private IFinanceRepository financeRepository;
 	@Autowired
 	IFinanceService financeService;
+	@Autowired
+	IOrderRepository orderRepository;
 	
 	/**
 	 * 添加注单订单财务
@@ -145,8 +148,9 @@ public class IFinanceServiceImpl extends BaseService implements IFinanceService 
 	 */
 	@Override
 	public Double findYingkuiMemberByTime(FindLiushuiReq req) throws ClientErrorException {
-		// TODO Auto-generated method stub
-		return null;
+		Double yingkui = orderRepository.findYingkuiByCreateTime(req.getBefore(), req.getAfter(), req.getMemberId());
+		
+		return yingkui;
 	}
 
 }

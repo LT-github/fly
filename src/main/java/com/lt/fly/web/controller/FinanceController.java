@@ -6,7 +6,9 @@ import java.util.Optional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,8 +60,8 @@ public class FinanceController extends BaseController{
 	/**
 	 * 查询某个用户的余额
 	 */
-	@PostMapping("/lookupUserBalance")
-	public HttpResult<Object> reckonBalance(Long userId) throws ClientErrorException {
+	@PostMapping("/lookupUserBalance/{userId}")
+	public HttpResult<Object> reckonBalance(@PathVariable Long userId) throws ClientErrorException {
 
 		Double balance = financeService.reckonBalance(userId);
 
@@ -128,10 +130,16 @@ public class FinanceController extends BaseController{
 		
 	}
 	@PostMapping("/findLiushuiMemberByTime")
-	public HttpResult<Double> findLiushuiMemberByTime(@RequestBody FindLiushuiReq req) throws ClientErrorException{
+	public HttpResult<Double> findLiushuiMemberByTime(@RequestBody @Validated FindLiushuiReq req) throws ClientErrorException{
 		
 		Double liushui = financeService.findLiushuiMemberByTime(req);
 		
 		return HttpResult.success(liushui,"查询流水成功");
+	}
+	@PostMapping("/findYingkuiMemberByTime")
+	public HttpResult<Double> findYingkuiMemberByTime(@RequestBody @Validated FindLiushuiReq req) throws ClientErrorException{
+		
+		Double yingkui = financeService.findYingkuiMemberByTime(req);
+		return HttpResult.success(yingkui,"查询盈亏成功");
 	}
 }
