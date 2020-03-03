@@ -5,6 +5,7 @@ import com.lt.fly.entity.Finance;
 import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.web.req.AuditFinanceReq;
 import com.lt.fly.web.req.FinanceAddReq;
+import com.lt.fly.web.req.FindBlanceBytime;
 import com.lt.fly.web.req.FindLiushuiReq;
 import com.lt.fly.web.req.JudgeAuditFinanceReq;
 
@@ -19,10 +20,20 @@ public interface IFinanceService {
 	void addOrderFinance(FinanceAddReq req) throws ClientErrorException;
 	
 	/**
+	 * 添加撤销财务订单
+	 */
+	void addRevokeOrderFinance(FinanceAddReq req) throws ClientErrorException;
+	
+	/**
 	 * 计算某个用户余额
 	 */
 	
 	Double reckonBalance(Long userId) throws ClientErrorException;
+	
+	/**
+	 * 计算某个用户,某个时间点余额
+	 */
+	Double reckonBalanceByTime(FindBlanceBytime req) throws ClientErrorException;
 	
 	/**
 	 * 生成用户充值订单
@@ -49,4 +60,9 @@ public interface IFinanceService {
 	 * 查询某个会员，某个时间段的盈亏
 	 */
 	Double findYingkuiMemberByTime(FindLiushuiReq req) throws ClientErrorException;
+	
+	/**
+	 * 查询所有财务订单分页
+	 */
+	
 }

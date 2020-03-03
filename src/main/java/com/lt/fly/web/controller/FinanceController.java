@@ -26,6 +26,7 @@ import com.lt.fly.utils.IdWorker;
 import com.lt.fly.web.req.AuditFinanceQ;
 import com.lt.fly.web.req.AuditFinanceReq;
 import com.lt.fly.web.req.FinanceAddReq;
+import com.lt.fly.web.req.FindBlanceBytime;
 import com.lt.fly.web.req.FindLiushuiReq;
 import com.lt.fly.web.req.JudgeAuditFinanceReq;
 import com.lt.fly.web.resp.PageResp;
@@ -68,8 +69,12 @@ public class FinanceController extends BaseController{
 
 		return HttpResult.success(balance,"余额查询成功");
 	}
-	
-
+	@PostMapping("/reckonBalanceByTime")
+	public HttpResult<Double> reckonBalanceByTime(@RequestBody @Validated FindBlanceBytime  req) throws ClientErrorException{
+		Double balance = financeService.reckonBalanceByTime(req);
+		
+		return  HttpResult.success(balance,"余额查询成功");
+	}
 	/**
 	 * 客户端请求，生成用户充值订单
 	 */	

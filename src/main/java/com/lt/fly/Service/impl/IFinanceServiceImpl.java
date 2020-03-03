@@ -20,6 +20,7 @@ import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.jpa.support.QueryBetween;
 import com.lt.fly.web.req.AuditFinanceReq;
 import com.lt.fly.web.req.FinanceAddReq;
+import com.lt.fly.web.req.FindBlanceBytime;
 import com.lt.fly.web.req.FindLiushuiReq;
 import com.lt.fly.web.req.JudgeAuditFinanceReq;
 
@@ -69,42 +70,61 @@ public class IFinanceServiceImpl extends BaseService implements IFinanceService 
 		
 	}
 	/**
+	 * 添加撤销财务订单
+	 */
+	@Override
+	public void addRevokeOrderFinance(FinanceAddReq req) throws ClientErrorException {
+		Finance finance = new Finance();
+		BeanUtils.copyProperties(req, finance);
+		finance.setStatus(0);
+		finance.setCreateTime(System.currentTimeMillis());
+		finance.setModifyTime(System.currentTimeMillis());
+		finance.setModifyUser(this.getLoginUser());
+		finance.setId(idWorker.nextId());
+		//finance.setAuditType(1);
+		if(finance.getMoney()!=null)
+			finance.setMoney(req.getBetsOrder().getTotalMoney());
+		Double balance = financeService.reckonBalance(req.getMemberId());
+		//判断余额
+		if(balance==null)
+			balance=0.0;
+		Optional<User> op = userRepository.findById(req.getMemberId());
+		if(!op.isPresent())
+			throw new ClientErrorException("该用户不存在");		
+		finance.setCreateUser(op.get());
+				
+		if(req.getType()!=6)
+			throw new ClientErrorException("订单类型异常");
+					
+		finance.setCountType(1);
+		financeRepository.save(finance);
+		
+	}
+	/**
 	 * 计算某个用户的余额
 	 */
 	@Override
 	public Double reckonBalance(Long userId) throws ClientErrorException {
 		
-		Double balance=0.0;
+
 		Optional<User> op = userRepository.findById(userId);
 		if(!op.isPresent())
 			throw new ClientErrorException("该用户不存在");
-		    User user = op.get();
-		List<Finance> finances = financeRepository.findAllByCreateUser(user);
-		if(finances==null || finances.isEmpty())
-			return 0.0;
-		
-           for (Finance finance : finances) {      	   
-        	   if(finance.getStatus()!=0)
-        		   continue;
-        	   if(finance.getType()==1) {
-        		   if(finance.getAuditStatus()==null || finance.getAuditStatus()!=1)
-        			   continue;
-        	   }
-        	   Double money=finance.getMoney();
-        	   if(money==null)
-        		   money=0.0;
-        	   //加减余额
-        	   if(finance.getCountType()==1) {
-        		   balance+=money;
-        	   }else if(finance.getCountType()==2){
-        		   balance-=money;  
-        	   }
-        	         	           	   			
-		}
-						
+		Double balance = financeRepository.findMemberBlance(userId);				
 		return balance;
 	}
 	
+	/**
+	 * 计算某个用户,某个时间点余额
+	 */
+	@Override
+	public Double reckonBalanceByTime(FindBlanceBytime req) throws ClientErrorException {
+		Optional<User> op = userRepository.findById(req.getMemberId());
+		if(!op.isPresent())
+			throw new ClientErrorException("该用户不存在");
+		Double balance = financeRepository.findMemberBlanceByTime(req.getMemberId(), req.getAfter());
+		return balance;
+	}
 	/**
 	 * 生成用户充值订单
 	 */
@@ -132,14 +152,8 @@ public class IFinanceServiceImpl extends BaseService implements IFinanceService 
 		
 		Optional<User> op = userRepository.findById(req.getMemberId());
 		if(!op.isPresent())
-			throw new ClientErrorException("该用户标识不存在");
-		User user = op.get();		
-		List<Finance> finances = financeRepository.findByCreateTimeBetweenAndCreateUserAndType(req.getBefore(),req.getAfter(), user,3);
-		Double liushui=0.0;
-		for (Finance finance : finances) {
-			if(finance.getMoney()!=null)
-				liushui+=finance.getMoney();
-		}
+			throw new ClientErrorException("该用户不存在");
+		Double liushui = orderRepository.findLiushuiByCreateTime(req.getBefore(), req.getAfter(), req.getMemberId());
 		
 		return liushui;
 	}
@@ -148,9 +162,14 @@ public class IFinanceServiceImpl extends BaseService implements IFinanceService 
 	 */
 	@Override
 	public Double findYingkuiMemberByTime(FindLiushuiReq req) throws ClientErrorException {
+		Optional<User> op = userRepository.findById(req.getMemberId());
+		if(!op.isPresent())
+			throw new ClientErrorException("该用户不存在");
 		Double yingkui = orderRepository.findYingkuiByCreateTime(req.getBefore(), req.getAfter(), req.getMemberId());
 		
 		return yingkui;
 	}
+	
+	
 
 }
