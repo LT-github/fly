@@ -36,7 +36,7 @@ import java.util.*;
  */
 @RestController
 @RequestMapping("/game")
-public class GameGroupController extends BaseController {
+public class GameController extends BaseController {
 
     @Autowired
     private IGameGroupRepository iGameGroupRepository;
