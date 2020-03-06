@@ -2,6 +2,7 @@ package com.lt.fly.web.vo;
 
 
 import com.lt.fly.entity.BetGroup;
+import com.lt.fly.entity.Odd;
 import com.lt.fly.utils.GlobalConstant;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,7 +36,7 @@ public class BetGroupVo {
         super();
     }
 
-    public BetGroupVo(BetGroup obj,Double oddValue){
+    public BetGroupVo(BetGroup obj, Odd odd){
         this.id = obj.getId();
         this.gameGroupName = obj.getGameGroup().getName();
         this.betGrouopName = obj.getName();
@@ -48,7 +49,7 @@ public class BetGroupVo {
         if (null!=obj.getModifyUser())
             this.modifiedUsername = obj.getModifyUser().getUsername();
         this.modifiedTime = obj.getModifyTime();
-        this.oddValue = oddValue;
+        this.oddValue = odd.getOddValue();
     }
 
     public BetGroupVo(BetGroup obj){

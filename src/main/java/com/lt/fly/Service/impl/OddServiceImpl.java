@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class IOddServiceImpl implements IOddService {
+public class OddServiceImpl implements IOddService {
 
     @Autowired
     private IOddRepository iOddRepository;
@@ -37,7 +37,7 @@ public class IOddServiceImpl implements IOddService {
     public OddVo findOneByOddGroupId(OddFind query) throws ClientErrorException {
         Odd odd = iOddRepository.findOne(query.getBetGroupId(),query.getOddGroupId());
         if(null == odd) {
-           throw new ClientErrorException("传递的参数找不到实体");
+           return null;
         }
         return new OddVo(odd);
     }

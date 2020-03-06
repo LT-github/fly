@@ -195,7 +195,12 @@ public class GameGroupController extends BaseController {
         for (BetGroup item :
                 page) {
             req.setBetGroupId(item.getId());
-            betGroupVos.add(new BetGroupVo(item,iOddService.findOneByOddGroupId(req).getOddValue()));
+            Odd odd = iOddRepository.findOne(item.getId(),query.getOddGroupId());
+            if (null != odd){
+                betGroupVos.add(new BetGroupVo(item,odd));
+            }else {
+                betGroupVos.add(new BetGroupVo(item));
+            }
         }
         resp.setData(betGroupVos);
         return HttpResult.success(resp,"获取下注组列表成功");
