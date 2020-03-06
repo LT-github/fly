@@ -3,27 +3,20 @@ package com.lt.fly.Service;
 
 import com.lt.fly.entity.Finance;
 import com.lt.fly.exception.ClientErrorException;
-import com.lt.fly.web.req.AuditFinanceReq;
-import com.lt.fly.web.req.FinanceAddReq;
-import com.lt.fly.web.req.FindBlanceBytime;
-import com.lt.fly.web.req.FindLiushuiReq;
-import com.lt.fly.web.req.JudgeAuditFinanceReq;
+import com.lt.fly.web.query.FinanceFind;
+import com.lt.fly.web.req.*;
+import com.lt.fly.web.resp.PageResp;
+import com.lt.fly.web.vo.FinanceVo;
 
 
 public interface IFinanceService {
 
 	/**
-	 * 添加财务注
-	 * 订单
+	 * 根据类型添加财务记录
 	 */
 	
-	void addOrderFinance(FinanceAddReq req) throws ClientErrorException;
-	
-	/**
-	 * 添加撤销财务订单
-	 */
-	void addRevokeOrderFinance(FinanceAddReq req) throws ClientErrorException;
-	
+	Finance add(FinanceAdd req, int type) throws ClientErrorException;
+
 	/**
 	 * 计算某个用户余额
 	 */
@@ -36,20 +29,10 @@ public interface IFinanceService {
 	Double reckonBalanceByTime(FindBlanceBytime req) throws ClientErrorException;
 	
 	/**
-	 * 生成用户充值订单
-	 */
-	Finance addAuditMember(AuditFinanceReq req) throws ClientErrorException;
-	
-	/**
 	 * 审核会员充值订单
 	 */
 	
 	void judgeAuditFinance(JudgeAuditFinanceReq req) throws ClientErrorException;
-	
-	/**
-	 * 生成某个会员返点财务
-	 */
-	void addMemberReturnFinance() throws ClientErrorException;
 	
 	/**
 	 * 查询某个会员，某个时间段的流水
@@ -60,9 +43,6 @@ public interface IFinanceService {
 	 * 查询某个会员，某个时间段的盈亏
 	 */
 	Double findYingkuiMemberByTime(FindLiushuiReq req) throws ClientErrorException;
-	
-	/**
-	 * 查询所有财务订单分页
-	 */
-	
+
+	PageResp<FinanceVo,Finance> findAll(FinanceFind query);
 }

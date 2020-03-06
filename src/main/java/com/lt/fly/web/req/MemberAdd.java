@@ -21,6 +21,8 @@ public class MemberAdd {
 	private Integer status;
 	@NotNull(message = "盘口id不能为空")
 	private Long handicapId;
+	@NotNull(message = "电话号码不能为空")
+	private String mobile;
 
 	private String remark;
 	private String nickname;

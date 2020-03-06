@@ -3,7 +3,7 @@ package com.lt.fly.web.controller;
 import com.lt.fly.Service.IFinanceService;
 import com.lt.fly.annotation.UserLoginToken;
 import com.lt.fly.dao.IBetGroupRepository;
-import com.lt.fly.dao.IMemberRepository;
+import com.lt.fly.dao.IFinanceRepository;
 import com.lt.fly.dao.IOrderRepository;
 import com.lt.fly.entity.*;
 import com.lt.fly.exception.ClientErrorException;
@@ -11,30 +11,27 @@ import com.lt.fly.redis.service.IOrderDTOServiceCache;
 import com.lt.fly.utils.*;
 import com.lt.fly.utils.gameUtils.GameProperty;
 import com.lt.fly.utils.gameUtils.GameUtil;
+import com.lt.fly.web.resp.ClientShowResp;
+import com.lt.fly.web.req.FinanceAdd;
 import com.lt.fly.web.req.OrderAdd;
-import com.lt.fly.web.resp.SaveResp;
+import com.lt.fly.web.vo.FinanceVo;
 import com.lt.fly.web.vo.OrderVo;
 import com.lt.lxc.pojo.OrderDTO;
 import com.lt.lxc.service.OpenDataISV;
+import io.swagger.models.auth.In;
 import org.apache.dubbo.config.annotation.Reference;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import sun.security.krb5.internal.Ticket;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.math.BigDecimal;
+import java.util.*;
 
 @RestController
-@RequestMapping("/operation")
-public class OperationController extends BaseController{
+@RequestMapping("/client")
+public class ClientController extends BaseController{
 
     @Autowired
     private IOrderRepository iOrderRepository;
@@ -47,6 +44,9 @@ public class OperationController extends BaseController{
 
     @Autowired
     private IFinanceService iFinanceService;
+
+    @Autowired
+    private IFinanceRepository iFinanceRepository;
 
     @Autowired
     private IOrderDTOServiceCache iOrderDTOServiceCache;
@@ -144,10 +144,17 @@ public class OperationController extends BaseController{
 
             //财务记录集合
             Set<Finance> finances = new HashSet<>();
-            //TODO 生成下注财务记录
+            FinanceAdd req = new FinanceAdd();
 
-            //TODO 生成返点财务记录
+            //生成下注财务记录
+            req.setMoney(gp.getMoney());
+            req.setUserBalance(balance-gp.getMoney()*proportion);
+            finances.add(iFinanceService.add(req,GlobalConstant.FananceType.BET.getCode()));
 
+            //生成返点财务记录
+            req.setMoney(gp.getMoney()*proportion);
+            req.setUserBalance(balance);
+            finances.add(iFinanceService.add(req,GlobalConstant.FananceType.TIMELY_LIUSHUI.getCode()));
             //添加财务记录
             order.setFinances(finances);
 
@@ -189,4 +196,79 @@ public class OperationController extends BaseController{
         }
         return HttpResult.success(OrderVo.tovo(orders),"下注成功!");
     }
+
+    /**
+     * 充值
+     * @return
+     * @throws ClientErrorException
+     */
+    @PostMapping("/recharge")
+    @UserLoginToken
+    public HttpResult recharge(FinanceAdd req) throws ClientErrorException{
+        Finance finance = iFinanceService.add(req,GlobalConstant.FananceType.RECHARGE.getCode());
+        iFinanceRepository.save(finance);
+        return HttpResult.success(new FinanceVo(finance),"上分申请提交成功");
+    }
+
+    /**
+     * 下分
+     * @return
+     * @throws ClientErrorException
+     */
+    @PostMapping("/descend")
+    @UserLoginToken
+    public HttpResult descend(FinanceAdd req) throws ClientErrorException{
+        Finance finance = iFinanceService.add(req,GlobalConstant.FananceType.DESCEND.getCode());
+        iFinanceRepository.save(finance);
+        return HttpResult.success(new FinanceVo(finance),"下分申请提交成功");
+    }
+
+    /**
+     * 首页显示
+     * @return
+     */
+    @GetMapping
+    @UserLoginToken
+    public HttpResult index(ClientShowResp resp) throws ClientErrorException{
+        //现在时间戳
+        long now = System.currentTimeMillis();
+        //获取今日零点时间戳
+        long zero=now/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();
+
+        List<Order> orders = iOrderRepository.findByUserAndTime(now,zero,ContextHolderUtil.getTokenUserId());
+
+        BigDecimal betResult = new BigDecimal(0);
+        BigDecimal betTotal = new BigDecimal(0);
+        BigDecimal returnTotal = new BigDecimal(0);
+        BigDecimal dividendTotal = new BigDecimal(0);
+        Set<Long> issues = new HashSet<>();
+        for (Order item :
+                orders) {
+            betTotal.add(new BigDecimal(item.getTotalMoney()));
+            if(item.getBattleResult()<0)
+                betResult.subtract(new BigDecimal(item.getBattleResult()));
+            else
+                betResult.add(new BigDecimal(item.getBattleResult()));
+
+            issues.add(item.getIssueNumber());
+            for (Finance it:
+                 item.getFinances()) {
+                if(it.getType().equals(GlobalConstant.FananceType.RANGE_LIUSHUI)){
+                    returnTotal.add(new BigDecimal(it.getMoney()));
+                }
+                if(it.getType().equals(GlobalConstant.FananceType.RANGE_YINGLI)){
+                    dividendTotal.add(new BigDecimal(it.getMoney()));
+                }
+            }
+        }
+        resp.setBetResult(betResult.doubleValue());
+        resp.setBetTotal(betTotal.doubleValue());
+        resp.setIssueCount(issues.size());
+        resp.setReturnTotal(returnTotal.doubleValue());
+        resp.setDividendTotal(dividendTotal.doubleValue());
+        return HttpResult.success(resp,"查询今日数据成功");
+    }
+
+
+
 }

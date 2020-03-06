@@ -4,7 +4,8 @@ import com.lt.fly.Service.IOrderService;
 import com.lt.fly.dao.IOrderRepository;
 import com.lt.fly.entity.Order;
 import com.lt.fly.exception.ClientErrorException;
-import com.lt.fly.web.req.OrderFind;
+import com.lt.fly.web.query.BetReportFind;
+import com.lt.fly.web.query.OrderFind;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.vo.OrderVo;
 import com.lt.lxc.pojo.OrderDTO;
@@ -31,16 +32,11 @@ public class OrderServiceImpl implements IOrderService {
      * @throws ClientErrorException
      */
     @Override
-    public PageResp<OrderVo, Order> findAll(OrderFind req) throws ClientErrorException {
+    public PageResp findAll(OrderFind req) throws ClientErrorException {
         Page<Order> page = iOrderRepository.findAll(req);
-
-        return new PageResp<OrderVo,Order>(page).getPageVo(new PageResp.PageGenerator<OrderVo,Order>(){
-
-            @Override
-            public List<OrderVo> generator(List<Order> content) {
-                return OrderVo.tovo(content);
-            }
-        });
+        PageResp resp = new PageResp(page);
+        resp.setData(OrderVo.tovo(page.getContent()));
+        return new PageResp(page);
     }
 
     /**
@@ -65,5 +61,12 @@ public class OrderServiceImpl implements IOrderService {
         Long end = System.currentTimeMillis();
         Long time = end-start;
         System.err.println(""+ LocalDateTime.now()+">>>>>"+map.size()+"组数据结算的时长为:"+time+"ms");
+    }
+
+    @Override
+    public PageResp findReport(BetReportFind query) throws ClientErrorException {
+//        iOrderRepository.findReport();
+
+        return null;
     }
 }

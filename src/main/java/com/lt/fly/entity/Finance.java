@@ -12,11 +12,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Getter
 @Setter
 public class Finance extends BasicEntity{
-
-	// 该条财务记录的状态  0 正常 、1 禁用
-	@Column
-	private Integer status;
-	
 	// 该条财务记录的金额
 	@Column
 	private Double money;
@@ -33,15 +28,11 @@ public class Finance extends BasicEntity{
 	@Column(name = "audit_status")
 	private Integer auditStatus;
 
-	// 审核的类型  0 需要审核 1不需要审核
-	@Column(name = "audit_type")
-	private Integer auditType;
-
 	//计数类型(1加 2减)
 	@Column(name = "count_type")
 	private Integer countType;
 
-	//财务类型(1:充值,2:投注,3:撤销,4:实时返点,5:区间流水返点,6:区间盈利返点)
+	//财务类型(1:充值,2:投注,3:撤销,4:实时返点,5:区间流水返点,6:区间盈利返点,7:下分)
 	@Column
 	private Integer type;
 

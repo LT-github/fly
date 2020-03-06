@@ -1,5 +1,6 @@
 package com.lt.fly.web.controller;
 
+import com.lt.fly.Service.IOddService;
 import com.lt.fly.annotation.UserLoginToken;
 import com.lt.fly.dao.IBetGroupRepository;
 import com.lt.fly.dao.IGameGroupRepository;
@@ -14,6 +15,9 @@ import com.lt.fly.utils.GlobalConstant;
 import com.lt.fly.utils.HttpResult;
 import com.lt.fly.utils.IdWorker;
 import com.lt.fly.utils.MyBeanUtils;
+import com.lt.fly.web.query.BetGroupFind;
+import com.lt.fly.web.query.GameGroupFind;
+import com.lt.fly.web.query.OddFind;
 import com.lt.fly.web.req.*;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.vo.BetGroupVo;
@@ -48,6 +52,9 @@ public class GameGroupController extends BaseController {
 
     @Autowired
     private IOddGroupRepository iOddGroupRepository;
+
+    @Autowired
+    private IOddService iOddService;
 
     /**
      * 添加玩法组
@@ -173,21 +180,24 @@ public class GameGroupController extends BaseController {
 
     /**
      * 查询下注组
-     * @param req
+     * @param query
      * @return
      * @throws ClientErrorException
      */
     @GetMapping("/bet")
     @UserLoginToken
-    public HttpResult find(BetGroupFind req) throws ClientErrorException{
-        Page<BetGroup> page = iBetGroupRepository.findAll(req);
-        PageResp<BetGroupVo,BetGroup> resp = new PageResp<BetGroupVo,BetGroup>(page).getPageVo(new PageResp.PageGenerator<BetGroupVo,BetGroup>(){
-
-            @Override
-            public List<BetGroupVo> generator(List<BetGroup> content) {
-                return BetGroupVo.tovo(content);
-            }
-        });
+    public HttpResult find(BetGroupFind query) throws ClientErrorException{
+        Page<BetGroup> page = iBetGroupRepository.findAll(query);
+        PageResp resp = new PageResp(page);
+        List<BetGroupVo> betGroupVos = new ArrayList<>();
+        OddFind req = new OddFind();
+        req.setOddGroupId(query.getOddGroupId());
+        for (BetGroup item :
+                page) {
+            req.setBetGroupId(item.getId());
+            betGroupVos.add(new BetGroupVo(item,iOddService.findOneByOddGroupId(req).getOddValue()));
+        }
+        resp.setData(betGroupVos);
         return HttpResult.success(resp,"获取下注组列表成功");
     }
 

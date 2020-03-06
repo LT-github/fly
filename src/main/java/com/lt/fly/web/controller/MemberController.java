@@ -13,7 +13,7 @@ import com.lt.fly.utils.HttpResult;
 import com.lt.fly.utils.IdWorker;
 import com.lt.fly.web.req.MemberAdd;
 import com.lt.fly.web.req.MemberEdit;
-import com.lt.fly.web.req.MemberFind;
+import com.lt.fly.web.query.MemberFind;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.vo.MemberVo;
 import org.springframework.beans.BeanUtils;
@@ -144,7 +144,7 @@ public class MemberController extends BaseController{
 	}
 	
 	/**
-	   *   按照id查询
+	 *  按照id查询
 	 * @param id
 	 * @return
 	 * @throws ClientErrorException

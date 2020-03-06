@@ -1,4 +1,4 @@
-package com.lt.fly.web.req;
+package com.lt.fly.web.query;
 
 import com.lt.fly.jpa.support.DataQueryObjectPage;
 import com.lt.fly.jpa.support.QueryBetween;

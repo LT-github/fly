@@ -12,7 +12,7 @@ import com.lt.fly.utils.HttpResult;
 import com.lt.fly.utils.IdWorker;
 import com.lt.fly.utils.MyBeanUtils;
 import com.lt.fly.web.req.DataDictionaryAdd;
-import com.lt.fly.web.req.DataDictionaryFind;
+import com.lt.fly.web.query.DataDictionaryFind;
 import com.lt.fly.web.vo.DataDictionaryVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;

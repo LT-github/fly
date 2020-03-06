@@ -14,8 +14,6 @@ import lombok.Setter;
 @Setter
 public class AuditFindVo {
 
-	    // 该条财务记录的状态  0 正常 、1 禁用
-		private Integer status;		
 		// 该条财务记录的金额
 		private Double money;		
 		// 这笔财务的描述
@@ -24,8 +22,6 @@ public class AuditFindVo {
 		private Double balance;
 		// 财务的审核状态  0 审核中 1审核通过 2审核失败
 		private Integer auditStatus;
-		// 审核的类型  0 需要审核 1不需要审核
-		private Integer auditType;
 		//计数类型(1加 2减)
 		private Integer countType;
 		//财务类型(1:充值,2:返点,3:投注)
@@ -52,12 +48,10 @@ public class AuditFindVo {
 			this.modifyTime=finance.getModifyTime();
 			this.createUser=finance.getCreateUser();
 			this.modifyUser=finance.getModifyUser();
-			this.status=finance.getStatus();
 			this.money=finance.getMoney();
 			this.description=finance.getDescription();
 			this.balance=finance.getBalance();
 			this.auditStatus=finance.getAuditStatus();
-			this.auditType=finance.getAuditType();
 			this.type=finance.getType();
 			this.countType=finance.getCountType();
 			
@@ -74,16 +68,13 @@ public class AuditFindVo {
 			return resp;
 		}
 
-		public AuditFindVo(Integer status, Double money, String description, Double balance, Integer auditStatus,
-				Integer auditType, Integer countType, Integer type, Long id, Long createTime, Long modifyTime,
+		public AuditFindVo(Double money, String description, Double balance, Integer auditStatus,Integer countType, Integer type, Long id, Long createTime, Long modifyTime,
 				User createUser, User modifyUser) {
 			super();
-			this.status = status;
 			this.money = money;
 			this.description = description;
 			this.balance = balance;
 			this.auditStatus = auditStatus;
-			this.auditType = auditType;
 			this.countType = countType;
 			this.type = type;
 			this.id = id;

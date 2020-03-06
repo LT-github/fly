@@ -1,4 +1,4 @@
-package com.lt.fly.web.req;
+package com.lt.fly.web.query;
 
 import lombok.Getter;
 import lombok.Setter;

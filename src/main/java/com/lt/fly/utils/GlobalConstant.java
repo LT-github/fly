@@ -33,17 +33,17 @@ public class GlobalConstant {
 	
 	//充值财务状态
 	@Getter
-	public enum FinanceStatus {
+	public enum AuditStatus {
 		
-		IN_AUDIT(1, "审核中"),
-		AUDIT_PASS(2, "已审核"),
-		AUDIT_FAILED(3, "审核未通过");
+		IN_AUDIT(0, "审核中"),
+		AUDIT_PASS(1, "已审核"),
+		AUDIT_FAILED(2, "审核未通过");
 
 	    public int code;
 
 	    public String message;
 
-	    FinanceStatus(int code, String message) {
+		AuditStatus(int code, String message) {
 	        this.code = code;
 	        this.message = message;
 	    }
@@ -118,12 +118,29 @@ public class GlobalConstant {
 		CANCLE(3,"撤销"),
 		TIMELY_LIUSHUI(4,"实时流水返点"),
 		RANGE_LIUSHUI(5,"区间流水返点"),
-		RANGE_YINGLI(6,"区间盈利返点");
+		RANGE_YINGLI(6,"区间盈利返点"),
+		DESCEND(7,"下分");
+
 
 		private int code;
 		private String msg;
 
 		FananceType(int code, String msg) {
+			this.code = code;
+			this.msg = msg;
+		}
+	}
+
+	//计数类型
+	@Getter
+	public enum CountType{
+		ADD(1,"加"),
+		SUBTRACT(2,"减");
+
+		private int code;
+		private String msg;
+
+		CountType(int code, String msg) {
 			this.code = code;
 			this.msg = msg;
 		}

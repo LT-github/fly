@@ -22,6 +22,8 @@ public class BetGroupVo {
 
     private Integer singleBetting;
 
+    private Double oddValue;
+
     private Integer maximumBet;
 
     private String modifiedUsername;
@@ -31,6 +33,22 @@ public class BetGroupVo {
 
     public BetGroupVo(){
         super();
+    }
+
+    public BetGroupVo(BetGroup obj,Double oddValue){
+        this.id = obj.getId();
+        this.gameGroupName = obj.getGameGroup().getName();
+        this.betGrouopName = obj.getName();
+        if(GlobalConstant.GameStatus.CLOSE.getCode() == obj.getGameGroup().getStatus())
+            this.status = GlobalConstant.GameStatus.CLOSE.getCode();
+        else
+            this.status = obj.getStatus();
+        this.singleBetting = obj.getSingleBetting();
+        this.maximumBet = obj.getMaximumBet();
+        if (null!=obj.getModifyUser())
+            this.modifiedUsername = obj.getModifyUser().getUsername();
+        this.modifiedTime = obj.getModifyTime();
+        this.oddValue = oddValue;
     }
 
     public BetGroupVo(BetGroup obj){
@@ -56,4 +74,5 @@ public class BetGroupVo {
         }
         return betGroupVos;
     }
+
 }

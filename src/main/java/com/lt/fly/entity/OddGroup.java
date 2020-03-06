@@ -21,4 +21,7 @@ public class OddGroup extends BasicEntity{
             inverseJoinColumns = @JoinColumn(name = " odd_id"))
     private Set<Odd> odds;
 
+    @OneToOne
+    private Handicap handicap;
+
 }

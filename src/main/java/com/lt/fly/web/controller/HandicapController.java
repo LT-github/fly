@@ -18,7 +18,7 @@ import com.lt.fly.entity.Proportion;
 import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.utils.HttpResult;
 import com.lt.fly.utils.IdWorker;
-import com.lt.fly.web.req.DataDictionaryFind;
+import com.lt.fly.web.query.DataDictionaryFind;
 import com.lt.fly.web.req.HandicapAdd;
 import com.lt.fly.web.vo.HandicapVo;
 import org.springframework.beans.factory.annotation.Autowired;
