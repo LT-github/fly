@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class BetReportVo {
     //日期
-    private Long dateTime;
+    private String dateTime;
     //飞单数
     private Integer betCount;
     //飞单流水

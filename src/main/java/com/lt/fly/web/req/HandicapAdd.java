@@ -16,6 +16,9 @@ public class HandicapAdd {
     @NotNull(message = "请选择至少一个返点规则")
     private List<Long> proportionIds;
 
+    @NotNull(message = "赔率组不能为空")
+    private Long oddGroupId;
+
     @NotNull(message = "请选择打票流水")
     private Long liushuiId;
 
