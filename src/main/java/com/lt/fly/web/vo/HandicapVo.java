@@ -34,7 +34,9 @@ public class HandicapVo {
         this.liushui = new DataDictionaryVo(obj.getLiushui());
         this.yinkui = new DataDictionaryVo(obj.getYingkui());
         //设置门店用户
-        this.memberVos = MemberVo.toVo(new ArrayList<>(obj.getMembers()));
+        if(null != obj.getMembers()){
+            this.memberVos = MemberVo.toVo(new ArrayList<>(obj.getMembers()));
+        }
     }
 
     public static List<HandicapVo> toVo(List<Handicap> list){
