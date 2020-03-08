@@ -219,13 +219,15 @@ public class GameController extends BaseController {
         BetGroup betGroup = isNotNull(iBetGroupRepository.findById(id),"传递的参数没有实体");
         MyBeanUtils.copyProperties(req,betGroup);
         iBetGroupRepository.save(betGroup);
+
+        Odd odd = isNotNull(iOddRepository.findById(req.getOddId()),"传递的参数没有实体");
         if(null != req.getOddId()){
             OddGroup oddGroup = isNotNull(iOddGroupRepository.findById(req.getOddGroupId()),"传递的参数没有实体");
             Set<Odd> odds = new HashSet<>();
             //找到该下注组的所有赔率并且循环
-            for (Odd odd :
+            for (Odd item :
                     oddGroup.getOdds()) {
-                if(!odd.getBetGroup().getId().equals(id)){
+                if(!item.getBetGroup().getId().equals(id)){
                     odds.add(odd);
                 }
             }
