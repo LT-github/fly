@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -25,5 +26,5 @@ public class HandicapAdd {
     @NotNull(message = "请选择盈亏")
     private Long yinkunId;
 
-    private List<Long> memberIds;
+    private List<Long> memberIds = new ArrayList<>();
 }

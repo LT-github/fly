@@ -108,7 +108,7 @@ public class HandicapController extends BaseController {
         objSave.setProportions(pro);
 
         //设置会员
-        if (null != obj.getMemberIds() || !obj.getMemberIds().isEmpty()){
+        if (null != obj.getMemberIds() && 0 != obj.getMemberIds().size()){
             List<Member> members = iMemberRepository.findAllById(obj.getMemberIds());
             if (null != objSave.getMembers() || !objSave.getMembers().isEmpty()){
                 objSave.getMembers().addAll(members);
