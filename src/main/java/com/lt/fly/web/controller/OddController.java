@@ -14,6 +14,7 @@ import com.lt.fly.utils.IdWorker;
 import com.lt.fly.web.req.OddAdd;
 import com.lt.fly.web.query.OddFind;
 import com.lt.fly.web.req.OddGroupAdd;
+import com.lt.fly.web.req.OddGroupEdit;
 import com.lt.fly.web.vo.OddGroupVo;
 import com.lt.fly.web.vo.OddVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -137,8 +138,14 @@ public class OddController extends BaseController {
     public HttpResult deleteOddGroup(@PathVariable Long id) throws ClientErrorException{
         OddGroup oddGroup = isNotNull(iOddGroupRepository.findById(id),"传递的参数没有实体");
         if (null != oddGroup.getHandicap())
-            throw new ClientErrorException("该赔率组正在被"+oddGroup.getHandicap().getName()+"使用中,不能删除");
+            throw new ClientErrorException("该赔率组正在被"+oddGroup.getHandicap().getName()+"盘口使用中,不能删除");
         iOddGroupRepository.delete(oddGroup);
         return HttpResult.success(null,"删除成功");
+    }
+
+    public HttpResult editOddGroup(@PathVariable Long id,@RequestBody OddGroupEdit req) throws ClientErrorException{
+        OddGroup oddGroup = isNotNull(iOddGroupRepository.findById(id),"传递的参数没有实体");
+        oddGroup.setName(req.getName());
+        return HttpResult.success(new OddGroupVo(oddGroup),"修改赔率组成功");
     }
 }

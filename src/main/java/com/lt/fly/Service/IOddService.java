@@ -7,6 +7,4 @@ import com.lt.fly.web.vo.OddVo;
 
 public interface IOddService {
 
-    OddVo findOneByOddGroupId(OddFind query) throws ClientErrorException;
-
 }

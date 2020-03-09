@@ -175,7 +175,7 @@ public class GameController extends BaseController {
         betGroup.setGameGroup(gameGroup);
         MyBeanUtils.copyProperties(req,betGroup);
         iBetGroupRepository.save(betGroup);
-        return HttpResult.success(new BetGroupVo(betGroup),"添加'"+req.getName()+"'成功");
+        return HttpResult.success(new BetGroupVo(betGroup,null),"添加'"+req.getName()+"'成功");
     }
 
     /**
@@ -188,18 +188,28 @@ public class GameController extends BaseController {
     @UserLoginToken
     public HttpResult find(BetGroupFind query) throws ClientErrorException{
         Page<BetGroup> page = iBetGroupRepository.findAll(query);
+        OddGroup oddGroup = null;
+        if(null != query.getOddGroupId()){
+            oddGroup = isNotNull(iOddGroupRepository.findById(query.getOddGroupId()), "传递的参数没有实体");
+        }
+
         PageResp resp = new PageResp(page);
         List<BetGroupVo> betGroupVos = new ArrayList<>();
-        OddFind req = new OddFind();
-        req.setOddGroupId(query.getOddGroupId());
-        for (BetGroup item :
-                page) {
-            req.setBetGroupId(item.getId());
-            Odd odd = iOddRepository.findOne(item.getId(),query.getOddGroupId());
-            if (null != odd){
-                betGroupVos.add(new BetGroupVo(item,odd));
-            }else {
-                betGroupVos.add(new BetGroupVo(item));
+
+        if (null != oddGroup) {
+            for (BetGroup item :
+                    page) {
+                for (Odd odd :
+                        oddGroup.getOdds()) {
+                    if (odd.getBetGroup().getId().equals(item.getId())) {
+                        betGroupVos.add(new BetGroupVo(item,odd));
+                    }
+                }
+            }
+        }else {
+            for (BetGroup item :
+                    page) {
+                betGroupVos.add(new BetGroupVo(item,null));
             }
         }
         resp.setData(betGroupVos);
@@ -220,21 +230,29 @@ public class GameController extends BaseController {
         MyBeanUtils.copyProperties(req,betGroup);
         iBetGroupRepository.save(betGroup);
 
-        Odd odd = isNotNull(iOddRepository.findById(req.getOddId()),"传递的参数没有实体");
+        Odd odd = null;
         if(null != req.getOddId()){
+            odd = isNotNull(iOddRepository.findById(req.getOddId()),"传递的参数没有实体");
             OddGroup oddGroup = isNotNull(iOddGroupRepository.findById(req.getOddGroupId()),"传递的参数没有实体");
             Set<Odd> odds = new HashSet<>();
             //找到该下注组的所有赔率并且循环
-            for (Odd item :
-                    oddGroup.getOdds()) {
-                if(!item.getBetGroup().getId().equals(id)){
-                    odds.add(odd);
+            if (null != oddGroup.getOdds() || 0 !=oddGroup.getOdds().size()) {
+                for (Odd item :
+                        oddGroup.getOdds()) {
+                    if(!item.getBetGroup().getId().equals(id)){
+                        odds.add(item);
+                    }
                 }
+                odds.add(odd);
+            }else{
+                odds.add(odd);
             }
+
+
             oddGroup.setOdds(odds);
             iOddGroupRepository.save(oddGroup);
         }
-        return HttpResult.success(new BetGroupVo(betGroup),"修改"+betGroup.getName()+"信息成功");
+        return HttpResult.success(new BetGroupVo(betGroup,odd),"修改"+betGroup.getName()+"信息成功");
     }
 
     /**

@@ -49,29 +49,16 @@ public class BetGroupVo {
         if (null!=obj.getModifyUser())
             this.modifiedUsername = obj.getModifyUser().getUsername();
         this.modifiedTime = obj.getModifyTime();
-        this.oddValue = odd.getOddValue();
-    }
-
-    public BetGroupVo(BetGroup obj){
-        this.id = obj.getId();
-        this.gameGroupName = obj.getGameGroup().getName();
-        this.betGrouopName = obj.getName();
-        if(GlobalConstant.GameStatus.CLOSE.getCode() == obj.getGameGroup().getStatus())
-            this.status = GlobalConstant.GameStatus.CLOSE.getCode();
-        else
-            this.status = obj.getStatus();
-        this.singleBetting = obj.getSingleBetting();
-        this.maximumBet = obj.getMaximumBet();
-        if (null!=obj.getModifyUser())
-            this.modifiedUsername = obj.getModifyUser().getUsername();
-        this.modifiedTime = obj.getModifyTime();
+        if (null != odd) {
+            this.oddValue = odd.getOddValue();
+        }
     }
 
     public static List<BetGroupVo> tovo(List<BetGroup> betGroups){
         List<BetGroupVo> betGroupVos = new ArrayList<>();
         for (BetGroup item :
                 betGroups) {
-            betGroupVos.add(new BetGroupVo(item));
+            betGroupVos.add(new BetGroupVo(item,null));
         }
         return betGroupVos;
     }
