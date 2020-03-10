@@ -203,6 +203,8 @@ public class GameController extends BaseController {
                         oddGroup.getOdds()) {
                     if (odd.getBetGroup().getId().equals(item.getId())) {
                         betGroupVos.add(new BetGroupVo(item,odd));
+                    }else{
+                        betGroupVos.add(new BetGroupVo(item,null));
                     }
                 }
             }

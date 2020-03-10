@@ -2,6 +2,7 @@ package com.lt.fly.web.vo;
 
 import com.lt.fly.entity.Handicap;
 import com.lt.fly.entity.Member;
+import com.lt.fly.entity.Odd;
 import com.lt.fly.entity.Proportion;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +18,7 @@ public class HandicapVo {
     private Long id;
     private String name;
     private List<ProportionVo> proportions;
+    private String oddGroupName;
     private List<MemberVo> memberVos;
     private DataDictionaryVo liushui;
     private DataDictionaryVo yinkui;
@@ -33,6 +35,7 @@ public class HandicapVo {
         // 设置流水、盈亏的查询
         this.liushui = new DataDictionaryVo(obj.getLiushui());
         this.yinkui = new DataDictionaryVo(obj.getYingkui());
+        this.oddGroupName = obj.getOddGroup().getName();
         //设置门店用户
         if(null != obj.getMembers()){
             this.memberVos = MemberVo.toVo(new ArrayList<>(obj.getMembers()));

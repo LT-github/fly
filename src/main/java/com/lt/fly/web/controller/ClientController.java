@@ -1,6 +1,7 @@
 package com.lt.fly.web.controller;
 
 import com.lt.fly.Service.IFinanceService;
+import com.lt.fly.Service.IUserService;
 import com.lt.fly.annotation.UserLoginToken;
 import com.lt.fly.dao.IBetGroupRepository;
 import com.lt.fly.dao.IFinanceRepository;
@@ -11,6 +12,7 @@ import com.lt.fly.redis.service.IOrderDTOServiceCache;
 import com.lt.fly.utils.*;
 import com.lt.fly.utils.gameUtils.GameProperty;
 import com.lt.fly.utils.gameUtils.GameUtil;
+import com.lt.fly.web.req.UserLogin;
 import com.lt.fly.web.resp.ClientShowResp;
 import com.lt.fly.web.req.FinanceAdd;
 import com.lt.fly.web.req.OrderAdd;
@@ -51,8 +53,17 @@ public class ClientController extends BaseController{
     @Autowired
     private IOrderDTOServiceCache iOrderDTOServiceCache;
 
+    @Autowired
+    private IUserService iUserService;
+
     @Reference(version = "1.0.0",url="dubbo://localhost:23457",check = false)
     private OpenDataISV openData;
+
+
+    @PostMapping("/login")
+    public HttpResult login(@RequestBody UserLogin req) throws ClientErrorException{
+        return HttpResult.success(iUserService.login(req),"登录成功");
+    }
 
 
     @PostMapping("/bet")
@@ -204,7 +215,7 @@ public class ClientController extends BaseController{
      */
     @PostMapping("/recharge")
     @UserLoginToken
-    public HttpResult recharge(FinanceAdd req) throws ClientErrorException{
+    public HttpResult recharge(@RequestBody FinanceAdd req) throws ClientErrorException{
         Finance finance = iFinanceService.add(req,GlobalConstant.FananceType.RECHARGE.getCode());
         iFinanceRepository.save(finance);
         return HttpResult.success(new FinanceVo(finance),"上分申请提交成功");
@@ -217,7 +228,12 @@ public class ClientController extends BaseController{
      */
     @PostMapping("/descend")
     @UserLoginToken
-    public HttpResult descend(FinanceAdd req) throws ClientErrorException{
+    public HttpResult descend(@RequestBody FinanceAdd req) throws ClientErrorException{
+        //先查余额
+        double balance = iFinanceService.reckonBalance(ContextHolderUtil.getTokenUserId());
+        if(balance<req.getMoney()){
+            throw new ClientErrorException("余额不足");
+        }
         Finance finance = iFinanceService.add(req,GlobalConstant.FananceType.DESCEND.getCode());
         iFinanceRepository.save(finance);
         return HttpResult.success(new FinanceVo(finance),"下分申请提交成功");
@@ -269,6 +285,12 @@ public class ClientController extends BaseController{
         return HttpResult.success(resp,"查询今日数据成功");
     }
 
+
+    @GetMapping("/balance")
+    @UserLoginToken
+    public HttpResult findBalance() throws ClientErrorException{
+        return HttpResult.success(iFinanceService.reckonBalance(ContextHolderUtil.getTokenUserId()),"查询成功");
+    }
 
 
 }

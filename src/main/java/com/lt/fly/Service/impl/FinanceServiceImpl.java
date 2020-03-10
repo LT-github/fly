@@ -51,6 +51,9 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 		finance.setMoney(req.getMoney());
 		finance.setDescription(req.getDescription());
 		finance.setType(type);
+		if (finance.getType().equals(RECHARGE.getCode()) || finance.getType().equals(DESCEND.getCode())) {
+			finance.setAuditStatus(GlobalConstant.AuditStatus.IN_AUDIT.getCode());
+		}
 		if (finance.getType().equals(BET.getCode()) || finance.getType().equals(DESCEND.getCode()))
 			finance.setCountType(GlobalConstant.CountType.SUBTRACT.getCode());
 		else

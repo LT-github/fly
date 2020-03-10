@@ -7,14 +7,8 @@ import java.util.Set;
 
 import com.lt.fly.annotation.RequiredPermission;
 import com.lt.fly.annotation.UserLoginToken;
-import com.lt.fly.dao.IDataDictionaryRepository;
-import com.lt.fly.dao.IHandicapRepository;
-import com.lt.fly.dao.IMemberRepository;
-import com.lt.fly.dao.IProportionRepository;
-import com.lt.fly.entity.DataDictionary;
-import com.lt.fly.entity.Handicap;
-import com.lt.fly.entity.Member;
-import com.lt.fly.entity.Proportion;
+import com.lt.fly.dao.*;
+import com.lt.fly.entity.*;
 import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.utils.HttpResult;
 import com.lt.fly.utils.IdWorker;
@@ -57,6 +51,9 @@ public class HandicapController extends BaseController {
 
     @Autowired
     private IMemberRepository iMemberRepository;
+
+    @Autowired
+    private IOddGroupRepository iOddGroupRepository;
 
     /**
      * 添加盘口
@@ -106,6 +103,10 @@ public class HandicapController extends BaseController {
 
         }
         objSave.setProportions(pro);
+
+        //设置赔率组
+        OddGroup oddGroup = isNotNull(iOddGroupRepository.findById(obj.getOddGroupId()),"传递的参数没有实体");
+        objSave.setOddGroup(oddGroup);
 
         //设置会员
         if (null != obj.getMemberIds() && 0 != obj.getMemberIds().size()){

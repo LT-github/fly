@@ -145,4 +145,20 @@ public class GlobalConstant {
 			this.msg = msg;
 		}
 	}
+
+	@Getter
+	public enum OrderStatus {
+		NOTClEARING(0,"未结算"),
+		CLEARING(1,"已结算"),
+		CANCEL(2,"撤销");
+		private int code;
+
+		private String message;
+
+		OrderStatus(int code, String message) {
+			this.code = code;
+			this.message = message;
+		}
+
+	}
 }

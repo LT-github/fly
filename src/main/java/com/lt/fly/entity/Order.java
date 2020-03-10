@@ -26,9 +26,9 @@ public class Order extends BasicEntity{
 	@Column(name = "result_type")
 	private Integer resultType;
 
-	// 0 未结算  1 已结算 2已撤销
+	// 0未结算  1已结算 2已撤销
 	@Column(name = "status")
-	private Integer status;
+	private Integer status = GlobalConstant.OrderStatus.NOTClEARING.getCode();
 
 	// 财务记录
 	@OneToMany(mappedBy = "order" , cascade = CascadeType.ALL,fetch = FetchType.LAZY)
@@ -45,7 +45,7 @@ public class Order extends BasicEntity{
 	// 总点
 	@Column(name = "total_money")
 	private Double totalMoney;
-	
+
 	// 开奖结果 0=赢 1=输
 	@Column(name = "lottery_result")
 	private Integer lotteryResult;
