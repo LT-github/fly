@@ -17,11 +17,13 @@ import com.lt.fly.web.req.OddGroupAdd;
 import com.lt.fly.web.req.OddGroupEdit;
 import com.lt.fly.web.vo.OddGroupVo;
 import com.lt.fly.web.vo.OddVo;
+import org.apache.dubbo.remoting.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -59,7 +61,23 @@ public class OddController extends BaseController {
         return HttpResult.success(new OddVo(odd),"添加下注组'"+betGroup.getName()+"'的赔率成功");
     }
 
-//    /**
+    /**
+     * 查找指定下注组的赔率
+     * @param betGroupId
+     * @return
+     * @throws ClientErrorException
+     */
+    @GetMapping("/{betGroupId}")
+    @UserLoginToken
+    public HttpResult findByBetGroup(@PathVariable Long betGroupId) throws ClientErrorException{
+        List<Odd> odds = iOddRepository.findByBetGroupId(betGroupId);
+        if(null == odds || 0 == odds.size()){
+            return null;
+        }
+        return HttpResult.success(OddVo.tovo(odds),"查询赔率成功!");
+    }
+
+    /**
 //     * 查找指定下注组和赔率组的赔率
 //     * @param req
 //     * @return
