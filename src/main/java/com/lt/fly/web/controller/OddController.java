@@ -103,7 +103,7 @@ public class OddController extends BaseController {
     @UserLoginToken
     public HttpResult delete(@PathVariable Long id) throws ClientErrorException{
         Odd odd = isNotNull(iOddRepository.findById(id),"传递的参数没有实体");
-        if (null != odd.getOddGroups() || !odd.getOddGroups().isEmpty())
+        if (null != odd.getOddGroups() && !odd.getOddGroups().isEmpty())
             throw new ClientErrorException("该赔率正在被使用,不能删除");
         iOddRepository.delete(odd);
         return HttpResult.success(null,"删除赔率成功");
@@ -126,9 +126,10 @@ public class OddController extends BaseController {
         oddGroup.setCreateTime(System.currentTimeMillis());
         oddGroup.setCreateUser(getLoginUser());
         oddGroup.setName(req.getName());
-
-        List<Odd> odds = iOddRepository.findByIds(req.getOddIds());
-        oddGroup.setOdds(new HashSet<>(odds));
+        if (null != req.getOddIds() && 0 != req.getOddIds().size()){
+            List<Odd> odds = iOddRepository.findByIds(req.getOddIds());
+            oddGroup.setOdds(new HashSet<>(odds));
+        }
 
         iOddGroupRepository.save(oddGroup);
         return HttpResult.success(new OddGroupVo(oddGroup),"添加'"+req.getName()+"'成功");
