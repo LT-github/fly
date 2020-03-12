@@ -49,7 +49,8 @@ public class OddController extends BaseController {
 
     @PostMapping
     @UserLoginToken
-    public HttpResult addOdd(@RequestBody OddAdd req) throws ClientErrorException {
+    public HttpResult addOdd(@RequestBody @Validated OddAdd req, BindingResult bindingResult) throws ClientErrorException {
+        this.paramsValid(bindingResult);
         BetGroup betGroup = isNotNull(iBetGroupRepository.findById(req.getBetGroupId()),"传递的参数没有实体");
         Odd odd = new Odd();
         odd.setId(idWorker.nextId());
