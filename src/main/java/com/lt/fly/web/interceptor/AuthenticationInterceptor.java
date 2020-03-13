@@ -18,6 +18,7 @@ import com.lt.fly.utils.GlobalUtil;
 import com.lt.fly.utils.HttpResult;
 import com.lt.fly.utils.ResultCode;
 import org.apache.commons.codec.binary.StringUtils;
+import org.apache.dubbo.common.utils.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -172,7 +173,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             	// 这里测试使用 直接add
                 Set<String> permissionSet  = new HashSet<>();
             	User user = optional.get();
-            	if(user instanceof User) {
+            	if(user instanceof Admin) {
             		Admin admin =(Admin)user;
             	Set<Role> roles = admin.getRoles();
 
@@ -206,9 +207,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 //
 //
 //            	}
-//                if (CollectionUtils.isEmpty(permissionSet)) {
-//                	 return false;
-//                }
+                if (CollectionUtils.isEmpty(permissionSet)) {
+                	 return false;
+                }
 
                 return permissionSet.contains(requiredPermission.value());
             }

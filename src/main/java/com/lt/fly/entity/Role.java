@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -22,7 +23,7 @@ public class Role extends BasicEntity{
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "t_role_authority",joinColumns = @JoinColumn(name = "role_id"),
     inverseJoinColumns = @JoinColumn(name = "authority_id"))
-	private Set<Authority> authoritys;
+	private Set<Authority> authoritys = new HashSet<>();
 	
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "t_role_admin",joinColumns = @JoinColumn(name = "role_id"),

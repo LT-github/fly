@@ -49,7 +49,7 @@ public class OrderVo {
     }
 
     public OrderVo(Order obj) {
-        BeanUtils.copyProperties(obj,this);
+        MyBeanUtils.copyProperties(obj,this);
         this.username = obj.getCreateUser().getUsername();
         this.gameType = obj.getBetGroup().getGameGroup().getName();
     }

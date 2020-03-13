@@ -34,11 +34,11 @@ public class OrderServiceImpl implements IOrderService {
      * @throws ClientErrorException
      */
     @Override
-    public PageResp findAll(OrderFind req) throws ClientErrorException {
+    public PageResp<OrderVo,Order> findAll(OrderFind req) throws ClientErrorException {
         Page<Order> page = iOrderRepository.findAll(req);
-        PageResp resp = new PageResp(page);
+        PageResp<OrderVo,Order> resp = new PageResp(page);
         resp.setData(OrderVo.tovo(page.getContent()));
-        return new PageResp(page);
+        return resp;
     }
 
     /**

@@ -13,7 +13,7 @@ import java.util.Map;
 
 public interface IOrderService {
 
-    PageResp findAll(OrderFind req) throws ClientErrorException;
+    PageResp<OrderVo,Order> findAll(OrderFind req) throws ClientErrorException;
 
     void settle(Map<Long, OrderDTO> map);
 
