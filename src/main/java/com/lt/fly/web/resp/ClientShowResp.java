@@ -7,13 +7,15 @@ import lombok.Setter;
 @Setter
 public class ClientShowResp {
     //今日飞单总额
-    private Double betTotal;
+    private double betTotal;
     //今日飞单总盈亏
-    private Double betResult;
+    private double betResult;
     //今日飞单期数
     private Integer issueCount;
-    //今日回水
-    private Double returnTotal;
+    //区间回水
+    private double rangeTotal;
+    //实时回水
+    private double timelyTotal;
     //今日分红
-    private Double dividendTotal;
+    private double dividendTotal;
 }

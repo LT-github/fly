@@ -13,7 +13,6 @@ public class OddGroupAdd {
     @NotNull(message = "名称不能为空")
     private String name;
 
-    @NotNull(message = "赔率不能为空")
     private List<Long> oddIds;
 
 }

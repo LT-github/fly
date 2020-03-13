@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -31,8 +32,8 @@ public class Order extends BasicEntity{
 	private Integer status = GlobalConstant.OrderStatus.NOTClEARING.getCode();
 
 	// 财务记录
-	@OneToMany(mappedBy = "order" , cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-	private Set<Finance> finances;
+	@OneToMany(mappedBy = "order" , cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+	private Set<Finance> finances = new HashSet<>();
 
 	// 玩法下注内容
 	@Column(name = "bets_content")

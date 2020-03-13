@@ -20,11 +20,9 @@ import com.lt.fly.web.vo.FinanceVo;
 import com.lt.fly.web.vo.OrderVo;
 import com.lt.lxc.pojo.OrderDTO;
 import com.lt.lxc.service.OpenDataISV;
-import io.swagger.models.auth.In;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,6 +64,12 @@ public class ClientController extends BaseController{
     }
 
 
+    /**
+     * 下注
+     * @param reqs
+     * @return
+     * @throws ClientErrorException
+     */
     @PostMapping("/bet")
     @UserLoginToken
     @Transactional(rollbackFor = ClientErrorException.class)
@@ -88,7 +92,7 @@ public class ClientController extends BaseController{
             for (Proportion item :
                     proportions) {
                 if(item.getReturnPoint().getId().equals(CommonsUtil.TIMELY_LIUSHUI_RETURN_POINT)) {
-                    proportion = (item.getProportionVal())/100;
+                    proportion = Arith.div(item.getProportionVal(),100,2);
                 }
             }
         }
@@ -96,7 +100,7 @@ public class ClientController extends BaseController{
         //期号
         long issueNumber = GlobalConstant.NewData.ISSUE_NUMBER.getData();
         if(issueNumber == 1l) {
-            //调用开奖系统的接口,得到数据库中最新一期的期号
+            //调用开奖系统的接口,得到当前期的期号
             if(null == openData) {
                 throw new ClientErrorException("开奖系统未启动!");
             }
@@ -151,20 +155,22 @@ public class ClientController extends BaseController{
             if(balance<gp.getMoney()) {
                 throw new ClientErrorException("余额不足,请充值!");
             }
-            balance = balance-gp.getMoney()+gp.getMoney()*proportion;
+            balance = Arith.sub(balance,gp.getMoney())+gp.getMoney()*proportion;
 
             //财务记录集合
-            Set<Finance> finances = new HashSet<>();
+            Set<Finance> finances = order.getFinances();
             FinanceAdd req = new FinanceAdd();
+            req.setOrder(order);
 
             //生成下注财务记录
             req.setMoney(gp.getMoney());
-            req.setUserBalance(balance-gp.getMoney()*proportion);
+            req.setUserBalance(Arith.sub(balance,gp.getMoney()*proportion));
             finances.add(iFinanceService.add(req,GlobalConstant.FananceType.BET.getCode()));
 
             //生成返点财务记录
-            req.setMoney(gp.getMoney()*proportion);
+            req.setMoney(Arith.mul(gp.getMoney(),proportion));
             req.setUserBalance(balance);
+
             finances.add(iFinanceService.add(req,GlobalConstant.FananceType.TIMELY_LIUSHUI.getCode()));
             //添加财务记录
             order.setFinances(finances);
@@ -245,42 +251,58 @@ public class ClientController extends BaseController{
      */
     @GetMapping
     @UserLoginToken
-    public HttpResult index(ClientShowResp resp) throws ClientErrorException{
+    public HttpResult index() throws ClientErrorException{
         //现在时间戳
         long now = System.currentTimeMillis();
         //获取今日零点时间戳
-        long zero=now/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();
+        long zero = DateUtil.getDayStartTime(System.currentTimeMillis());
 
-        List<Order> orders = iOrderRepository.findByUserAndTime(now,zero,ContextHolderUtil.getTokenUserId());
+        List<Order> orders = iOrderRepository.findByUserAndTime(ContextHolderUtil.getTokenUserId(),zero,now);
+
+        List<Finance> finances = iFinanceRepository.findByCreateTimeBetweenAndCreateUser(zero,now,getLoginUser());
+
 
         BigDecimal betResult = new BigDecimal(0);
         BigDecimal betTotal = new BigDecimal(0);
-        BigDecimal returnTotal = new BigDecimal(0);
+        BigDecimal timelyTotal = new BigDecimal(0);
+        BigDecimal rangeTotal = new BigDecimal(0);
         BigDecimal dividendTotal = new BigDecimal(0);
+        for (Finance item :
+                finances) {
+            if (item.getType().equals(GlobalConstant.FananceType.RANGE_LIUSHUI.getCode())) {
+                rangeTotal = rangeTotal.add(new BigDecimal(item.getMoney()));
+            }
+            if (item.getType().equals(GlobalConstant.FananceType.RANGE_YINGLI.getCode())) {
+                dividendTotal = dividendTotal.add(new BigDecimal(item.getMoney()));
+            }
+
+        }
         Set<Long> issues = new HashSet<>();
         for (Order item :
                 orders) {
-            betTotal.add(new BigDecimal(item.getTotalMoney()));
-            if(item.getBattleResult()<0)
-                betResult.subtract(new BigDecimal(item.getBattleResult()));
-            else
-                betResult.add(new BigDecimal(item.getBattleResult()));
+            betTotal = betTotal.add(new BigDecimal(item.getTotalMoney()));
+            if (item.getStatus().equals(GlobalConstant.OrderStatus.CLEARING.getCode())) {
+                if(item.getBattleResult()<0)
+                    betResult = betResult.subtract(new BigDecimal(Math.abs(item.getBattleResult())));
+                else
+                    betResult = betResult.add(new BigDecimal(item.getBattleResult()));
+            }
 
             issues.add(item.getIssueNumber());
             for (Finance it:
                  item.getFinances()) {
-                if(it.getType().equals(GlobalConstant.FananceType.RANGE_LIUSHUI)){
-                    returnTotal.add(new BigDecimal(it.getMoney()));
-                }
-                if(it.getType().equals(GlobalConstant.FananceType.RANGE_YINGLI)){
-                    dividendTotal.add(new BigDecimal(it.getMoney()));
+                if(it.getType().equals(GlobalConstant.FananceType.TIMELY_LIUSHUI.getCode())){
+                    timelyTotal = timelyTotal.add(new BigDecimal(it.getMoney()));
                 }
             }
         }
+
+        ClientShowResp resp = new ClientShowResp();
         resp.setBetResult(betResult.doubleValue());
         resp.setBetTotal(betTotal.doubleValue());
         resp.setIssueCount(issues.size());
-        resp.setReturnTotal(returnTotal.doubleValue());
+        resp.setRangeTotal(rangeTotal.doubleValue());
+        resp.setTimelyTotal(timelyTotal.doubleValue());
         resp.setDividendTotal(dividendTotal.doubleValue());
         return HttpResult.success(resp,"查询今日数据成功");
     }

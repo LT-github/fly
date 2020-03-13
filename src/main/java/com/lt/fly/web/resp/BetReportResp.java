@@ -13,7 +13,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class BetReportResp extends PageResp{
+public class BetReportResp<T, L> extends PageResp<T, L>{
     //总飞单数
     private Integer betCountTotal = 0;
     //总飞单金额
@@ -28,6 +28,14 @@ public class BetReportResp extends PageResp{
     private Double huiShuiTotal = 0.0;
     //总分红
     private Double fenHongTotal = 0.0;
+
+    public BetReportResp(Integer pageNum, Integer pageSize, Integer totalPage, Long eleTotalNum, List<T> data) {
+        super(pageNum, pageSize, totalPage, eleTotalNum, data);
+    }
+
+    public BetReportResp() {
+        super();
+    }
 
     public BetReportResp(Page page) {
         this.setEleTotalNum(page.getTotalElements());

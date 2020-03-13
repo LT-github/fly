@@ -20,4 +20,5 @@ public class FinanceAdd {
 	@NotNull(message = "金额不能为空")
 	private double money;
 
+	private Order order;
 }

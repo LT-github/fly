@@ -52,13 +52,16 @@ public class OrderServiceImpl implements IOrderService {
         //修改betOrder
         for ( Long key : map.keySet()) {
             try {
-
-
-//                iOrderRepository.updateById(map.get(key).getLotteryResult(),map.get(key).getBattleResult(),map.get(key).getExchangeDetail(),key);
+                iOrderRepository.updateById(map.get(key).getLotteryResult(),map.get(key).getBattleResult(),map.get(key).getExchangeDetail(),key);
                 issueNumberSet.add(map.get(key).getIssueNumber());
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+        for (Long issueNumber :
+                issueNumberSet) {
+            iOrderRepository.updateResultTypeByIssuNumber(issueNumber);
+            iOrderRepository.updateByIssueNumber(System.currentTimeMillis(),issueNumber);
         }
         Long end = System.currentTimeMillis();
         Long time = end-start;
@@ -68,13 +71,16 @@ public class OrderServiceImpl implements IOrderService {
     //竞猜报表
     @Override
     public BetReportResp findReport(BetReportFind query) throws ClientErrorException {
-        Pageable pageable = new PageRequest(query.getPage(), query.getSize());
-        Page<Object[]> page = iOrderRepository.findReport(query.getStart(),query.getEnd(),pageable);
-        BetReportResp betReportResp = new BetReportResp(page);
+        PageRequest pageRequest = PageRequest.of(query.getPage(), query.getSize());//借助计算起始位置
+        long total=iOrderRepository.countByReport(query.getStart(),query.getEnd());// 计算数据总条数
+        List<Object[]> records=iOrderRepository.findReport(query.getStart(),query.getEnd(),pageRequest.getOffset(),pageRequest.getPageSize());// 获取分页数据
+        int totalPageNum = (int)(total  +  query.getSize()  - 1) / query.getSize();//计算总页数
+
+        BetReportResp betReportResp = new BetReportResp(query.getPage(), query.getSize(), totalPageNum, total, records);
 
         List<BetReportVo> betReportVos = new ArrayList<>();
         for (Object[] objArr:
-             page.getContent()) {
+                records) {
             BetReportVo betReportVo = new BetReportVo();
             betReportVo.setDateTime(objArr[0].toString());
             //下注数
