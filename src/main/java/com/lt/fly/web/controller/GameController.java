@@ -21,6 +21,7 @@ import com.lt.fly.web.query.OddFind;
 import com.lt.fly.web.req.*;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.vo.BetGroupVo;
+import com.lt.fly.web.vo.GameForAddVo;
 import com.lt.fly.web.vo.GameGroupVo;
 import com.lt.fly.web.vo.GameTypeVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -278,5 +279,17 @@ public class GameController extends BaseController {
         }
         iBetGroupRepository.saveAll(betGroups);
         return HttpResult.success(BetGroupVo.tovo(betGroups),"多选修改下注组成功!");
+    }
+
+    /**
+     * 添加赔率时获取玩法列表
+     * @return
+     * @throws ClientErrorException
+     */
+    @GetMapping("all")
+    @UserLoginToken
+    public HttpResult getALlforAdd() throws ClientErrorException{
+        List<BetGroup> betGroups = iBetGroupRepository.findAll();
+        return HttpResult.success(GameForAddVo.tovo(betGroups),"获取玩法列表成功!");
     }
 }
