@@ -72,7 +72,7 @@ public class PageResp<T, L> {
 	
 	public PageResp (Page<L> page){
 		this.setEleTotalNum(page.getTotalElements());
-		this.setPageNum(page.getNumber());
+		this.setPageNum(page.getNumber()+1);
 		this.setPageSize(page.getSize());
 		this.setTotalPage(page.getTotalPages());
 		this.data2 = page.getContent();
