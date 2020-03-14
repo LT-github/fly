@@ -198,16 +198,18 @@ public class GameController extends BaseController {
         List<BetGroupVo> betGroupVos = new ArrayList<>();
 
         if (null != oddGroup) {
+
             for (BetGroup item :
                     page) {
+                BetGroupVo betGroupVo = new BetGroupVo(item,null);
                 for (Odd odd :
                         oddGroup.getOdds()) {
                     if (odd.getBetGroup().getId().equals(item.getId())) {
-                        betGroupVos.add(new BetGroupVo(item,odd));
-                    }else{
-                        betGroupVos.add(new BetGroupVo(item,null));
+                        betGroupVo.setOddValue(odd.getOddValue());
                     }
                 }
+                betGroupVos.add(betGroupVo);
+
             }
         }else {
             for (BetGroup item :
