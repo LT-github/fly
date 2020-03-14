@@ -11,6 +11,8 @@ import com.lt.fly.entity.GameGroup;
 import com.lt.fly.entity.Odd;
 import com.lt.fly.entity.OddGroup;
 import com.lt.fly.exception.ClientErrorException;
+import com.lt.fly.jpa.support.DataQueryObject;
+import com.lt.fly.jpa.support.DataQueryObjectPage;
 import com.lt.fly.utils.GlobalConstant;
 import com.lt.fly.utils.HttpResult;
 import com.lt.fly.utils.IdWorker;
@@ -290,8 +292,10 @@ public class GameController extends BaseController {
      */
     @GetMapping("all")
     @UserLoginToken
-    public HttpResult getALlforAdd() throws ClientErrorException{
-        List<BetGroup> betGroups = iBetGroupRepository.findAll();
-        return HttpResult.success(GameForAddVo.tovo(betGroups),"获取玩法列表成功!");
+    public HttpResult getALlforAdd(DataQueryObjectPage query) throws ClientErrorException{
+        Page<BetGroup> page = iBetGroupRepository.findAll(query);
+        PageResp resp = new PageResp(page);
+        resp.setData(GameForAddVo.tovo(page.getContent()));
+        return HttpResult.success(resp,"获取玩法列表成功!");
     }
 }
