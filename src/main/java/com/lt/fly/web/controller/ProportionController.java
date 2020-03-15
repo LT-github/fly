@@ -77,7 +77,7 @@ public class ProportionController extends BaseController {
      * @return
      */
 //    @RequiredPermission(value="findProportionAll")
-    @GetMapping("/all")
+    @GetMapping
     @UserLoginToken
     public HttpResult<PageResp<ProportionVo, Proportion>> findProportionAll(DataQueryObjectPage req){
         Page<Proportion> page = iProportionRepository.findAll(req);
@@ -90,6 +90,18 @@ public class ProportionController extends BaseController {
         });
 
         return HttpResult.success(resp,"查询成功");
+    }
+
+    /**
+     * 获取返点比例列表.不分页
+     * @return
+     */
+    @GetMapping("/all")
+    @UserLoginToken
+    public HttpResult proportionList(){
+        List<Proportion> proportions = iProportionRepository.findAll();
+
+        return HttpResult.success(ProportionVo.toVo(proportions),"获取返点规则列表成功");
     }
 
     /**
