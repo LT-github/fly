@@ -76,7 +76,7 @@ public class ProportionController extends BaseController {
      * @param req
      * @return
      */
-    @RequiredPermission(value="findProportionAll")
+//    @RequiredPermission(value="findProportionAll")
     @GetMapping("/all")
     @UserLoginToken
     public HttpResult<PageResp<ProportionVo, Proportion>> findProportionAll(DataQueryObjectPage req){
@@ -98,7 +98,7 @@ public class ProportionController extends BaseController {
      * @return
      * @throws ClientErrorException
      */
-    @RequiredPermission(value="findProportionById")
+//    @RequiredPermission(value="findProportionById")
     @GetMapping("/{id}")
     public HttpResult<ProportionVo> findProportionById(@PathVariable Long id) throws ClientErrorException{
         Proportion objQuery = isNotNull(iProportionRepository.findById(id),"查询的返点比例不存在");
@@ -114,7 +114,7 @@ public class ProportionController extends BaseController {
      * @return
      * @throws ClientErrorException
      */
-    @RequiredPermission(value="editProportion")
+//    @RequiredPermission(value="editProportion")
     @PutMapping("/{id}")
     @UserLoginToken
     public HttpResult<ProportionVo> editProportion(@PathVariable Long id ,@RequestBody @Validated ProportionAdd obj ,
@@ -151,7 +151,7 @@ public class ProportionController extends BaseController {
      * @return
      * @throws ClientErrorException
      */
-    @RequiredPermission(value="deleteProportion")
+//    @RequiredPermission(value="deleteProportion")
     @DeleteMapping("/{id}")
     @UserLoginToken
     public HttpResult<Object> deleteProportion(@PathVariable Long id)
