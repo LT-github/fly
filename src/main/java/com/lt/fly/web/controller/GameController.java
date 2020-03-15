@@ -141,7 +141,7 @@ public class GameController extends BaseController {
 
     @PutMapping("/type")
     @UserLoginToken
-    public HttpResult editType(GameTypeEdit req) throws ClientErrorException{
+    public HttpResult editType(@RequestBody GameTypeEdit req) throws ClientErrorException{
         List<GameGroup> gameGroups = iGameGroupRepository.findByType(req.getType());
         if(null == gameGroups || 0 == gameGroups.size())
             throw new ClientErrorException("当前的参数"+req.getType()+"没有实体");
