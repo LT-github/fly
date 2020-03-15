@@ -35,7 +35,7 @@ public class DataDictionaryController extends BaseController{
 	@Autowired
 	protected IdWorker idWorker;
 	
-	@RequiredPermission(value="findDataDictionaryById")
+//	@RequiredPermission(value="findDataDictionaryById")
 	@GetMapping("/{id}")
 	@UserLoginToken
 	public HttpResult<DataDictionaryVo> findById(@PathVariable Long id) {
@@ -47,7 +47,7 @@ public class DataDictionaryController extends BaseController{
 		return HttpResult.success(new DataDictionaryVo(optional.get()),"查询成功");
 	}
 	
-	@RequiredPermission(value="findDataDictionary")
+//	@RequiredPermission(value="findDataDictionary")
 	@GetMapping("/all")
 	@UserLoginToken
 	public HttpResult<List<DataDictionaryVo>> findAll(DataDictionaryFind query){
@@ -95,7 +95,7 @@ public class DataDictionaryController extends BaseController{
 		return HttpResult.success(new DataDictionaryVo(objSave),objSave.getName() + "添加成功");
 	}
 	
-	@RequiredPermission(value="deleteChild")
+//	@RequiredPermission(value="deleteChild")
 	@DeleteMapping("/{id}")
 	@UserLoginToken
 	public HttpResult<DataDictionaryVo> deleteChild(@PathVariable Long id) 
@@ -110,7 +110,8 @@ public class DataDictionaryController extends BaseController{
 		
 		return HttpResult.success(new DataDictionaryVo(objDelete),objDelete.getName() + "删除成功");
 	}
-	@RequiredPermission(value="updateDataDictionary")
+
+//	@RequiredPermission(value="updateDataDictionary")
 	@PutMapping("/{id}")
 	@UserLoginToken
 	public HttpResult<DataDictionaryVo> updateDataDictionary(@PathVariable Long id ,@RequestBody DataDictionaryAdd obj, 
