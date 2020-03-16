@@ -104,7 +104,7 @@ public class MemberController extends BaseController{
 	 * @param query
 	 * @return
 	 */
-	@GetMapping("/all")
+	@GetMapping
 	@UserLoginToken
 	public HttpResult<PageResp<MemberVo, Member>> findAllPage(MemberFind query){
 		
@@ -116,7 +116,7 @@ public class MemberController extends BaseController{
 	}
 	
 	/**
-	 * 查询所有会员
+	 * 查询所有会员,不分页
 	 * @return
 	 */
 	@GetMapping("/list")
