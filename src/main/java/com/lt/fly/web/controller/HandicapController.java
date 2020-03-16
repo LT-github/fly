@@ -10,12 +10,16 @@ import com.lt.fly.annotation.UserLoginToken;
 import com.lt.fly.dao.*;
 import com.lt.fly.entity.*;
 import com.lt.fly.exception.ClientErrorException;
+import com.lt.fly.jpa.support.DataQueryObject;
+import com.lt.fly.jpa.support.DataQueryObjectPage;
 import com.lt.fly.utils.HttpResult;
 import com.lt.fly.utils.IdWorker;
 import com.lt.fly.web.query.DataDictionaryFind;
 import com.lt.fly.web.req.HandicapAdd;
+import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.vo.HandicapVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -163,6 +167,20 @@ public class HandicapController extends BaseController {
     public HttpResult<List<HandicapVo>> findAll(){
         List<Handicap> handicaps = iHandicapRepository.findAll();
         return HttpResult.success(HandicapVo.toVo(handicaps),"查询成功");
+    }
+
+    /**
+     * 盘口列表,需要分页
+     * @param query
+     * @return
+     */
+    @GetMapping
+    @UserLoginToken
+    public HttpResult findAll(DataQueryObjectPage query){
+        Page<Handicap> page = iHandicapRepository.findAll(query);
+        PageResp resp = new PageResp(page);
+        resp.setData(HandicapVo.toVo(page.getContent()));
+        return HttpResult.success(resp,"获取盘口列表成功!");
     }
 
     /**
