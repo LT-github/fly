@@ -62,7 +62,7 @@ public class HandicapController extends BaseController {
      * @return
      * @throws Exception
      */
-    @RequiredPermission(value="addUserGroup")
+//    @RequiredPermission(value="addUserGroup")
     @PostMapping
     @UserLoginToken
     public HttpResult<HandicapVo> addHandicap(@RequestBody @Validated HandicapAdd obj, BindingResult bindingResult)
@@ -157,8 +157,9 @@ public class HandicapController extends BaseController {
      * 查询所有的盘口,不需要分页
      * @return
      */
-    @RequiredPermission(value="findAllGroup")
+//    @RequiredPermission(value="findAllGroup")
     @GetMapping("/all")
+    @UserLoginToken
     public HttpResult<List<HandicapVo>> findAll(){
         List<Handicap> handicaps = iHandicapRepository.findAll();
         return HttpResult.success(HandicapVo.toVo(handicaps),"查询成功");
@@ -172,7 +173,7 @@ public class HandicapController extends BaseController {
      * @return
      * @throws Exception
      */
-    @RequiredPermission(value="editUserShop-edit")
+//    @RequiredPermission(value="editUserShop-edit")
     @PutMapping("/{id}")
     @UserLoginToken
     public HttpResult<HandicapVo> editHandicap(@PathVariable Long id,@RequestBody @Validated HandicapAdd obj,
@@ -188,7 +189,7 @@ public class HandicapController extends BaseController {
      * @return
      * @throws ClientErrorException
      */
-    @RequiredPermission(value="delUserShop-del")
+//    @RequiredPermission(value="delUserShop-del")
     @DeleteMapping("/{id}")
     @UserLoginToken
     public HttpResult deleteHandicap(@PathVariable Long id) throws ClientErrorException {
