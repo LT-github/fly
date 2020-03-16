@@ -23,8 +23,9 @@ public class MemberFind extends DataQueryObjectPage {
 	@QueryField(name = "username",type = QueryType.FULL_LIKE)
 	private String username;
 
-	@QueryField(name = "nikename",type = QueryType.FULL_LIKE)
-	private String nikename;
+	@QueryField(name = "nickname",type = QueryType.FULL_LIKE)
+	private String nickname;
 
-	private QueryBetween<Long> modifyTime;
+	@QueryField(name = "createTime",type = QueryType.BEWTEEN)
+	private QueryBetween<Long> createTime;
 }
