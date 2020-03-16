@@ -19,7 +19,7 @@ public class BetGroup extends BasicEntity{
     @Column(length = 32)
     private String name;
 
-    // 玩法状态 0 正常 1禁用
+    // 玩法状态 0关闭 1开启
     @Column
     private Integer status;
 

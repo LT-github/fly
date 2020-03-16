@@ -10,6 +10,7 @@ import com.lt.fly.entity.*;
 import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.redis.service.IOrderDTOServiceCache;
 import com.lt.fly.utils.*;
+import com.lt.fly.utils.GlobalConstant.FananceType;
 import com.lt.fly.utils.gameUtils.GameProperty;
 import com.lt.fly.utils.gameUtils.GameUtil;
 import com.lt.fly.web.req.UserLogin;
@@ -21,6 +22,7 @@ import com.lt.fly.web.vo.OrderVo;
 import com.lt.lxc.pojo.OrderDTO;
 import com.lt.lxc.service.OpenDataISV;
 import org.apache.dubbo.config.annotation.Reference;
+import org.hibernate.sql.ordering.antlr.GeneratedOrderByLexer;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +30,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.*;
+
+import static com.lt.fly.utils.GlobalConstant.FananceType.*;
 
 @RestController
 @RequestMapping("/client")
@@ -156,25 +160,6 @@ public class ClientController extends BaseController{
                 throw new ClientErrorException("余额不足,请充值!");
             }
             balance = Arith.sub(balance,gp.getMoney())+gp.getMoney()*proportion;
-
-            //财务记录集合
-            Set<Finance> finances = order.getFinances();
-            FinanceAdd req = new FinanceAdd();
-            req.setOrder(order);
-
-            //生成下注财务记录
-            req.setMoney(gp.getMoney());
-            req.setUserBalance(Arith.sub(balance,gp.getMoney()*proportion));
-            finances.add(iFinanceService.add(req,GlobalConstant.FananceType.BET.getCode()));
-
-            //生成返点财务记录
-            req.setMoney(Arith.mul(gp.getMoney(),proportion));
-            req.setUserBalance(balance);
-
-            finances.add(iFinanceService.add(req,GlobalConstant.FananceType.TIMELY_LIUSHUI.getCode()));
-            //添加财务记录
-            order.setFinances(finances);
-
             //下注总额
             totalBet += gp.getMoney();
             //总返点
@@ -187,9 +172,17 @@ public class ClientController extends BaseController{
             order.setCreateUser(member);
             order.setCreateTime(nowtime);
 
+            //生成下注财务记录
+            iFinanceService.add(member,gp.getMoney(),balance, BET);
+
+            //生成返点财务记录
+            balance = Arith.sub(balance,gp.getMoney());
+            iFinanceService.add(member,Arith.mul(gp.getMoney(),proportion),balance, TIMELY_LIUSHUI);
+
+
+
             orders.add(order);
         }
-        iOrderRepository.saveAll(orders);
         //是否封盘
         if(!GlobalConstant.Bet.SWITCH.isFlag())
             throw new ClientErrorException("已封盘!");
@@ -222,8 +215,7 @@ public class ClientController extends BaseController{
     @PostMapping("/recharge")
     @UserLoginToken
     public HttpResult recharge(@RequestBody FinanceAdd req) throws ClientErrorException{
-        Finance finance = iFinanceService.add(req,GlobalConstant.FananceType.RECHARGE.getCode());
-        iFinanceRepository.save(finance);
+        Finance finance = iFinanceService.add((Member) getLoginUser(),req.getMoney(),null, RECHARGE);
         return HttpResult.success(new FinanceVo(finance),"上分申请提交成功");
     }
 
@@ -240,7 +232,7 @@ public class ClientController extends BaseController{
         if(balance<req.getMoney()){
             throw new ClientErrorException("余额不足");
         }
-        Finance finance = iFinanceService.add(req,GlobalConstant.FananceType.DESCEND.getCode());
+        Finance finance = iFinanceService.add((Member) getLoginUser(),req.getMoney(),null, DESCEND);
         iFinanceRepository.save(finance);
         return HttpResult.success(new FinanceVo(finance),"下分申请提交成功");
     }
@@ -262,48 +254,53 @@ public class ClientController extends BaseController{
         List<Finance> finances = iFinanceRepository.findByCreateTimeBetweenAndCreateUser(zero,now,getLoginUser());
 
 
-        BigDecimal betResult = new BigDecimal(0);
-        BigDecimal betTotal = new BigDecimal(0);
-        BigDecimal timelyTotal = new BigDecimal(0);
-        BigDecimal rangeTotal = new BigDecimal(0);
-        BigDecimal dividendTotal = new BigDecimal(0);
+        double betResult = 0;
+        double betTotal = 0;
+        double timelyTotal = 0;
+        double rangeTotal = 0;
+        double dividendTotal = 0;
         for (Finance item :
                 finances) {
-            if (item.getType().equals(GlobalConstant.FananceType.RANGE_LIUSHUI.getCode())) {
-                rangeTotal = rangeTotal.add(new BigDecimal(item.getMoney()));
+            //下注金额
+            if (item.getType().equals(BET.getCode())) {
+                betTotal = Arith.add(betTotal,item.getMoney());
             }
-            if (item.getType().equals(GlobalConstant.FananceType.RANGE_YINGLI.getCode())) {
-                dividendTotal = dividendTotal.add(new BigDecimal(item.getMoney()));
-            }
+            //飞单盈亏
+            if(item.getType().equals(BET_WIN.getCode())){
+                betResult = Arith.add(betResult,item.getMoney());
 
+            }
+            //区间流水
+            if (item.getType().equals(RANGE_LIUSHUI.getCode())) {
+                rangeTotal = Arith.add(rangeTotal,item.getMoney());
+            }
+            //区间分红
+            if (item.getType().equals(RANGE_YINGLI.getCode())) {
+                dividendTotal = Arith.add(dividendTotal,item.getMoney());
+            }
+            //实时流水
+            if (item.getType().equals(TIMELY_LIUSHUI.getCode())) {
+                timelyTotal = Arith.add(timelyTotal,item.getMoney());
+            }
+            //撤销
+            if(item.getType().equals(CANCLE.getCode())){
+                timelyTotal = Arith.sub(timelyTotal,item.getMoney());
+            }
         }
         Set<Long> issues = new HashSet<>();
+
         for (Order item :
                 orders) {
-            betTotal = betTotal.add(new BigDecimal(item.getTotalMoney()));
-            if (item.getStatus().equals(GlobalConstant.OrderStatus.CLEARING.getCode())) {
-                if(item.getBattleResult()<0)
-                    betResult = betResult.subtract(new BigDecimal(Math.abs(item.getBattleResult())));
-                else
-                    betResult = betResult.add(new BigDecimal(item.getBattleResult()));
-            }
-
             issues.add(item.getIssueNumber());
-            for (Finance it:
-                 item.getFinances()) {
-                if(it.getType().equals(GlobalConstant.FananceType.TIMELY_LIUSHUI.getCode())){
-                    timelyTotal = timelyTotal.add(new BigDecimal(it.getMoney()));
-                }
-            }
         }
 
         ClientShowResp resp = new ClientShowResp();
-        resp.setBetResult(betResult.doubleValue());
-        resp.setBetTotal(betTotal.doubleValue());
+        resp.setBetResult(Arith.sub(betResult,betTotal));
+        resp.setBetTotal(betTotal);
         resp.setIssueCount(issues.size());
-        resp.setRangeTotal(rangeTotal.doubleValue());
-        resp.setTimelyTotal(timelyTotal.doubleValue());
-        resp.setDividendTotal(dividendTotal.doubleValue());
+        resp.setRangeTotal(rangeTotal);
+        resp.setTimelyTotal(timelyTotal);
+        resp.setDividendTotal(dividendTotal);
         return HttpResult.success(resp,"查询今日数据成功");
     }
 

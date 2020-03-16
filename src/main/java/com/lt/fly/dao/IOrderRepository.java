@@ -19,18 +19,30 @@ import java.util.List;
 public interface IOrderRepository extends BaseRepository<Order, Long> {
 	
 	//查询某个会员，某个时间段的盈亏
-	@Query(nativeQuery = true,value="SELECT (ifnull(a.snum1,0)-ifnull(b.snum2,0)) " + 
-			"FROM " + 
-			"(SELECT sum(ifnull(battle_result,0)) snum1 from t_order WHERE result_type=1 AND status in(0,1) AND lottery_result=0 AND create_time Between ?1 and ?2 AND create_user_id=?3) a," + 
+	@Query(nativeQuery = true,value="SELECT (ifnull(a.snum1,0)-ifnull(b.snum2,0)) " +
+			"FROM " +
+			"(SELECT sum(ifnull(battle_result,0)) snum1 from t_order WHERE result_type=1 AND status in(0,1) AND lottery_result=0 AND create_time Between ?1 and ?2 AND create_user_id=?3) a," +
 			"(SELECT sum(ifnull(battle_result,0)) snum2 from t_order WHERE result_type=1 AND status in(0,1) AND lottery_result=1 AND create_time Between ?1 and ?2 AND create_user_id=?3) b ")
 	Double findYingkuiByCreateTime(Long before,Long after,Long memberId);
-	
-	//查询某个会员，某个时间段的流水
-	@Query(nativeQuery = true,value="SELECT sum(ifnull(total_money,0)) FROM t_order WHERE status in(0,1) AND create_time Between ?1 and ?2 AND create_user_id=?3")
-	Double findLiushuiByCreateTime(Long before,Long after,Long memberId);
 
-	@Query(nativeQuery = true,value = "select * from t_order where create_user_id = ?1 and create_time between ?2 and ?3")
-	List<Order> findByUserAndTime(Long memberId,Long before,Long after);
+	//查询某个会员，某个时间段的流水
+	@Query(nativeQuery = true,value="SELECT sum(ifnull(total_money,0)) FROM t_order WHERE status != 2 AND create_time Between :start and :end AND create_user_id= :memberId")
+	Double findLiushuiByCreateTime(Long start,Long end,Long memberId);
+
+	@Query(nativeQuery = true,value="SELECT sum(ifnull(total_money,0)) FROM t_order WHERE status != 2 AND create_user_id= :memberId")
+	Double findLiushuiByCreateTime(Long memberId);
+
+	@Query(nativeQuery = true,value = "select sum (battle_result) from t_order o where o.battle_result < 0 AND create_time Between :start and :end AND create_user_id= :memberId")
+	Double findYingliByCreateTime(Long start,Long end,Long memberId);
+
+	@Query(nativeQuery = true,value = "select sum (battle_result) from t_order o where o.battle_result < 0 AND create_user_id= :memberId")
+	Double findYingliByCreateTime(Long memberId);
+
+
+
+
+	@Query(nativeQuery = true,value = "select * from t_order where create_user_id = :memberId and create_time between :start and :end")
+	List<Order> findByUserAndTime(Long memberId,Long start,Long end);
 
 	@Query(nativeQuery = true,value = "select t1.dat,ifnull(sum(t1.betcount),0),ifnull(sum(t1.betResult),0),ifnull(sum(t1.water),0),ifnull(sum(t1.recharge),0),\n" +
 			"ifnull(sum(t1.descend),0),ifnull(sum(t1.huishui),0),ifnull(sum(t1.fenghong),0) \n" +

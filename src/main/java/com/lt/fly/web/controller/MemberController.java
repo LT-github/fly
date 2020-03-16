@@ -111,7 +111,7 @@ public class MemberController extends BaseController{
 		Page<Member> page = iMemberRepository.findAll(query);
 		PageResp<MemberVo, Member> prp = new PageResp<MemberVo, Member>(page);
 		prp.setData(MemberVo.toVo(page.getContent()));
-		
+
 		return HttpResult.success(prp, "查询成功");
 	}
 	

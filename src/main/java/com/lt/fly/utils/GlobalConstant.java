@@ -119,7 +119,8 @@ public class GlobalConstant {
 		TIMELY_LIUSHUI(4,"实时流水返点"),
 		RANGE_LIUSHUI(5,"区间流水返点"),
 		RANGE_YINGLI(6,"区间盈利返点"),
-		DESCEND(7,"下分");
+		DESCEND(7,"下分"),
+		BET_WIN(8,"下注获胜");
 
 
 		private int code;

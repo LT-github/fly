@@ -20,6 +20,7 @@ public class OrderSV implements OrderISV{
 	@Override
 	public void orderSettle(Map<Long,OrderDTO> map)  {
 		iOrderService.settle(map);
+
 		System.err.println(">>>>> 结算成功");
 	}
 

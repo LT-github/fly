@@ -1,11 +1,15 @@
 package com.lt.fly.Service.impl;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import com.lt.fly.dao.IMemberRepository;
 import com.lt.fly.entity.Member;
+import com.lt.fly.entity.Order;
+import com.lt.fly.utils.Arith;
 import com.lt.fly.utils.GlobalConstant;
+import com.lt.fly.utils.MyBeanUtils;
 import com.lt.fly.web.query.FinanceFind;
 import com.lt.fly.web.req.*;
 import com.lt.fly.web.resp.PageResp;
@@ -43,23 +47,45 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 
 	
 	@Override
-	public Finance add(FinanceAdd req, int type) throws ClientErrorException{
+	public Finance add(User user, Double money,Double balance, GlobalConstant.FananceType type) throws ClientErrorException{
 		Finance finance = new Finance();
 		finance.setId(idWorker.nextId());
 		finance.setCreateTime(System.currentTimeMillis());
-		finance.setCreateUser(getLoginUser());
-		finance.setMoney(req.getMoney());
-		finance.setDescription(req.getDescription());
-		finance.setType(type);
-		if(null != req.getOrder())
-			finance.setOrder(req.getOrder());
-		if (finance.getType().equals(RECHARGE.getCode()) || finance.getType().equals(DESCEND.getCode())) {
-			finance.setAuditStatus(GlobalConstant.AuditStatus.IN_AUDIT.getCode());
+		finance.setType(type.getCode());
+		finance.setMoney(money);
+		finance.setDescription(user.getNickname()+type.getMsg()+money+"。");
+		finance.setCreateUser(user);
+		if (null == balance)
+			balance = reckonBalance(user.getId());
+		finance.setBalance(balance);
+
+		switch (type){
+			//上分
+			case RECHARGE:
+				finance.setCountType(GlobalConstant.CountType.ADD.getCode());
+				finance.setAuditStatus(GlobalConstant.AuditStatus.IN_AUDIT.getCode());
+				break;
+			//下分
+			case DESCEND:
+				finance.setCountType(GlobalConstant.CountType.SUBTRACT.getCode());
+				finance.setAuditStatus(GlobalConstant.AuditStatus.IN_AUDIT.getCode());
+				break;
+			//下注
+			case BET:
+				finance.setCountType(GlobalConstant.CountType.SUBTRACT.getCode());
+				break;
+			//撤销,下注获胜
+			case CANCLE:case BET_WIN:
+				finance.setCountType(GlobalConstant.CountType.ADD.getCode());
+				break;
+			//返点
+			case TIMELY_LIUSHUI:case RANGE_LIUSHUI:case RANGE_YINGLI:
+				finance.setCountType(GlobalConstant.CountType.ADD.getCode());
+				break;
+			default:
+				break;
 		}
-		if (finance.getType().equals(BET.getCode()) || finance.getType().equals(DESCEND.getCode()))
-			finance.setCountType(GlobalConstant.CountType.SUBTRACT.getCode());
-		else
-			finance.setCountType(GlobalConstant.CountType.ADD.getCode());
+		iFinanceRepository.save(finance);
 		return finance;
 	}
 
@@ -68,23 +94,17 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 		Member member = isNotNull(iMemberRepository.findById(userId),"会员不存在");
 		BigDecimal sum = new BigDecimal(0);
 		for(Finance item:member.getFinances()){
-			//上分和下分
-			if (item.getType().equals(RECHARGE.getCode()) || item.getType().equals(DESCEND.getCode())) {
-				if(item.getAuditStatus().equals(GlobalConstant.AuditStatus.AUDIT_PASS.getCode())){
-
-					if(item.getCountType().equals(GlobalConstant.CountType.ADD.getCode()))
-						sum = sum.add(new BigDecimal(item.getMoney()));
-					else
-						sum = sum.subtract(new BigDecimal(item.getMoney()));
+			if(item.getCountType().equals(GlobalConstant.CountType.ADD.getCode())){
+				sum = sum.add(new BigDecimal(item.getMoney().toString()));
+				if (null != item.getAuditStatus() && !item.getAuditStatus().equals(GlobalConstant.AuditStatus.AUDIT_PASS.getCode())) {
+					sum = sum.subtract(new BigDecimal(item.getMoney().toString()));
 				}
-			}else {
-				//投注撤销回水和分红
-				if(item.getCountType().equals(GlobalConstant.CountType.ADD.getCode()))
-					sum = sum.add(new BigDecimal(item.getMoney()));
-				else
-					sum = sum.subtract(new BigDecimal(item.getMoney()));
+			} else {
+				sum = sum.subtract(new BigDecimal(item.getMoney().toString()));
+				if (null != item.getAuditStatus() && !item.getAuditStatus().equals(GlobalConstant.AuditStatus.AUDIT_PASS.getCode())) {
+					sum = sum.add(new BigDecimal(item.getMoney().toString()));
+				}
 			}
-
 		}
 		return sum.doubleValue();
 	}
@@ -139,6 +159,28 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 		PageResp<FinanceVo, Finance> resp = new PageResp<>(page);
 		resp.setData(FinanceVo.tovo(page.getContent()));
 		return resp;
+	}
+
+	@Override
+	public double moneyForReturn(Long start, Long end, Member member, Integer type) throws ClientErrorException {
+		//某时间段的某会员的所有财务信息
+		List<Finance> finances = iFinanceRepository.findByCreateTimeBetweenAndCreateUser(start,end,member);
+
+		double money=0;
+		for (Finance item :
+				finances) {
+			if (item.getType().equals(type)){
+				money = Arith.add(money,item.getMoney());
+			}
+		}
+		return money;
+	}
+
+	@Override
+	public Finance findNew(Integer type, Long memberId) {
+		//从缓存中取出
+
+		return null;
 	}
 
 

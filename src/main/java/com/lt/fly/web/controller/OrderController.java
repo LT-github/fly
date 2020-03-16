@@ -25,7 +25,7 @@ public class OrderController extends BaseController {
      * @return
      * @throws ClientErrorException
      */
-    @RequiredPermission(value="findGuessingList")
+//    @RequiredPermission(value="findGuessingList")
     @GetMapping("/all")
     @UserLoginToken
     public HttpResult findAll(OrderFind req) throws ClientErrorException {

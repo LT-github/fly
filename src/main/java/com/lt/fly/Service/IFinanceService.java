@@ -2,7 +2,11 @@ package com.lt.fly.Service;
 
 
 import com.lt.fly.entity.Finance;
+import com.lt.fly.entity.Member;
+import com.lt.fly.entity.Order;
+import com.lt.fly.entity.User;
 import com.lt.fly.exception.ClientErrorException;
+import com.lt.fly.utils.GlobalConstant;
 import com.lt.fly.web.query.FinanceFind;
 import com.lt.fly.web.req.*;
 import com.lt.fly.web.resp.PageResp;
@@ -15,12 +19,11 @@ public interface IFinanceService {
 	 * 根据类型添加财务记录
 	 */
 	
-	Finance add(FinanceAdd req, int type) throws ClientErrorException;
+	Finance add(User user, Double money,Double balance, GlobalConstant.FananceType type) throws ClientErrorException;
 
 	/**
 	 * 计算某个用户余额
 	 */
-	
 	Double reckonBalance(Long userId) throws ClientErrorException;
 	
 	/**
@@ -45,4 +48,9 @@ public interface IFinanceService {
 	Double findYingkuiMemberByTime(FindLiushuiReq req) throws ClientErrorException;
 
 	PageResp<FinanceVo,Finance> findAll(FinanceFind query);
+
+
+	double moneyForReturn(Long start, Long end, Member member,Integer type) throws ClientErrorException;
+
+	Finance findNew(Integer type,Long memberId);
 }

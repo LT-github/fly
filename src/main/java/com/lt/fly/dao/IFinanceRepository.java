@@ -46,5 +46,11 @@ public interface IFinanceRepository extends BaseRepository<Finance, Long> {
     //查今日财务记录
 	List<Finance> findByCreateTimeBetweenAndCreateUser(Long start,Long end,User user);
 
+	//找到最新的财务
+    @Query(nativeQuery = true,value = "select * from t_finance f where f.type = :type and create_user_id = :memberId order by create_time desc limit 0,1;")
+    Finance findNew(Integer type,Long memberId);
+
+
+
 
 }

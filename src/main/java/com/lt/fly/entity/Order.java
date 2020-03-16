@@ -31,10 +31,6 @@ public class Order extends BasicEntity{
 	@Column(name = "status")
 	private Integer status = GlobalConstant.OrderStatus.NOTClEARING.getCode();
 
-	// 财务记录
-	@OneToMany(mappedBy = "order" , cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-	private Set<Finance> finances = new HashSet<>();
-
 	// 玩法下注内容
 	@Column(name = "bets_content")
 	private String betsContent;

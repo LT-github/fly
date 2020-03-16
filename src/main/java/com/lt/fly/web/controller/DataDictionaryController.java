@@ -38,13 +38,11 @@ public class DataDictionaryController extends BaseController{
 //	@RequiredPermission(value="findDataDictionaryById")
 	@GetMapping("/{id}")
 	@UserLoginToken
-	public HttpResult<DataDictionaryVo> findById(@PathVariable Long id) {
+	public HttpResult<DataDictionaryVo> findById(@PathVariable Long id) throws ClientErrorException{
 		
-		Optional<DataDictionary> optional = iDataDictionaryRepository.findById(id);
-		if(!optional.isPresent())
-			throw new RuntimeException("该code的实体不存在");
+		DataDictionary dataDictionary = isNotNull(iDataDictionaryRepository.findById(id),"该code的实体不存在");
 		
-		return HttpResult.success(new DataDictionaryVo(optional.get()),"查询成功");
+		return HttpResult.success(new DataDictionaryVo(dataDictionary),"查询成功");
 	}
 	
 //	@RequiredPermission(value="findDataDictionary")
@@ -73,11 +71,11 @@ public class DataDictionaryController extends BaseController{
 		objSave.setStatus(obj.getStatus()==null?0:obj.getStatus());
 		
 		if(parentId != null) {
-			Optional<DataDictionary> optional = iDataDictionaryRepository.findById(parentId);
-			if(!optional.isPresent()) {
-				throw new ClientErrorException("传递的父元素ID查询不到实体");
-			}
-			objSave.setParent(optional.get());
+
+			DataDictionary dataDictionary = isNotNull(iDataDictionaryRepository.findById(parentId),"传递的父元素ID查询不到实体");
+
+			objSave.setParent(dataDictionary);
+
 			DataDictionaryFind query = new DataDictionaryFind();
 			query.setParentId(parentId);
 			List<DataDictionary> list = iDataDictionaryRepository.findAll(query);
@@ -98,13 +96,9 @@ public class DataDictionaryController extends BaseController{
 //	@RequiredPermission(value="deleteChild")
 	@DeleteMapping("/{id}")
 	@UserLoginToken
-	public HttpResult<DataDictionaryVo> deleteChild(@PathVariable Long id) 
-			throws ClientErrorException {
-		Optional<DataDictionary> optional = iDataDictionaryRepository.findById(id);
-		if(!optional.isPresent()) {
-			throw new ClientErrorException("数据库id不存在");
-		}
-		DataDictionary objDelete = optional.get();
+	public HttpResult<DataDictionaryVo> deleteChild(@PathVariable Long id) throws ClientErrorException {
+
+		DataDictionary objDelete = isNotNull(iDataDictionaryRepository.findById(id),"数据库id不存在");
 		
 		iDataDictionaryRepository.deleteById(objDelete.getId());
 		
@@ -118,20 +112,12 @@ public class DataDictionaryController extends BaseController{
 			BindingResult bindingResult) throws ClientErrorException{
 		this.paramsValid(bindingResult);
 		
-		Optional<DataDictionary> optional = iDataDictionaryRepository.findById(id);
-		if(!optional.isPresent()) {
-			throw new ClientErrorException("数据库id不存在");
-		}
-		DataDictionary objEditor = optional.get();
+		DataDictionary objEditor = isNotNull(iDataDictionaryRepository.findById(id),"数据库id不存在");
 		
 		MyBeanUtils.copyProperties(obj, objEditor);
 		
 		if(obj.getParentId() != null) {
-			Optional<DataDictionary> findById = iDataDictionaryRepository.findById(obj.getParentId());
-			if(!findById.isPresent()) {
-				throw new ClientErrorException("parentId 不存在");
-			}
-			DataDictionary parent = findById.get();
+			DataDictionary parent = isNotNull(iDataDictionaryRepository.findById(obj.getParentId()),"parentId 不存在");
 			objEditor.setParent(parent);
 		}
 		
