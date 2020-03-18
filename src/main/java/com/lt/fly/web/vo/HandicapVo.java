@@ -18,7 +18,7 @@ public class HandicapVo {
     private Long id;
     private String name;
     private List<ProportionVo> proportions;
-    private String oddGroupName;
+    private OddGroupVo oddGroupVo;
     private List<MemberVo> memberVos;
     private DataDictionaryVo liushui;
     private DataDictionaryVo yinkui;
@@ -35,7 +35,7 @@ public class HandicapVo {
         // 设置流水、盈亏的查询
         this.liushui = new DataDictionaryVo(obj.getLiushui());
         this.yinkui = new DataDictionaryVo(obj.getYingkui());
-        this.oddGroupName = obj.getOddGroup().getName();
+        this.oddGroupVo = new OddGroupVo(obj.getOddGroup());
         //设置门店用户
         if(null != obj.getMembers()){
             this.memberVos = MemberVo.toVo(new ArrayList<>(obj.getMembers()));
