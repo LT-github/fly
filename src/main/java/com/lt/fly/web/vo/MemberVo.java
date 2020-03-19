@@ -25,12 +25,6 @@ public class MemberVo {
 	// 昵称
 	private String nickname;
 	
-	// 用户真实姓名
-	private String realname;
-	
-	// 身份证号
-	private String idcard;
-	
 	// 用户手机号
 	private String mobile;
 
@@ -43,15 +37,12 @@ public class MemberVo {
 	// 最后登录时间
 	private Long lastLoginTime;
 	
-	// 余额
-	private Double balance;
-	
 	// 备注
 	private String remark;
-	
+
 	// 盘口Id
 	private Long HandicapId;
-	
+
 	//盘口名称
 	private String HandicapName;
 	
@@ -60,8 +51,10 @@ public class MemberVo {
 	}
 	public MemberVo(Member obj) {
 		BeanUtils.copyProperties(obj, this);
-		this.HandicapId = obj.getHandicap().getId();
-		this.HandicapName = obj.getHandicap().getName();
+		if (null != obj.getHandicap()) {
+			this.HandicapId = obj.getHandicap().getId();
+			this.HandicapName = obj.getHandicap().getName();
+		}
 	}
 	
 	public static List<MemberVo> toVo(List<Member> list){
