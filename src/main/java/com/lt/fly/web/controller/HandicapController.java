@@ -126,6 +126,8 @@ public class HandicapController extends BaseController {
                 item.setHandicap(objSave);
             }
             objSave.setMembers(new HashSet<>(members));
+        }else{
+            objSave.setMembers(null);
         }
         Handicap save = iHandicapRepository.save(objSave);
         return save;
