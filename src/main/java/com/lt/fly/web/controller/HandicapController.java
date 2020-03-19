@@ -118,7 +118,7 @@ public class HandicapController extends BaseController {
         }
         objSave.setOddGroup(oddGroup);
 
-        if (null != objSave.getMembers() || 0 !=objSave.getMembers().size()){
+        if (null != objSave.getMembers() && 0 !=objSave.getMembers().size()){
             for (Member item :
                     objSave.getMembers()) {
                 item.setHandicap(null);
