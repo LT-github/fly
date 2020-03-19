@@ -116,7 +116,6 @@ public class HandicapController extends BaseController {
                 throw new ClientErrorException("当前赔率组正在被"+oddGroup.getHandicap().getName()+"使用中");
             }
         }
-        oddGroup.setHandicap(objSave);
         objSave.setOddGroup(oddGroup);
 
         //设置会员
@@ -224,6 +223,7 @@ public class HandicapController extends BaseController {
             throw new ClientErrorException("该盘口还有会员,请移除后在操作!");
         handicap.setOddGroup(null);
         handicap.setProportions(null);
+        iHandicapRepository.delete(handicap);
         return HttpResult.success(null,handicap.getName() + "删除成功");
     }
 
