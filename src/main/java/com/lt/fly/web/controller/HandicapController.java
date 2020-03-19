@@ -118,6 +118,13 @@ public class HandicapController extends BaseController {
         }
         objSave.setOddGroup(oddGroup);
 
+        if (null != objSave.getMembers() || 0 !=objSave.getMembers().size()){
+            for (Member item :
+                    objSave.getMembers()) {
+                item.setHandicap(null);
+            }
+        }
+
         //设置会员
         if (null != obj.getMemberIds() && 0 != obj.getMemberIds().size()){
             List<Member> members = iMemberRepository.findAllById(obj.getMemberIds());
@@ -126,8 +133,6 @@ public class HandicapController extends BaseController {
                 item.setHandicap(objSave);
             }
             objSave.setMembers(new HashSet<>(members));
-        }else{
-            objSave.setMembers(null);
         }
         Handicap save = iHandicapRepository.save(objSave);
         return save;
