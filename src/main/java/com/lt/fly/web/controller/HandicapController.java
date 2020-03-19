@@ -116,6 +116,10 @@ public class HandicapController extends BaseController {
         //设置会员
         if (null != obj.getMemberIds() && 0 != obj.getMemberIds().size()){
             List<Member> members = iMemberRepository.findAllById(obj.getMemberIds());
+            for (Member item :
+                    members) {
+                item.setHandicap(objSave);
+            }
             objSave.setMembers(new HashSet<>(members));
         }
         Handicap save = iHandicapRepository.save(objSave);
