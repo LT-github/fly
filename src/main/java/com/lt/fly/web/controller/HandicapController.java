@@ -220,7 +220,7 @@ public class HandicapController extends BaseController {
     @UserLoginToken
     public HttpResult deleteHandicap(@PathVariable Long id) throws ClientErrorException {
         Handicap handicap = isNotNull(iHandicapRepository.findById(id),"删除的组id找不到实体");
-        if (null != handicap.getMembers() || 0 != handicap.getMembers().size())
+        if (null != handicap.getMembers() && 0 != handicap.getMembers().size())
             throw new ClientErrorException("该盘口还有会员,请移除后在操作!");
         handicap.setOddGroup(null);
         handicap.setProportions(null);
