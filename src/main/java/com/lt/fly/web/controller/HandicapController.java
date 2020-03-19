@@ -112,7 +112,7 @@ public class HandicapController extends BaseController {
         //设置赔率组
         OddGroup oddGroup = isNotNull(iOddGroupRepository.findById(obj.getOddGroupId()),"传递的参数没有实体");
         if (null != oddGroup.getHandicap()){
-            if (!objSave.getId().equals(oddGroup.getId())) {
+            if (!objSave.getId().equals(oddGroup.getHandicap().getId())) {
                 throw new ClientErrorException("当前赔率组正在被"+oddGroup.getHandicap().getName()+"使用中");
             }
         }
