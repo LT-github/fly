@@ -111,6 +111,7 @@ public class HandicapController extends BaseController {
 
         //设置赔率组
         OddGroup oddGroup = isNotNull(iOddGroupRepository.findById(obj.getOddGroupId()),"传递的参数没有实体");
+        oddGroup.setHandicap(objSave);
         objSave.setOddGroup(oddGroup);
 
         //设置会员
@@ -214,7 +215,7 @@ public class HandicapController extends BaseController {
     @UserLoginToken
     public HttpResult deleteHandicap(@PathVariable Long id) throws ClientErrorException {
         Handicap handicap = isNotNull(iHandicapRepository.findById(id),"删除的组id找不到实体");
-        if (null != handicap.getMembers() || !handicap.getMembers().isEmpty())
+        if (null != handicap.getMembers() || 0 != handicap.getMembers().size())
             throw new ClientErrorException("该盘口还有会员,请移除后在操作!");
         handicap.setOddGroup(null);
         handicap.setProportions(null);
