@@ -86,11 +86,12 @@ public class HandicapController extends BaseController {
             objSave = new Handicap();
             objSave.setId(idWorker.nextId());
             objSave.setCreateTime(System.currentTimeMillis());
+            objSave.setCreateUser(getLoginUser());
         }
 
         objSave.setName(obj.getName());
         objSave.setModifyTime(System.currentTimeMillis());
-
+        objSave.setModifyUser(getLoginUser());
         // 设置流水、盈亏
         DataDictionary liushui = checkDatadictionary(obj.getLiushuiId(),"liushui-query");
         objSave.setLiushui(liushui);
@@ -115,10 +116,7 @@ public class HandicapController extends BaseController {
         //设置会员
         if (null != obj.getMemberIds() && 0 != obj.getMemberIds().size()){
             List<Member> members = iMemberRepository.findAllById(obj.getMemberIds());
-            if (null != objSave.getMembers() || !objSave.getMembers().isEmpty()){
-                objSave.getMembers().addAll(members);
-            }else
-                objSave.setMembers(new HashSet<>(members));
+            objSave.setMembers(new HashSet<>(members));
         }
         Handicap save = iHandicapRepository.save(objSave);
         return save;
@@ -225,7 +223,7 @@ public class HandicapController extends BaseController {
      * @return
      * @throws ClientErrorException
      */
-    @RequiredPermission(value="findGroupById")
+//    @RequiredPermission(value="findGroupById")
     @GetMapping("/{id}")
     public HttpResult<HandicapVo> findById(@PathVariable Long id) throws ClientErrorException{
 
