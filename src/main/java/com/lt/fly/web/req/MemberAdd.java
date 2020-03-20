@@ -17,13 +17,11 @@ public class MemberAdd {
 	@NotNull(message = "密码不能为空")
 	@Pattern(regexp = RegexUtil.CHECK_PASSWORD,message = "密码必须是6-20位的字母、数字、下划线")
 	private String password;
-	@NotNull(message = "状态不能为空")
-	private Integer status;
-	@NotNull(message = "盘口id不能为空")
-	private Long handicapId;
 	@NotNull(message = "电话号码不能为空")
 	private String mobile;
 
-	private String remark;
 	private String nickname;
+
+	//推荐码
+	private String referralCode;
 }

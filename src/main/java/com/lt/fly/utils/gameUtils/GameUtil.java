@@ -1,5 +1,6 @@
 package com.lt.fly.utils.gameUtils;
 
+import com.lt.fly.utils.Arith;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -34,13 +35,13 @@ public class GameUtil {
 			if(isStartWithNumber(gameContent)) {
 				single = check(gameContent.substring(3));
 			}
-			money = single*10;
+			money = Arith.mul(single,10);
 		}
 		else if(gameContent.contains("翻")) {
 			if(isStartWithNumber(gameContent)) {
 				single = check(gameContent.substring(3));
 			}
-			money = single*3;
+			money = Arith.mul(single,3);
 		}else if(gameContent.contains("平")) {
 			if(isStartWithNumber(gameContent)) {
 				single = check(gameContent.substring(3));

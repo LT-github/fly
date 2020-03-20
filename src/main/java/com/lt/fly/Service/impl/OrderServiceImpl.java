@@ -70,7 +70,7 @@ public class OrderServiceImpl extends BaseService implements IOrderService {
                 iOrderRepository.updateById(map.get(key).getLotteryResult(),map.get(key).getBattleResult(),map.get(key).getExchangeDetail(),key);
                 if (map.get(key).getLotteryResult().equals(GlobalConstant.LotteryResult.WIN.getCode())) {
                     Order order = isNotNull(iOrderRepository.findById(map.get(key).getId()),"传递得到参数没有实体类");
-                    iFinanceService.add((Member)order.getCreateUser(),map.get(key).getBattleResult(),null, GlobalConstant.FananceType.BET_WIN);
+                    iFinanceService.add(order.getCreateUser(),map.get(key).getBattleResult(),null, GlobalConstant.FananceType.BET_WIN);
                 }
 
                 issueNumberSet.add(map.get(key).getIssueNumber());
@@ -92,13 +92,15 @@ public class OrderServiceImpl extends BaseService implements IOrderService {
     @Override
     public BetReportResp findReport(BetReportFind query) throws ClientErrorException {
         PageRequest pageRequest = PageRequest.of(query.getPage(), query.getSize());//借助计算起始位置
-        long total=iOrderRepository.countByReport(query.getStart(),query.getEnd());// 计算数据总条数
-        List<Object[]> records=iOrderRepository.findReport(query.getStart(),query.getEnd(),pageRequest.getOffset(),pageRequest.getPageSize());// 获取分页数据
+        long total=iFinanceRepository.countByReport(query.getStart(),query.getEnd());// 计算数据总条数
+        List<Object[]> records=iFinanceRepository.findReport(query.getStart(),query.getEnd(),pageRequest.getOffset(),pageRequest.getPageSize());// 获取分页数据
         int totalPageNum = (int)(total  +  query.getSize()  - 1) / query.getSize();//计算总页数
 
         BetReportResp betReportResp = new BetReportResp(query.getPage(), query.getSize(), totalPageNum, total, records);
 
         List<BetReportVo> betReportVos = new ArrayList<>();
+
+
         for (Object[] objArr:
                 records) {
             BetReportVo betReportVo = new BetReportVo();
@@ -124,6 +126,9 @@ public class OrderServiceImpl extends BaseService implements IOrderService {
             //分红
             betReportVo.setFengHong(Double.parseDouble(objArr[7].toString()));
             betReportResp.setFenHongTotal(Arith.add(betReportResp.getFenHongTotal(),Double.parseDouble(objArr[7].toString())));
+            //战果
+            betReportVo.setWinMoney(Double.parseDouble(objArr[8].toString()));
+            betReportResp.setWinMoneyTotal(Arith.add(betReportResp.getWinMoneyTotal(),Double.parseDouble(objArr[8].toString())));
 
             betReportVos.add(betReportVo);
         }

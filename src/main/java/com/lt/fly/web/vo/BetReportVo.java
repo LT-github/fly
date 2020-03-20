@@ -14,6 +14,8 @@ public class BetReportVo {
     private Integer betCount;
     //飞单流水
     private Double water;
+    //飞单战果
+    private Double winMoney;
     //飞单盈亏
     private Double betResult;
     //上分数
@@ -24,20 +26,4 @@ public class BetReportVo {
     private Double huiShui;
     //分红
     private Double fengHong;
-
-    public BetReportVo() {
-        super();
-    }
-
-//    public BetReportVo(Order order,Finance finance) {
-////        this.dateTime = dateTime;
-////        this.issueCount = issueCount;
-////        this.betCount = betCount;
-////        this.rechargeCount = rechargeCount;
-////        this.descendCount = descendCount;
-////        this.huiShui = huiShui;
-////        this.fengHong = fengHong;
-////    }
-
-
 }

@@ -7,12 +7,12 @@ import lombok.Setter;
 @Setter
 public class GameProperty {
 	
-	private Integer count;
-	private Double money;
-	private Double single;
+	private int count;
+	private double money;
+	private double single;
 	
 	
-	public GameProperty(Integer count, Double money, Double single) {
+	public GameProperty(int count, double money, double single) {
 		super();
 		this.count = count;
 		this.money = money;

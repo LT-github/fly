@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/odd")
@@ -52,6 +53,13 @@ public class OddController extends BaseController {
     public HttpResult addOdd(@RequestBody @Validated OddAdd req, BindingResult bindingResult) throws ClientErrorException {
         this.paramsValid(bindingResult);
         BetGroup betGroup = isNotNull(iBetGroupRepository.findById(req.getBetGroupId()),"传递的参数没有实体");
+        Set<Odd> odds = betGroup.getOdds();
+        for (Odd item :
+                odds) {
+            if (item.getOddValue().equals(req.getOddValue())){
+                throw new ClientErrorException("该赔率组已经存在赔率值为'"+req.getOddValue()+"'的赔率,请勿重复添加");
+            }
+        }
         Odd odd = new Odd();
         odd.setId(idWorker.nextId());
         odd.setBetGroup(betGroup);

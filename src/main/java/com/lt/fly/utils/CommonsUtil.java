@@ -13,4 +13,10 @@ public class CommonsUtil {
     //流水查询
     public static final Long LIUSHUI_QUERY = 3519791229519872l;
 
+
+    //分红结算时间(以小时计)
+    public static final Long FENHONG_TIME = 3647003743553536l;
+
+    //退水结算时间(以小时计)
+    public static final Long TUISHUI_TIME = 3647007629264896l;
 }

@@ -18,6 +18,8 @@ public class BetReportResp<T, L> extends PageResp<T, L>{
     private Integer betCountTotal = 0;
     //总飞单金额
     private Double waterTotal = 0.0;
+    //总战果
+    private Double winMoneyTotal = 0.0;
     //总盈亏
     private Double betResultTotal = 0.0;
     //总上分

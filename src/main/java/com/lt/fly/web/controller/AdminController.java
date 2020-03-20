@@ -129,6 +129,8 @@ public class AdminController extends BaseController {
         if(id != null) {
             admin = isNotNull(iAdminRepository.findById(id),"修改的实体不存在");
             BeanUtils.copyProperties(obj, admin);
+            admin.setCreateTime(System.currentTimeMillis());
+            admin.setCreateUser(getLoginUser());
         }else {
             AdminAdd objAdd = (AdminAdd) obj;
             admin = new Admin();
@@ -138,6 +140,10 @@ public class AdminController extends BaseController {
             admin.setCreateUser(this.getLoginUser());
             BeanUtils.copyProperties(objAdd, admin);
         }
+        admin.setModifyTime(System.currentTimeMillis());
+        admin.setModifyUser(getLoginUser());
+
+
         //清空角色列表
         admin.getRoles().clear();
         // 封装角色

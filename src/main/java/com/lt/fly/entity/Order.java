@@ -43,7 +43,7 @@ public class Order extends BasicEntity{
 	@Column(name = "total_money")
 	private Double totalMoney;
 
-	// 开奖结果 0=赢 1=输
+	// 开奖结果 0=输 1=赢
 	@Column(name = "lottery_result")
 	private Integer lotteryResult;
 

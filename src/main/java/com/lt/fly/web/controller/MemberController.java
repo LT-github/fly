@@ -11,10 +11,12 @@ import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.utils.GlobalConstant;
 import com.lt.fly.utils.HttpResult;
 import com.lt.fly.utils.IdWorker;
-import com.lt.fly.web.req.MemberAdd;
-import com.lt.fly.web.req.MemberEdit;
 import com.lt.fly.web.query.MemberFind;
+import com.lt.fly.web.req.MemberAdd;
+import com.lt.fly.web.query.MemberFindPage;
+import com.lt.fly.web.req.MemberEditByClient;
 import com.lt.fly.web.resp.PageResp;
+import com.lt.fly.web.vo.MemberFinanceVo;
 import com.lt.fly.web.vo.MemberVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,19 +58,8 @@ public class MemberController extends BaseController{
 										  BindingResult bindingResult) throws ClientErrorException {
 		this.paramsValid(bindingResult);
 		
+
 		Member member = new Member();
-		member.setId(idWorker.nextId());
-		member.setCreateTime(System.currentTimeMillis());
-		member.setCreateUser(this.getLoginUser());
-		BeanUtils.copyProperties(obj, member);
-		if (null == obj.getNickname())
-			member.setNickname(obj.getUsername());
-
-		Handicap handicap = isNotNull(iHandicapRepository.findById(obj.getHandicapId()),"组id查询不到实体");
-		member.setHandicap(handicap);
-
-		iMemberRepository.save(member);
-		
 		return HttpResult.success(new MemberVo(member), "添加成功");
 	}
 	
@@ -82,7 +73,7 @@ public class MemberController extends BaseController{
 	 */
 	@PutMapping("/{id}")
 	@UserLoginToken
-	public HttpResult<MemberVo> editStore(@PathVariable Long id , @RequestBody @Validated MemberEdit obj ,
+	public HttpResult<MemberVo> editStore(@PathVariable Long id , @RequestBody @Validated MemberEditByClient obj ,
 			BindingResult bindingResult) throws ClientErrorException{
 		this.paramsValid(bindingResult);
 		
@@ -91,8 +82,17 @@ public class MemberController extends BaseController{
 		if (null == obj.getNickname())
 			objEdit.setNickname(objEdit.getNickname());
 
-		Handicap handicap = isNotNull(iHandicapRepository.findById(obj.getHandicapId()),"组id查询不到实体");
-		objEdit.setHandicap(handicap);
+
+		if (null != obj.getHandicapId()) {
+			Handicap handicap = isNotNull(iHandicapRepository.findById(obj.getHandicapId()),"组id查询不到实体");
+			objEdit.setHandicap(handicap);
+			objEdit.setIsHaveHandicap(GlobalConstant.IsHaveHandicap.YSE.getCode());
+		}else {
+			objEdit.setIsHaveHandicap(GlobalConstant.IsHaveHandicap.NOT.getCode());
+		}
+
+		objEdit.setModifyUser(getLoginUser());
+		objEdit.setModifyTime(System.currentTimeMillis());
 
 		iMemberRepository.save(objEdit);
 		
@@ -106,11 +106,16 @@ public class MemberController extends BaseController{
 	 */
 	@GetMapping
 	@UserLoginToken
-	public HttpResult<PageResp<MemberVo, Member>> findAllPage(MemberFind query){
-		
+	public HttpResult findAllPage(MemberFindPage query){
+
+		if (query.getHandicapId().equals(000000l)){
+			query.setHandicapId(null);
+			query.setIsHaveHandicap(GlobalConstant.IsHaveHandicap.NOT.getCode());
+		}
+
 		Page<Member> page = iMemberRepository.findAll(query);
 		PageResp<MemberVo, Member> prp = new PageResp<MemberVo, Member>(page);
-		prp.setData(MemberVo.toVo(page.getContent()));
+		prp.setData(MemberFinanceVo.toVo(page.getContent()));
 
 		return HttpResult.success(prp, "查询成功");
 	}
@@ -119,10 +124,14 @@ public class MemberController extends BaseController{
 	 * 查询所有会员,不分页
 	 * @return
 	 */
-	@GetMapping("/list")
+	@GetMapping("/all")
 	@UserLoginToken
-	public HttpResult<List<MemberVo>> findAllByList(){
-		List<Member> list = iMemberRepository.findAll();
+	public HttpResult findAllByList(MemberFind query){
+		if (query.getHandicapId().equals(000000l)){
+			query.setHandicapId(null);
+			query.setIsHaveHandicap(GlobalConstant.IsHaveHandicap.NOT.getCode());
+		}
+		List<Member> list = iMemberRepository.findAll(query);
 		return HttpResult.success(MemberVo.toVo(list), "查询成功");
 	}
 	

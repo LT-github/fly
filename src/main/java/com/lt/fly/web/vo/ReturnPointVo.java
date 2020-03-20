@@ -1,4 +1,4 @@
-package com.lt.fly.web.resp;
+package com.lt.fly.web.vo;
 
 import com.lt.fly.entity.Member;
 import lombok.Data;
@@ -14,4 +14,7 @@ public class ReturnPointVo {
 
     private double returnMoney;
 
+    private Long memberId;
+
+    private Long time;
 }

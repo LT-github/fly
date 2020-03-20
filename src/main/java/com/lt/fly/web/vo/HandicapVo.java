@@ -4,6 +4,7 @@ import com.lt.fly.entity.Handicap;
 import com.lt.fly.entity.Member;
 import com.lt.fly.entity.Odd;
 import com.lt.fly.entity.Proportion;
+import com.lt.fly.utils.GlobalConstant;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.catalina.Store;
@@ -47,6 +48,9 @@ public class HandicapVo {
         for(Handicap item:list) {
             handicapVos.add(new HandicapVo(item));
         }
+        HandicapVo handicapVo = new HandicapVo();
+        handicapVo.setId(GlobalConstant.NoMemberHandicap.id.getCode());
+        handicapVo.setName("无盘口");
         return handicapVos;
     }
 }

@@ -12,6 +12,7 @@ import com.lt.fly.entity.*;
 import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.jpa.support.DataQueryObject;
 import com.lt.fly.jpa.support.DataQueryObjectPage;
+import com.lt.fly.utils.GlobalConstant;
 import com.lt.fly.utils.HttpResult;
 import com.lt.fly.utils.IdWorker;
 import com.lt.fly.web.query.DataDictionaryFind;
@@ -122,6 +123,7 @@ public class HandicapController extends BaseController {
             for (Member item :
                     objSave.getMembers()) {
                 item.setHandicap(null);
+                item.setIsHaveHandicap(GlobalConstant.IsHaveHandicap.NOT.getCode());
             }
         }
 

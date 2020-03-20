@@ -1,17 +1,10 @@
 package com.lt.fly.Service.impl;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
-
 import com.lt.fly.dao.IMemberRepository;
 import com.lt.fly.entity.Member;
-import com.lt.fly.entity.Order;
-import com.lt.fly.utils.Arith;
 import com.lt.fly.utils.GlobalConstant;
-import com.lt.fly.utils.MyBeanUtils;
 import com.lt.fly.web.query.FinanceFind;
-import com.lt.fly.web.req.*;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.vo.FinanceVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +20,6 @@ import com.lt.fly.entity.Finance;
 import com.lt.fly.entity.User;
 import com.lt.fly.exception.ClientErrorException;
 
-import static com.lt.fly.utils.GlobalConstant.FananceType.*;
 
 @Service
 public class FinanceServiceImpl extends BaseService implements IFinanceService {
@@ -109,50 +101,6 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 		return sum.doubleValue();
 	}
 	
-	/**
-	 * 计算某个用户,某个时间点余额
-	 */
-	@Override
-	public Double reckonBalanceByTime(FindBlanceBytime req) throws ClientErrorException {
-		Optional<User> op = iUserRepository.findById(req.getMemberId());
-		if(!op.isPresent())
-			throw new ClientErrorException("该用户不存在");
-		Double balance = iFinanceRepository.findMemberBlanceByTime(req.getMemberId(), req.getAfter());
-		return balance;
-	}
-
-	@Override
-	public void judgeAuditFinance(JudgeAuditFinanceReq req) throws ClientErrorException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/**
-	 * 查询某个会员，某个时间段的流水
-	 */
-	@Override
-	public Double findLiushuiMemberByTime(FindLiushuiReq req) throws ClientErrorException {
-		
-		Optional<User> op = iUserRepository.findById(req.getMemberId());
-		if(!op.isPresent())
-			throw new ClientErrorException("该用户不存在");
-		Double liushui = iOrderRepository.findLiushuiByCreateTime(req.getBefore(), req.getAfter(), req.getMemberId());
-		
-		return liushui;
-	}
-	/**
-	 * 查询某个会员，某个时间段的盈亏
-	 */
-	@Override
-	public Double findYingkuiMemberByTime(FindLiushuiReq req) throws ClientErrorException {
-		Optional<User> op = iUserRepository.findById(req.getMemberId());
-		if(!op.isPresent())
-			throw new ClientErrorException("该用户不存在");
-		Double yingkui = iOrderRepository.findYingkuiByCreateTime(req.getBefore(), req.getAfter(), req.getMemberId());
-		
-		return yingkui;
-	}
-
 	@Override
 	public PageResp<FinanceVo, Finance> findAll(FinanceFind query) {
 		Page<Finance> page = iFinanceRepository.findAll(query);
@@ -160,28 +108,4 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 		resp.setData(FinanceVo.tovo(page.getContent()));
 		return resp;
 	}
-
-	@Override
-	public double moneyForReturn(Long start, Long end, Member member, Integer type) throws ClientErrorException {
-		//某时间段的某会员的所有财务信息
-		List<Finance> finances = iFinanceRepository.findByCreateTimeBetweenAndCreateUser(start,end,member);
-
-		double money=0;
-		for (Finance item :
-				finances) {
-			if (item.getType().equals(type)){
-				money = Arith.add(money,item.getMoney());
-			}
-		}
-		return money;
-	}
-
-	@Override
-	public Finance findNew(Integer type, Long memberId) {
-		//从缓存中取出
-
-		return null;
-	}
-
-
 }

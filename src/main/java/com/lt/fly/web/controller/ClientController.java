@@ -62,9 +62,19 @@ public class ClientController extends BaseController{
     private OpenDataISV openData;
 
 
+    /**
+     * 登录
+     * @param req
+     * @return
+     * @throws ClientErrorException
+     */
     @PostMapping("/login")
     public HttpResult login(@RequestBody UserLogin req) throws ClientErrorException{
         return HttpResult.success(iUserService.login(req),"登录成功");
+    }
+
+    public HttpResult register()throws ClientErrorException{
+        return HttpResult.success(null,"注册成功!");
     }
 
 
@@ -112,9 +122,6 @@ public class ClientController extends BaseController{
             GlobalConstant.NewData.ISSUE_NUMBER.setData(issueNumber);
         }
 
-        double totalBet = 0;
-        double totalReturn = 0;
-
         List<Order> orders = new ArrayList<>();
         //生成注单
         for (OrderAdd item : reqs) {
@@ -159,11 +166,6 @@ public class ClientController extends BaseController{
             if(balance<gp.getMoney()) {
                 throw new ClientErrorException("余额不足,请充值!");
             }
-            balance = Arith.sub(balance,gp.getMoney())+gp.getMoney()*proportion;
-            //下注总额
-            totalBet += gp.getMoney();
-            //总返点
-            totalReturn +=gp.getMoney()*proportion;
 
             //补全order基本信息
             order.setId(idWorker.nextId());
@@ -176,13 +178,13 @@ public class ClientController extends BaseController{
             iFinanceService.add(member,gp.getMoney(),balance, BET);
 
             //生成返点财务记录
-            balance = Arith.sub(balance,gp.getMoney());
-            iFinanceService.add(member,Arith.mul(gp.getMoney(),proportion),balance, TIMELY_LIUSHUI);
-
-
-
+            iFinanceService.add(member,Arith.mul(gp.getMoney(),proportion),Arith.sub(balance,gp.getMoney()), TIMELY_LIUSHUI);
             orders.add(order);
+
+            balance = Arith.sub(balance,gp.getMoney())+gp.getMoney()*proportion;
         }
+        iOrderRepository.saveAll(orders);
+
         //是否封盘
         if(!GlobalConstant.Bet.SWITCH.isFlag())
             throw new ClientErrorException("已封盘!");

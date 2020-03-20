@@ -1,37 +1,28 @@
 package com.lt.fly.web.controller;
 
 import com.lt.fly.annotation.UserLoginToken;
-import com.lt.fly.dao.IMemberRepository;
-import com.lt.fly.dao.IOrderRepository;
-import com.lt.fly.entity.Handicap;
-import com.lt.fly.entity.Member;
-import com.lt.fly.entity.Proportion;
+import com.lt.fly.dao.*;
+import com.lt.fly.entity.*;
 import com.lt.fly.utils.*;
 import com.lt.fly.web.query.FinanceFind;
-import com.lt.fly.web.query.ReturnPointFind;
-import com.lt.fly.web.req.FinanceAdd;
+import com.lt.fly.web.query.ReturnPointFindPage;
 import com.lt.fly.web.req.ReturnSettle;
 import com.lt.fly.web.resp.PageResp;
-import com.lt.fly.web.resp.ReturnPointVo;
+import com.lt.fly.web.vo.ReturnPointVo;
 import com.lt.fly.web.vo.FinanceVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.lt.fly.Service.IFinanceService;
-import com.lt.fly.dao.IFinanceRepository;
-import com.lt.fly.dao.IUserRepository;
-import com.lt.fly.entity.Finance;
 import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.web.req.JudgeAuditFinanceReq;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-import static com.lt.fly.utils.GlobalConstant.FananceType.RANGE_LIUSHUI;
-import static com.lt.fly.utils.GlobalConstant.FananceType.RANGE_YINGLI;
+import static com.lt.fly.utils.GlobalConstant.FananceType.*;
 
 
 @RestController
@@ -41,10 +32,7 @@ public class FinanceController extends BaseController{
 	
 	@Autowired
 	private IFinanceRepository iFinanceRepository;
-	@Autowired
-    private IdWorker idWorker;
-	@Autowired
-	private IUserRepository userRepository;
+
 	@Autowired
 	private IFinanceService iFinanceService;
 
@@ -52,49 +40,8 @@ public class FinanceController extends BaseController{
 	private IMemberRepository iMemberRepository;
 
 	@Autowired
-	private IOrderRepository iOrderRepository;
+	private ISettingsRepository iSettingsRepository;
 
-	
-
-//	/**
-////	 * 查询某个用户的余额
-////	 */
-////	@PostMapping("/lookupUserBalance/{userId}")
-////	public HttpResult<Object> reckonBalance(@PathVariable Long userId) throws ClientErrorException {
-////
-////		Double balance = financeService.reckonBalance(userId);
-////
-////
-////		return HttpResult.success(balance,"余额查询成功");
-////	}
-////	@PostMapping("/reckonBalanceByTime")
-////	public HttpResult<Double> reckonBalanceByTime(@RequestBody @Validated FindBlanceBytime  req) throws ClientErrorException{
-////		Double balance = financeService.reckonBalanceByTime(req);
-////
-////		return  HttpResult.success(balance,"余额查询成功");
-////	}
-
-//	/**
-//	 * 客户端请求，生成用户充值订单
-//	 */
-//	@PostMapping("/addAuditMember")
-//	public HttpResult<Object> addAuditMember(@RequestBody @Validated AuditFinanceReq req) throws ClientErrorException {
-//
-////		Finance finance = new Finance();
-////		BeanUtils.copyProperties(req, finance);
-////		finance.setStatus(0);
-////		finance.setCreateTime(System.currentTimeMillis());
-////		finance.setModifyTime(System.currentTimeMillis());
-////		finance.setModifyUser(this.getLoginUser());
-////		finance.setId(idWorker.nextId());
-////		finance.setCreateUser(this.getLoginUser());
-////		finance.setAuditType(1);
-////		if(req.getType()!=1)
-////			throw new ClientErrorException("订单类型异常");
-////		finance.setCountType(1);
-////		financeRepository.save(finance);
-////		return HttpResult.success(null,"生成充值财务订单成功！");
-//	}
 	/**
 	 * 审核
 	 * @param req
@@ -113,25 +60,6 @@ public class FinanceController extends BaseController{
 		iFinanceRepository.save(finance);
 		return HttpResult.success(new FinanceVo(finance),"审核成功！");
 	}
-//	/**
-//	 * 根据条件分页查询所有充值或其他订单
-//	 * @return
-//	 * @throws ClientErrorException
-//	 */
-//	@PostMapping("/findAllAuditFinance")
-//	public HttpResult<PageResp<AuditFindVo,Finance>> findAllAuditFinance(@RequestBody AuditFinanceQ req) throws ClientErrorException{
-//
-//		Page<Finance> page = financeRepository.findAll(req);
-//
-//		if(page.getContent()==null || page.getContent().isEmpty())
-//			throw new ClientErrorException("暂时无数据");
-//		PageResp<AuditFindVo,Finance> resp = new PageResp<AuditFindVo,Finance>(page);
-//		resp.setData(AuditFindVo.toVo(page.getContent()));
-//
-//		return HttpResult.success(resp, "查询成功");
-//
-//
-//	}
 
 	/**
 	 * 财务列表
@@ -145,29 +73,14 @@ public class FinanceController extends BaseController{
 		return HttpResult.success(iFinanceService.findAll(query),"查询财务列表成功!");
 	}
 
-
-//	@PostMapping("/findLiushuiMemberByTime")
-//	public HttpResult<Double> findLiushuiMemberByTime(@RequestBody @Validated FindLiushuiReq req) throws ClientErrorException{
-//
-//		Double liushui = IFinanceService.findLiushuiMemberByTime(req);
-//
-//		return HttpResult.success(liushui,"查询流水成功");
-//	}
-//	@PostMapping("/findYingkuiMemberByTime")
-//	public HttpResult<Double> findYingkuiMemberByTime(@RequestBody @Validated FindLiushuiReq req) throws ClientErrorException{
-//
-//		Double yingkui = financeService.findYingkuiMemberByTime(req);
-//		return HttpResult.success(yingkui,"查询盈亏成功");
-//	}
-
 	/**
-	 * 待分红与回水列表
+	 * 可分红与回水列表
 	 * @return
 	 * @throws ClientErrorException
 	 */
 	@GetMapping("return")
 	@UserLoginToken
-	public HttpResult willReturnFind(ReturnPointFind query) throws ClientErrorException{
+	public HttpResult canReturnFind(ReturnPointFindPage query) throws ClientErrorException{
 
 		if (!query.getType().equals(RANGE_LIUSHUI.getCode())
 		&& !query.getType().equals(GlobalConstant.FananceType.RANGE_YINGLI.getCode())){
@@ -178,62 +91,40 @@ public class FinanceController extends BaseController{
 		Page<Member> page = iMemberRepository.findAll(query);
 		PageResp resp = new PageResp(page);
 		List<ReturnPointVo> list = new ArrayList<>();
+		List<ReturnPointVo> allAist = new ArrayList<>();
 		for (Member item :
 				page.getContent()) {
-
-			ReturnPointVo vo = new ReturnPointVo();
-			double returnPoint = 0;
-
-			Double money = null;
-			//这次待结算的流水
-			Finance finance = iFinanceRepository.findNew(query.getType(),item.getId());
-			if (null == finance) {
-				money = iOrderRepository.findLiushuiByCreateTime(item.getId());
-			}else {
-				money = iOrderRepository.findLiushuiByCreateTime(finance.getCreateTime(),System.currentTimeMillis(),item.getId());
+			ReturnPointVo vo = getReturnPointVo(query.getType(), item);
+			if (vo.getTime().equals(0l) && vo.getMoney()>0) {
+				list.add(vo);
 			}
-
-			double returnMoney = money==null?0:money;
-			//找到盘口
-			Handicap handicap = item.getHandicap();
-			Set<Proportion> proportions = handicap.getProportions();
-			for (Proportion proportion :
-					proportions) {
-				if (query.getType().equals(RANGE_LIUSHUI.getCode())) {
-					if (proportion.getReturnPoint().getId().equals(CommonsUtil.RANGE_LIUSHUI_RETURN_POINT)) {
-						String[] range = proportion.getRanges().split("-");
-						if (returnMoney>Double.parseDouble(range[0]) && returnMoney<Double.parseDouble(range[1])) {
-							returnPoint = Arith.div(proportion.getProportionVal(),100,2);
-						}
-					}
-				}else{
-					if (proportion.getReturnPoint().getId().equals(CommonsUtil.RANGE_YINGLI_RETURN_POINT)) {
-						String[] range = proportion.getRanges().split("-");
-						if (returnMoney>Double.parseDouble(range[0]) && returnMoney<Double.parseDouble(range[1])) {
-							returnPoint = Arith.div(proportion.getProportionVal(),100,2);
-						}
-					}
-				}
-
-			}
-
-			vo.setMoney(returnMoney);
-			vo.setUsername(item.getUsername());
-			vo.setNikename(item.getNickname());
-			vo.setReturnMoney(Arith.mul(returnMoney,returnPoint));
-			list.add(vo);
+			allAist.add(vo);
 		}
 
-		resp.setData(list);
+		if (query.getFindStatus()){
+			resp.setData(allAist);
+		}else {
+			resp.setData(list);
+		}
 		return HttpResult.success(resp,"获取待结算列表成功!");
 	}
 
+
+
+
+	/**
+	 * 结算返点
+	 * @param memberId
+	 * @param req
+	 * @param bindingResult
+	 * @return
+	 * @throws ClientErrorException
+	 */
 	@PutMapping("/return/{memberId}")
 	@UserLoginToken
-	HttpResult settle(@PathVariable Long memberId,@RequestBody ReturnSettle req) throws ClientErrorException{
-		Member member = isNotNull(iMemberRepository.findById(memberId),"无此用户");
+	HttpResult settle(@PathVariable Long memberId, @RequestBody @Validated ReturnSettle req, BindingResult bindingResult) throws ClientErrorException{
+		this.paramsValid(bindingResult);
 		GlobalConstant.FananceType type = null;
-
 		if (req.getType().equals(RANGE_LIUSHUI.getCode())) {
 			type = RANGE_LIUSHUI;
 		}
@@ -241,7 +132,15 @@ public class FinanceController extends BaseController{
 			type = RANGE_YINGLI;
 		}
 
-		Finance finance = iFinanceService.add(member,req.getMoney(),null, type);
+		Long time = getReturnTime(memberId,req.getType());
+		if (!time.equals(0l)){
+			throw new ClientErrorException("据下次结算"+type.getMsg()+"还有"+DateUtil.formatDateTime(time));
+		}
+
+		Member member = isNotNull(iMemberRepository.findById(memberId),"无此用户");
+
+		ReturnPointVo vo = getReturnPointVo(req.getType(), member);
+		Finance finance = iFinanceService.add(member,vo.getReturnMoney(),iFinanceService.reckonBalance(memberId), type);
 
 		finance.setModifyUser(getLoginUser());
 		finance.setModifyTime(System.currentTimeMillis());
@@ -250,5 +149,98 @@ public class FinanceController extends BaseController{
 
 		return HttpResult.success(new FinanceVo(finance),"结算成功");
 	}
-	
+
+
+	/**
+	 * 用户的返点Vo
+	 */
+	private ReturnPointVo getReturnPointVo(Integer type, Member item) throws ClientErrorException {
+
+		ReturnPointVo vo = new ReturnPointVo();
+		double returnPoint = 0;
+
+		double money = 0;
+
+		List<Finance> finances = null;
+		//上次结算财务记录
+		Finance last = iFinanceRepository.findNew(type,item.getId());
+		if (null != last){
+			finances = iFinanceRepository.findByCreateUserAndCreateTimeAfter(item,last.getCreateTime());
+		}else {
+			finances = iFinanceRepository.findByCreateUser(item);
+		}
+		if (null != finances && 0 != finances.size()){
+			for (Finance finance :
+					finances) {
+				if (finance.getType().equals(BET.getCode())) {
+					money = Arith.add(money,finance.getMoney());
+				}
+				if (type.equals(RANGE_YINGLI.getCode())) {
+					//分红
+					if (finance.getType().equals(BET_WIN.getCode())){
+						money = Arith.sub(money,finance.getMoney());
+					}
+				}
+				if (finance.getType().equals(CANCLE.getCode())){
+					money = Arith.sub(money,finance.getMoney());
+				}
+			}
+		}
+
+		//找到盘口
+		Handicap handicap = item.getHandicap();
+		Set<Proportion> proportions = handicap.getProportions();
+		for (Proportion proportion :
+				proportions) {
+			if (type.equals(RANGE_LIUSHUI.getCode())) {
+				if (proportion.getReturnPoint().getId().equals(CommonsUtil.RANGE_LIUSHUI_RETURN_POINT)) {
+					String[] range = proportion.getRanges().split("-");
+					if (money>Double.parseDouble(range[0]) && money<Double.parseDouble(range[1])) {
+						returnPoint = Arith.div(proportion.getProportionVal(),100,2);
+					}
+				}
+			}else{
+				if (proportion.getReturnPoint().getId().equals(CommonsUtil.RANGE_YINGLI_RETURN_POINT)) {
+					String[] range = proportion.getRanges().split("-");
+					if (money>Double.parseDouble(range[0]) && money<Double.parseDouble(range[1])) {
+						returnPoint = Arith.div(proportion.getProportionVal(),100,2);
+					}
+				}
+			}
+
+		}
+
+		vo.setMoney(money);
+		vo.setUsername(item.getUsername());
+		vo.setNikename(item.getNickname());
+		vo.setReturnMoney(Arith.mul(money,returnPoint));
+		vo.setMemberId(item.getId());
+		vo.setTime(getReturnTime(item.getId(),type));
+		return vo;
+	}
+
+	/**
+	 * 获取待结算剩余时间
+	 */
+	private Long getReturnTime(Long memberId,Integer type) throws ClientErrorException {
+		Settings settings = null;
+		if (type.equals(RANGE_LIUSHUI.getCode())) {
+			settings = isNotNull(iSettingsRepository.findById(CommonsUtil.TUISHUI_TIME),"结算剩余时间获取错误");
+		}else if (type.equals(RANGE_YINGLI.getCode())){
+			settings = isNotNull(iSettingsRepository.findById(CommonsUtil.FENHONG_TIME),"结算剩余时间获取错误");
+		}else {
+			throw new ClientErrorException("结算剩余时间获取错误");
+		}
+		String hour = settings.getDataValue();
+		long time = Long.parseLong(hour)*60*60*1000;
+
+		Finance last = iFinanceRepository.findNew(type,memberId);
+		if (null != last){
+			long difference = System.currentTimeMillis()-last.getCreateTime();
+			if (time-difference>0) {
+				return time-difference;
+			}
+		}
+		return 0l;
+	}
 }

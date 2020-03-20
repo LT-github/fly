@@ -70,8 +70,8 @@ public class GlobalConstant {
 	//注单开奖结果
 	@Getter
 	public enum LotteryResult{
-		LOSE(1,"输"),
-		WIN(0,"赢");
+		LOSE(0,"输"),
+		WIN(1,"赢");
 		
 		private int code;
 
@@ -113,14 +113,16 @@ public class GlobalConstant {
 	//财务类型
 	@Getter
 	public enum FananceType{
-		RECHARGE(1,"充值"),
-		BET(2,"投注"),
+		RECHARGE(1,"上分"),
+		BET(2,"下注"),
 		CANCLE(3,"撤销"),
-		TIMELY_LIUSHUI(4,"实时流水返点"),
-		RANGE_LIUSHUI(5,"区间流水返点"),
-		RANGE_YINGLI(6,"区间盈利返点"),
+		TIMELY_LIUSHUI(4,"实时流水"),
+		RANGE_LIUSHUI(5,"区间回水"),
+		RANGE_YINGLI(6,"区间分红"),
 		DESCEND(7,"下分"),
-		BET_WIN(8,"下注获胜");
+		BET_WIN(8,"下注获胜"),
+		RECOMMEND_LIUSHUI(9,"推手区间回水"),
+		RECOMMEND_YINGLI(10,"推手区间盈利");
 
 
 		private int code;
@@ -161,5 +163,45 @@ public class GlobalConstant {
 			this.message = message;
 		}
 
+	}
+
+
+	@Getter
+	public enum ReturnFind{
+		ALL(1,"所有"),
+		NOT_HAVE(2,"未结算");
+		private int code;
+		private String msg;
+
+		ReturnFind(int code, String msg) {
+			this.code = code;
+			this.msg = msg;
+		}
+	}
+
+	//会员是否存在盘口中,0:不在, 1:在
+	@Getter
+	public enum IsHaveHandicap{
+		NOT(0,"不在"),
+		YSE(1,"在");
+
+		private int code;
+		private String msg;
+
+		IsHaveHandicap(int code, String msg) {
+			this.code = code;
+			this.msg = msg;
+		}
+	}
+
+	@Getter
+	public enum NoMemberHandicap{
+		id(000000l);
+
+		private Long code;
+
+		NoMemberHandicap(Long code) {
+			this.code = code;
+		}
 	}
 }

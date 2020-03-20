@@ -23,7 +23,7 @@ public class BasicEntity {
 	@Column
 	private Long modifyTime;
 
-	@ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.REFRESH,CascadeType.MERGE,CascadeType.DETACH})
+	@ManyToOne(fetch = FetchType.EAGER,cascade = {CascadeType.REFRESH,CascadeType.MERGE,CascadeType.DETACH})
 	@JoinColumn(name="create_user_id")
 	private User createUser;
 

@@ -32,7 +32,7 @@ public class Finance extends BasicEntity{
 	@Column(name = "count_type")
 	private Integer countType;
 
-	//财务类型(1:充值,2:投注,3:撤销,4:实时返点,5:区间流水返点,6:区间盈利返点,7:下分,8:下注获胜)
+	//财务类型(1:充值,2:投注,3:撤销,4:实时返点,5:区间流水返点,6:区间盈利返点,7:下分,8:下注获胜.9:推手区间流水返点.10:推手区间盈利返点)
 	@Column
 	private Integer type;
 
