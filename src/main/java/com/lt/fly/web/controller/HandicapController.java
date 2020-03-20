@@ -111,7 +111,7 @@ public class HandicapController extends BaseController {
         objSave.setProportions(pro);
 
         //设置赔率组
-        OddGroup oddGroup = isNotNull(iOddGroupRepository.findById(obj.getOddGroupId()),"传递的参数没有实体");
+        OddGroup oddGroup = isNotNull(iOddGroupRepository.findById(obj.getOddGroupId()),"添加的赔率组不存在实体");
         if (null != oddGroup.getHandicap()){
             if (!objSave.getId().equals(oddGroup.getHandicap().getId())) {
                 throw new ClientErrorException("当前赔率组正在被"+oddGroup.getHandicap().getName()+"使用中");
@@ -133,6 +133,7 @@ public class HandicapController extends BaseController {
             for (Member item :
                     members) {
                 item.setHandicap(objSave);
+                item.setIsHaveHandicap(GlobalConstant.IsHaveHandicap.YSE.getCode());
             }
             objSave.setMembers(new HashSet<>(members));
         }
