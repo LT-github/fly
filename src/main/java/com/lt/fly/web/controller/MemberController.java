@@ -7,14 +7,17 @@ import com.lt.fly.dao.IHandicapRepository;
 import com.lt.fly.dao.IMemberRepository;
 import com.lt.fly.entity.Handicap;
 import com.lt.fly.entity.Member;
+import com.lt.fly.entity.User;
 import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.utils.GlobalConstant;
 import com.lt.fly.utils.HttpResult;
 import com.lt.fly.utils.IdWorker;
+import com.lt.fly.utils.ShareCodeUtil;
 import com.lt.fly.web.query.MemberFind;
-import com.lt.fly.web.req.MemberAdd;
+import com.lt.fly.web.req.MemberAddBySystem;
 import com.lt.fly.web.query.MemberFindPage;
 import com.lt.fly.web.req.MemberEditByClient;
+import com.lt.fly.web.req.MemberEditBySystem;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.vo.MemberFinanceVo;
 import com.lt.fly.web.vo.MemberVo;
@@ -54,12 +57,34 @@ public class MemberController extends BaseController{
 	 */
 	@PostMapping
 	@UserLoginToken
-	public HttpResult<MemberVo> addMember(@RequestBody @Validated MemberAdd obj ,
+	public HttpResult<MemberVo> addMember(@RequestBody @Validated MemberAddBySystem obj ,
 										  BindingResult bindingResult) throws ClientErrorException {
 		this.paramsValid(bindingResult);
-		
-
 		Member member = new Member();
+		member.setId(idWorker.nextId());
+		member.setCreateTime(System.currentTimeMillis());
+		BeanUtils.copyProperties(obj, member);
+		if (null == obj.getNickname())
+			member.setNickname(obj.getUsername());
+
+		if (null != obj.getHandicapId()){
+			Handicap handicap = isNotNull(iHandicapRepository.findById(obj.getHandicapId()),"组id查询不到实体");
+			member.setHandicap(handicap);
+			member.setIsHaveHandicap(GlobalConstant.IsHaveHandicap.YSE.getCode());
+		}else {
+			member.setIsHaveHandicap(GlobalConstant.IsHaveHandicap.NOT.getCode());
+		}
+
+		if (null != obj.getReferralCode()){
+            Long memberId = ShareCodeUtil.codeToId(obj.getReferralCode());
+            Member modifyUser = isNotNull(iMemberRepository.findById(memberId),"邀请码不正确!");
+            member.setModifyUser(modifyUser);
+		}
+
+		member.setCreateTime(System.currentTimeMillis());
+		member.setCreateUser(getLoginUser());
+
+		iMemberRepository.save(member);
 		return HttpResult.success(new MemberVo(member), "添加成功");
 	}
 	
@@ -73,7 +98,7 @@ public class MemberController extends BaseController{
 	 */
 	@PutMapping("/{id}")
 	@UserLoginToken
-	public HttpResult<MemberVo> editStore(@PathVariable Long id , @RequestBody @Validated MemberEditByClient obj ,
+	public HttpResult<MemberVo> editStore(@PathVariable Long id , @RequestBody @Validated MemberEditBySystem obj ,
 			BindingResult bindingResult) throws ClientErrorException{
 		this.paramsValid(bindingResult);
 		

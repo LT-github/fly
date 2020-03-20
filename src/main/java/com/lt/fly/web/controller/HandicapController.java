@@ -235,8 +235,10 @@ public class HandicapController extends BaseController {
         Handicap handicap = isNotNull(iHandicapRepository.findById(id),"删除的组id找不到实体");
         if (null != handicap.getMembers() && 0 != handicap.getMembers().size())
             throw new ClientErrorException("该盘口还有会员,请移除后在操作!");
-        handicap.setOddGroup(null);
-        handicap.setProportions(null);
+        if (null != handicap.getOddGroup()){
+            OddGroup oddGroup = handicap.getOddGroup();
+            oddGroup.setHandicap(null);
+        }
         iHandicapRepository.delete(handicap);
         return HttpResult.success(null,handicap.getName() + "删除成功");
     }

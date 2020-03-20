@@ -5,30 +5,29 @@ import com.lt.fly.Service.IUserService;
 import com.lt.fly.annotation.UserLoginToken;
 import com.lt.fly.dao.IBetGroupRepository;
 import com.lt.fly.dao.IFinanceRepository;
+import com.lt.fly.dao.IMemberRepository;
 import com.lt.fly.dao.IOrderRepository;
 import com.lt.fly.entity.*;
 import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.redis.service.IOrderDTOServiceCache;
 import com.lt.fly.utils.*;
-import com.lt.fly.utils.GlobalConstant.FananceType;
 import com.lt.fly.utils.gameUtils.GameProperty;
 import com.lt.fly.utils.gameUtils.GameUtil;
-import com.lt.fly.web.req.UserLogin;
+import com.lt.fly.web.req.*;
 import com.lt.fly.web.resp.ClientShowResp;
-import com.lt.fly.web.req.FinanceAdd;
-import com.lt.fly.web.req.OrderAdd;
 import com.lt.fly.web.vo.FinanceVo;
+import com.lt.fly.web.vo.MemberVo;
 import com.lt.fly.web.vo.OrderVo;
 import com.lt.lxc.pojo.OrderDTO;
 import com.lt.lxc.service.OpenDataISV;
 import org.apache.dubbo.config.annotation.Reference;
-import org.hibernate.sql.ordering.antlr.GeneratedOrderByLexer;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 import static com.lt.fly.utils.GlobalConstant.FananceType.*;
@@ -58,6 +57,9 @@ public class ClientController extends BaseController{
     @Autowired
     private IUserService iUserService;
 
+    @Autowired
+    private IMemberRepository iMemberRepository;
+
     @Reference(version = "1.0.0",url="dubbo://localhost:23457",check = false)
     private OpenDataISV openData;
 
@@ -73,10 +75,56 @@ public class ClientController extends BaseController{
         return HttpResult.success(iUserService.login(req),"登录成功");
     }
 
-    public HttpResult register()throws ClientErrorException{
-        return HttpResult.success(null,"注册成功!");
+    /**
+     * 注册
+     * @param obj
+     * @return
+     * @throws ClientErrorException
+     */
+    @PostMapping("/register")
+    public HttpResult register(@RequestBody @Validated MemberAddByClient obj ,
+                               BindingResult bindingResult)throws ClientErrorException{
+        this.paramsValid(bindingResult);
+        Member member = new Member();
+        member.setId(idWorker.nextId());
+        member.setCreateTime(System.currentTimeMillis());
+        member.setCreateUser(this.getLoginUser());
+        BeanUtils.copyProperties(obj, member);
+        if (null == obj.getNickname()){
+            member.setNickname(obj.getUsername());
+        }
+
+        if (null != obj.getReferralCode()){
+            Long memberId = ShareCodeUtil.codeToId(obj.getReferralCode());
+            Member modifyUser = isNotNull(iMemberRepository.findById(memberId),"邀请码不正确!");
+            member.setModifyUser(modifyUser);
+        }
+
+        member.setCreateTime(System.currentTimeMillis());
+
+        iMemberRepository.save(member);
+        return HttpResult.success(new MemberVo(member),"注册成功!");
     }
 
+    @PostMapping("/update")
+    @UserLoginToken
+    public HttpResult update(@PathVariable Long id , @RequestBody @Validated MemberEditByClient obj ,
+                             BindingResult bindingResult) throws ClientErrorException{
+        this.paramsValid(bindingResult);
+
+        Member objEdit = isNotNull(iMemberRepository.findById(id),"会员id查询不到实体");
+        BeanUtils.copyProperties(obj, objEdit);
+        if (null == obj.getNickname())
+            objEdit.setNickname(objEdit.getNickname());
+
+
+        objEdit.setModifyUser(getLoginUser());
+        objEdit.setModifyTime(System.currentTimeMillis());
+
+        iMemberRepository.save(objEdit);
+
+        return HttpResult.success(new MemberVo(objEdit), "编辑成功");
+    }
 
     /**
      * 下注

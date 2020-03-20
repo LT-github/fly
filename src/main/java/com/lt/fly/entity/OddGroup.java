@@ -21,7 +21,7 @@ public class OddGroup extends BasicEntity{
             inverseJoinColumns = @JoinColumn(name = " odd_id"))
     private Set<Odd> odds;
 
-    @OneToOne(mappedBy = "oddGroup", cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @OneToOne(mappedBy = "oddGroup")
     private Handicap handicap;
 
 }

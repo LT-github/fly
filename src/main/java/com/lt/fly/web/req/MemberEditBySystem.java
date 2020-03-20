@@ -11,12 +11,17 @@ import javax.validation.constraints.Pattern;
 
 @Getter
 @Setter
-public class MemberEdit {
+public class MemberEditBySystem extends MemberAddByClient{
 	
-	@NotNull(message = "密码不能为空")
-	@Pattern(regexp = RegexUtil.CHECK_PASSWORD,message = "必须是6-20位的字母、数字、下划线")
-	private String password;
 
-	private String nickname;
+	@NotNull(message = "状态不能为空")
+	private Integer status;
+
+	private Long handicapId;
+
+	private String remark;
+
+	@NotNull(message = "会员类型不能为空")
+	private Integer type;
 
 }

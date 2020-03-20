@@ -34,6 +34,13 @@ public class ShareCodeUtil {
      */
     private static final int s = 6;
 
+
+
+
+
+
+
+
     /**
      * 根据ID生成六位随机码
      *
@@ -43,6 +50,7 @@ public class ShareCodeUtil {
     public static String toSerialCode(long id) {
         char[] buf = new char[32];
         int charPos = 32;
+
 
         while ((id / binLen) > 0) {
             int ind = (int) (id % binLen);
@@ -91,7 +99,7 @@ public class ShareCodeUtil {
     }
 
     public static void main(String[] args) {
-        String code = toSerialCode(4638544160802816l);
+        String code = toSerialCode(1638544160802816l);
         Long id = codeToId(code);
         System.out.println(code);
         System.out.println(id);

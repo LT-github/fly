@@ -44,7 +44,7 @@ public class Handicap extends BasicEntity{
 	private Set<Member> members;
 
 	//赔率组
-	@OneToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REFRESH})
+	@OneToOne
 	@JoinColumn(name = "odd_group_id", referencedColumnName = "id")
 	private OddGroup oddGroup;
 	
