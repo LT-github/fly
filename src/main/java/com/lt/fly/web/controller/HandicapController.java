@@ -185,7 +185,7 @@ public class HandicapController extends BaseController {
         List<HandicapVo> handicapVos = HandicapVo.toVo(handicaps);
         HandicapVo handicapVo = new HandicapVo();
         handicapVo.setId(GlobalConstant.NoMemberHandicap.ID.getCode());
-        handicapVo.setName("盘口Z");
+        handicapVo.setName("无盘口");
         handicapVos.add(handicapVo);
         return HttpResult.success(handicapVos,"查询成功");
     }
