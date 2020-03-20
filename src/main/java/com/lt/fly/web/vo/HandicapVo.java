@@ -48,10 +48,6 @@ public class HandicapVo {
         for(Handicap item:list) {
             handicapVos.add(new HandicapVo(item));
         }
-        HandicapVo handicapVo = new HandicapVo();
-        handicapVo.setId(GlobalConstant.NoMemberHandicap.ID.getCode());
-        handicapVo.setName("无盘口");
-        handicapVos.add(handicapVo);
         return handicapVos;
     }
 }

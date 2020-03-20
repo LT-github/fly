@@ -182,7 +182,12 @@ public class HandicapController extends BaseController {
     @UserLoginToken
     public HttpResult<List<HandicapVo>> findAll(){
         List<Handicap> handicaps = iHandicapRepository.findAll();
-        return HttpResult.success(HandicapVo.toVo(handicaps),"查询成功");
+        List<HandicapVo> handicapVos = HandicapVo.toVo(handicaps);
+        HandicapVo handicapVo = new HandicapVo();
+        handicapVo.setId(GlobalConstant.NoMemberHandicap.ID.getCode());
+        handicapVo.setName("无盘口");
+        handicapVos.add(handicapVo);
+        return HttpResult.success(handicapVos,"查询成功");
     }
 
     /**
