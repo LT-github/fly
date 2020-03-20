@@ -200,12 +200,7 @@ public class HandicapController extends BaseController {
     public HttpResult findAll(DataQueryObjectPage query){
         Page<Handicap> page = iHandicapRepository.findAll(query);
         PageResp resp = new PageResp(page);
-        List<HandicapVo> handicapVos = HandicapVo.toVo(page.getContent());
-        HandicapVo handicapVo = new HandicapVo();
-        handicapVo.setId(GlobalConstant.NoMemberHandicap.ID.getCode());
-        handicapVo.setName("盘口Z");
-        handicapVos.add(handicapVo);
-        resp.setData(handicapVos);
+        resp.setData(HandicapVo.toVo(page.getContent()));
         return HttpResult.success(resp,"获取盘口列表成功!");
     }
 
