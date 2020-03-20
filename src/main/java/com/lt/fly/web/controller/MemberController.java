@@ -108,7 +108,7 @@ public class MemberController extends BaseController{
 	@UserLoginToken
 	public HttpResult findAllPage(MemberFindPage query){
 
-		if (query.getHandicapId().equals(000000l)){
+		if (null != query.getHandicapId() && query.getHandicapId().equals(000000l)){
 			query.setHandicapId(null);
 			query.setIsHaveHandicap(GlobalConstant.IsHaveHandicap.NOT.getCode());
 		}
@@ -127,7 +127,7 @@ public class MemberController extends BaseController{
 	@GetMapping("/all")
 	@UserLoginToken
 	public HttpResult findAllByList(MemberFind query){
-		if (query.getHandicapId().equals(000000l)){
+		if (null != query.getHandicapId() && query.getHandicapId().equals(000000l)){
 			query.setHandicapId(null);
 			query.setIsHaveHandicap(GlobalConstant.IsHaveHandicap.NOT.getCode());
 		}
