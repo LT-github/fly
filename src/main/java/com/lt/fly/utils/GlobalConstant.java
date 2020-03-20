@@ -196,7 +196,7 @@ public class GlobalConstant {
 
 	@Getter
 	public enum NoMemberHandicap{
-		id(000000l);
+		ID(000000l);
 
 		private Long code;
 

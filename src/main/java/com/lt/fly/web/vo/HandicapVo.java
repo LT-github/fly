@@ -49,7 +49,7 @@ public class HandicapVo {
             handicapVos.add(new HandicapVo(item));
         }
         HandicapVo handicapVo = new HandicapVo();
-        handicapVo.setId(GlobalConstant.NoMemberHandicap.id.getCode());
+        handicapVo.setId(GlobalConstant.NoMemberHandicap.ID.getCode());
         handicapVo.setName("无盘口");
         return handicapVos;
     }
