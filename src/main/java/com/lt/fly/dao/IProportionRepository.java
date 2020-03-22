@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IProportionRepository extends BaseRepository<Proportion, Long> {
 
+    Proportion findByDescription(String description);
 }

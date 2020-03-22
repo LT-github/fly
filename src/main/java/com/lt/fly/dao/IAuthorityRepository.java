@@ -6,4 +6,5 @@ import com.lt.fly.jpa.BaseRepository;
 
 public interface IAuthorityRepository extends BaseRepository<Authority, Long> {
 
+    Authority findByName(String name);
 }

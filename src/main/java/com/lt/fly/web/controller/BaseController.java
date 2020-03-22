@@ -39,4 +39,10 @@ public class BaseController {
 			throw new ClientErrorException(msg);
 		return optional.get();
 	}
+
+	protected <T> void existsForName(T t,String msg) throws ClientErrorException{
+		 if (null == t){
+		 	throw new ClientErrorException(msg);
+		 }
+	}
 }

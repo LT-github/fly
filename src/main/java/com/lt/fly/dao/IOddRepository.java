@@ -14,4 +14,6 @@ public interface IOddRepository extends BaseRepository<Odd,Long> {
 
     @Query(nativeQuery = true,value = "select * from t_odd o where o.bet_group_id = ?1")
     List<Odd> findByBetGroupId(Long betGroupId);
+
+    Odd findByOddValue(Double oddValue);
 }

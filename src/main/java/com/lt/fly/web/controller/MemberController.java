@@ -18,6 +18,7 @@ import com.lt.fly.web.req.MemberAddBySystem;
 import com.lt.fly.web.query.MemberFindPage;
 import com.lt.fly.web.req.MemberEditByClient;
 import com.lt.fly.web.req.MemberEditBySystem;
+import com.lt.fly.web.req.MemberTypeEdit;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.vo.MemberFinanceVo;
 import com.lt.fly.web.vo.MemberVo;
@@ -191,4 +192,30 @@ public class MemberController extends BaseController{
 		
 		return HttpResult.success(new MemberVo(member), "查询成功");
 	}
+
+	/**
+	 * 更改会员类型
+	 * @param id
+	 * @param req
+	 * @return
+	 * @throws ClientErrorException
+	 */
+	@UserLoginToken
+	@PutMapping("type/{id}")
+	public HttpResult updateType(@PathVariable Long id,@RequestBody MemberTypeEdit req) throws ClientErrorException{
+
+		Member member = isNotNull(iMemberRepository.findById(id),"会员id查询不到实体");
+		member.setType(req.getType());
+
+		String msg = null;
+		if (req.getType().equals(GlobalConstant.MemberType.GENERAL.getCode())){
+			msg = GlobalConstant.MemberType.GENERAL.getMsg();
+		} else if (req.getType().equals(GlobalConstant.MemberType.REFERRER.getCode())){
+			msg = GlobalConstant.MemberType.REFERRER.getMsg();
+		} else {
+			throw new ClientErrorException("会员类型不存在");
+		}
+		return HttpResult.success(new MemberVo(member),"更新"+member.getNickname()+"成为"+msg+"成功!");
+	}
+
 }

@@ -5,4 +5,5 @@ import com.lt.fly.jpa.BaseRepository;
 
 public interface IRoleRepository extends BaseRepository<Role, Long> {
 
+    Role findByName(String name);
 }

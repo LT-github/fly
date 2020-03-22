@@ -1,5 +1,6 @@
 package com.lt.fly.utils;
 
+import com.lt.fly.entity.Member;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -204,4 +205,19 @@ public class GlobalConstant {
 			this.code = code;
 		}
 	}
+
+	@Getter
+	public enum  MemberType{
+		GENERAL(1,"普通会员"),
+		REFERRER(2,"推手会员");
+
+		private Integer code;
+		private String msg;
+
+		MemberType(Integer code, String msg) {
+			this.code = code;
+			this.msg = msg;
+		}
+	}
+
 }
