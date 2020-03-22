@@ -73,6 +73,8 @@ public class HandicapController extends BaseController {
     public HttpResult<HandicapVo> addHandicap(@RequestBody @Validated HandicapAdd obj, BindingResult bindingResult)
             throws Exception{
         this.paramsValid(bindingResult);
+        existsForName(iHandicapRepository.findByName(obj.getName()),"盘口名已经存在");
+
         Handicap objSave = addOrEditorGroup(null,obj);
         return HttpResult.success(new HandicapVo(objSave),"添加成功");
     }
@@ -186,7 +188,7 @@ public class HandicapController extends BaseController {
         List<HandicapVo> handicapVos = HandicapVo.toVo(handicaps);
         HandicapVo handicapVo = new HandicapVo();
         handicapVo.setId(GlobalConstant.NoMemberHandicap.ID.getCode());
-        handicapVo.setName("无盘口");
+        handicapVo.setName("未加入盘口");
         handicapVos.add(handicapVo);
         return HttpResult.success(handicapVos,"查询成功");
     }

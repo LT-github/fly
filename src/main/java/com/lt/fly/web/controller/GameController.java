@@ -68,6 +68,8 @@ public class GameController extends BaseController {
     @UserLoginToken
     public HttpResult add(@RequestBody @Validated GameGroupAdd req, BindingResult bindingResult) throws ClientErrorException {
         this.paramsValid(bindingResult);
+
+        existsForName(iGameGroupRepository.findByName(req.getName()),"玩法组名已经存在");
         GameGroup gameGroup = new GameGroup();
         MyBeanUtils.copyProperties(req,gameGroup);
         gameGroup.setId(idWorker.nextId());

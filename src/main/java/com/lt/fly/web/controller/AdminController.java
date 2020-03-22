@@ -63,6 +63,8 @@ public class AdminController extends BaseController {
     public HttpResult<AdminVo> addAdmin(@RequestBody @Validated AdminAdd obj ,
                                         BindingResult bindingResult) throws ClientErrorException{
         this.paramsValid(bindingResult);
+        existsForName(iAdminRepository.findByUsername(obj.getUsername()),"用户名已经存在");
+
         Admin admin = editOrAddAdmin(obj, null);
         iAdminRepository.save(admin);
         return HttpResult.success(new AdminVo(admin), "添加成功");

@@ -61,6 +61,8 @@ public class MemberController extends BaseController{
 	public HttpResult<MemberVo> addMember(@RequestBody @Validated MemberAddBySystem obj ,
 										  BindingResult bindingResult) throws ClientErrorException {
 		this.paramsValid(bindingResult);
+
+		existsForName(iMemberRepository.findByUsername(obj.getUsername()),"会员名已经存在");
 		Member member = new Member();
 		member.setId(idWorker.nextId());
 		member.setCreateTime(System.currentTimeMillis());
@@ -76,6 +78,7 @@ public class MemberController extends BaseController{
 			member.setIsHaveHandicap(GlobalConstant.IsHaveHandicap.NOT.getCode());
 		}
 
+		//设置推荐人
 		if (null != obj.getReferralCode()){
             Long memberId = ShareCodeUtil.codeToId(obj.getReferralCode());
             Member modifyUser = isNotNull(iMemberRepository.findById(memberId),"邀请码不正确!");
@@ -116,9 +119,6 @@ public class MemberController extends BaseController{
 		}else {
 			objEdit.setIsHaveHandicap(GlobalConstant.IsHaveHandicap.NOT.getCode());
 		}
-
-		objEdit.setModifyUser(getLoginUser());
-		objEdit.setModifyTime(System.currentTimeMillis());
 
 		iMemberRepository.save(objEdit);
 		

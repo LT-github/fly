@@ -85,6 +85,9 @@ public class ClientController extends BaseController{
     public HttpResult register(@RequestBody @Validated MemberAddByClient obj ,
                                BindingResult bindingResult)throws ClientErrorException{
         this.paramsValid(bindingResult);
+
+        existsForName(iMemberRepository.findByUsername(obj.getUsername()),"会员名已经存在");
+
         Member member = new Member();
         member.setId(idWorker.nextId());
         member.setCreateTime(System.currentTimeMillis());

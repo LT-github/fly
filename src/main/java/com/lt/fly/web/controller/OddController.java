@@ -130,6 +130,8 @@ public class OddController extends BaseController {
     @UserLoginToken
     public HttpResult addOddGroup(@RequestBody @Validated OddGroupAdd req, BindingResult bindingResult)throws ClientErrorException {
         this.paramsValid(bindingResult);
+        existsForName(iOddGroupRepository.findByName(req.getName()),"赔率组名已经存在");
+
         OddGroup oddGroup = new OddGroup();
         oddGroup.setId(idWorker.nextId());
         oddGroup.setCreateTime(System.currentTimeMillis());

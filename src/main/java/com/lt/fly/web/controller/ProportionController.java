@@ -51,6 +51,8 @@ public class ProportionController extends BaseController {
             throws ClientErrorException {
         this.paramsValid(bindingResult);
 
+        existsForName(iProportionRepository.findByDescription(obj.getDescription()),"返点比例名已经存在");
+
         Proportion objSave = new Proportion();
         DataDictionary returnPoint = isNotNull(iDataDictionaryRepository.findById(obj.getReturnPointTypeId()),"返点比例不存在");
 

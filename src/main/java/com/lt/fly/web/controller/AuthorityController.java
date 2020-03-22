@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthorityController extends BaseController{
 
 	@Autowired
-	private IAuthorityRepository iauthorityRepository;
+	private IAuthorityRepository iAuthorityRepository;
 	@Autowired
 	private IdWorker idWorker;
 	
@@ -55,9 +55,11 @@ public class AuthorityController extends BaseController{
 												BindingResult bindingResult) throws ClientErrorException {
 		
 		this.paramsValid(bindingResult);
-		
+
+		existsForName(iAuthorityRepository.findByName(obj.getName()),"权限名已经存在");
+
 		Authority auth = addOrEditAuth(obj,null);
-		iauthorityRepository.save(auth);
+		iAuthorityRepository.save(auth);
 		return HttpResult.success(new AuthorityVo(auth),auth.getName() + "添加成功");
 	}
 	
@@ -78,7 +80,7 @@ public class AuthorityController extends BaseController{
 		this.paramsValid(bindingResult);
 		
 		Authority auth = addOrEditAuth(obj,id);
-		iauthorityRepository.flush();
+		iAuthorityRepository.flush();
 		return HttpResult.success(new AuthorityVo(auth),auth.getName() + "修改成功");
 	}
 	
@@ -94,7 +96,7 @@ public class AuthorityController extends BaseController{
 	public HttpResult<Object> deleteAuthority(@PathVariable Long id)
 			throws ClientErrorException{
 		
-		Optional<Authority> optional = iauthorityRepository.findById(id);
+		Optional<Authority> optional = iAuthorityRepository.findById(id);
 		if(!optional.isPresent()){
 			throw new ClientErrorException("修改的id找不到实体");
 		}
@@ -103,7 +105,7 @@ public class AuthorityController extends BaseController{
 		
 		auth.getRoles().clear();
 		//iauthorityRepository.save(auth);
-		iauthorityRepository.delete(auth);;
+		iAuthorityRepository.delete(auth);;
 		return HttpResult.success(new AuthorityVo(auth), "删除权限" + auth.getName() + "成功");
 	}
 	
@@ -117,7 +119,7 @@ public class AuthorityController extends BaseController{
 	@UserLoginToken
 	public HttpResult<PageResp<AuthorityVo,Authority>> findAll(DataQueryObjectPage query){
 		
-		Page<Authority> page = iauthorityRepository.findAll(query);
+		Page<Authority> page = iAuthorityRepository.findAll(query);
 		
 		PageResp<AuthorityVo,Authority> res = new PageResp<>(page);
 		res.setData(AuthorityVo.toVo(page.getContent()));
@@ -130,7 +132,7 @@ public class AuthorityController extends BaseController{
 		// 设置基本属性
 		Authority auth = null;
 		if(id!=null) {
-			Optional<Authority> optional = iauthorityRepository.findById(id);
+			Optional<Authority> optional = iAuthorityRepository.findById(id);
 			if(!optional.isPresent()){
 				throw new ClientErrorException("修改的id找不到实体");
 			}
@@ -147,7 +149,7 @@ public class AuthorityController extends BaseController{
 		
 		// 设置父元素
 		if(obj.getParentId() != null) {
-			Optional<Authority> optional = iauthorityRepository.findById(obj.getParentId());
+			Optional<Authority> optional = iAuthorityRepository.findById(obj.getParentId());
 			if(!optional.isPresent())
 				throw new ClientErrorException("权限父元素id查询不到实体");
 			
@@ -160,7 +162,7 @@ public class AuthorityController extends BaseController{
 //	@RequiredPermission(value="findAllAuthorityList")
 	@GetMapping("/list")
 	public HttpResult<List<AuthorityVo>> list(){
-		return HttpResult.success(AuthorityVo.toVo(iauthorityRepository.findAll()),"权限列表或去成功");
+		return HttpResult.success(AuthorityVo.toVo(iAuthorityRepository.findAll()),"权限列表或去成功");
 	}
 	
 }

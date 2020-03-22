@@ -54,7 +54,9 @@ public class RoleController extends BaseController {
 	public HttpResult<RoleVo> addRole(@RequestBody @Validated RoleAdd obj ,
 									  BindingResult bindingResult) throws ClientErrorException {
 		this.paramsValid(bindingResult);
-		
+
+		existsForName(iRoleRepository.findByName(obj.getName()),"角色名已经存在");
+
 		Role role = addOrEditRole(obj, null);
 		iRoleRepository.save(role);
 		return HttpResult.success(new RoleVo(role), "角色" + role.getName() +"添加成功");
@@ -73,8 +75,14 @@ public class RoleController extends BaseController {
 	@UserLoginToken
 	public HttpResult<RoleVo> editRole(@PathVariable Long id,@RequestBody @Validated RoleAdd obj , 
 			BindingResult bindingResult) throws ClientErrorException{
+
 		this.paramsValid(bindingResult);
-		Role role = addOrEditRole(obj, id);
+		Role role = iRoleRepository.findByName(obj.getName());
+		if (role != null && !role.getId().equals(id)){
+			throw new ClientErrorException("角色名已经存在");
+		}
+
+		role = addOrEditRole(obj, id);
 		iRoleRepository.flush();
 		return HttpResult.success(new RoleVo(role), "角色" + role.getName() +"添加成功");
 	}
