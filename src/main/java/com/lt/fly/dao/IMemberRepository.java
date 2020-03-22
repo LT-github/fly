@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface IMemberRepository extends BaseRepository<Member,Long> {
 
-    Member findByName(String name);
+    Member findByUsername(String username);
 }
