@@ -11,7 +11,7 @@ import javax.validation.constraints.Pattern;
 
 @Getter
 @Setter
-public class MemberEditBySystem extends MemberAddByClient{
+public class MemberEditBySystem extends MemberEditByClient{
 	
 
 	@NotNull(message = "状态不能为空")
