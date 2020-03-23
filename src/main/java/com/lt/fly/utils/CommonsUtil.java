@@ -8,15 +8,23 @@ public class CommonsUtil {
     //区间盈利返点
     public static final Long RANGE_YINGLI_RETURN_POINT = 3519790433437696l;
 
-    //盈亏查询
-    public static final Long YINGKUI_QUERY = 3519791501019136l;
-    //流水查询
-    public static final Long LIUSHUI_QUERY = 3519791229519872l;
-
-
     //分红结算时间(以小时计)
-    public static final Long FENHONG_TIME = 3647003743553536l;
+    public static final Long FENHONG_TIME = 3656797856565248l;
 
     //退水结算时间(以小时计)
-    public static final Long TUISHUI_TIME = 3647007629264896l;
+    public static final Long TUISHUI_TIME = 3656797201598464l;
+
+
+    //推手区间流水返点
+    public static final Long REFERRAL_LIUSHUI_RETURN_POINT = 3656747683547136l;
+    //推手区间盈亏返点
+    public static final Long REFERRAL_YINGLI_RETURN_POINT = 3656748369233920l;
+
+
+    //推手分红结算时间(以小时计)
+    public static final Long REFERRAL_FENHONG_TIME = 3656798042818560l;
+
+    //推手退水结算时间(以小时计)
+    public static final Long REFERRAL_TUISHUI_TIME = 3656798239819776l;
+
 }

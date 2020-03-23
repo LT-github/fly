@@ -30,9 +30,7 @@ public class SettingsController extends BaseController {
         MyBeanUtils.copyProperties(req,settings);
         settings.setId(idWorker.nextId());
         settings.setCreateTime(System.currentTimeMillis());
-        settings.setCreateUser(getLoginUser());
         settings.setModifyTime(System.currentTimeMillis());
-        settings.setModifyUser(getLoginUser());
         iSettingsRepository.save(settings);
         return HttpResult.success(new SettingsVo(settings),"添加'"+req.getDataKey()+"'设置选项成功!");
     }
@@ -42,7 +40,6 @@ public class SettingsController extends BaseController {
     public HttpResult edit(@RequestBody SettingEdit req, @PathVariable Long id) throws ClientErrorException {
         Settings settings = isNotNull(iSettingsRepository.findById(id),"传递参数没有实体!");
         settings.setDataValue(req.getDataValue());
-        settings.setModifyUser(getLoginUser());
         settings.setModifyTime(System.currentTimeMillis());
         iSettingsRepository.flush();
         return HttpResult.success(new SettingsVo(settings),"修改'"+settings.getDataKey()+"'设置选项成功!");

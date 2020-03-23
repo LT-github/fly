@@ -44,4 +44,8 @@ public class Proportion extends BasicEntity{
 	@Column(name="discriminator", insertable = false, updatable = false)
 	private String discriminator;
 
+	// 该返点对应的店铺组
+	@ManyToMany(mappedBy = "proportions")
+	private Set<Member> members;
+
 }

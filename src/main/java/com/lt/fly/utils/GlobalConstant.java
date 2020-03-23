@@ -1,10 +1,7 @@
 package com.lt.fly.utils;
 
-import com.lt.fly.entity.Member;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.regex.Pattern;
 
 public class GlobalConstant {
 	
@@ -113,7 +110,7 @@ public class GlobalConstant {
 
 	//财务类型
 	@Getter
-	public enum FananceType{
+	public enum FinanceType {
 		RECHARGE(1,"上分"),
 		BET(2,"下注"),
 		CANCLE(3,"撤销"),
@@ -129,7 +126,7 @@ public class GlobalConstant {
 		private int code;
 		private String msg;
 
-		FananceType(int code, String msg) {
+		FinanceType(int code, String msg) {
 			this.code = code;
 			this.msg = msg;
 		}

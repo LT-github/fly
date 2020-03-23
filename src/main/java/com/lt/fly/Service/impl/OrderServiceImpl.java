@@ -5,8 +5,6 @@ import com.lt.fly.Service.IFinanceService;
 import com.lt.fly.Service.IOrderService;
 import com.lt.fly.dao.IFinanceRepository;
 import com.lt.fly.dao.IOrderRepository;
-import com.lt.fly.entity.Finance;
-import com.lt.fly.entity.Member;
 import com.lt.fly.entity.Order;
 import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.utils.Arith;
@@ -22,7 +20,6 @@ import com.lt.lxc.pojo.OrderDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -70,7 +67,7 @@ public class OrderServiceImpl extends BaseService implements IOrderService {
                 iOrderRepository.updateById(map.get(key).getLotteryResult(),map.get(key).getBattleResult(),map.get(key).getExchangeDetail(),key);
                 if (map.get(key).getLotteryResult().equals(GlobalConstant.LotteryResult.WIN.getCode())) {
                     Order order = isNotNull(iOrderRepository.findById(map.get(key).getId()),"传递得到参数没有实体类");
-                    iFinanceService.add(order.getCreateUser(),map.get(key).getBattleResult(),null, GlobalConstant.FananceType.BET_WIN);
+                    iFinanceService.add(order.getCreateUser(),map.get(key).getBattleResult(),null, GlobalConstant.FinanceType.BET_WIN);
                 }
 
                 issueNumberSet.add(map.get(key).getIssueNumber());

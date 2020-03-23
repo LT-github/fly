@@ -9,7 +9,7 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.lt.fly.utils.GlobalConstant.FananceType.*;
+import static com.lt.fly.utils.GlobalConstant.FinanceType.*;
 
 @Data
 public class MemberFinanceVo extends MemberVo {

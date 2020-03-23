@@ -9,7 +9,7 @@ public class ReferralMemberVo {
     private String referralName;
 
     //推手用户名
-    private String MemberName;
+    private String memberName;
 
     //推手昵称
     private String nickName;

@@ -37,4 +37,9 @@ public class Member extends User{
     @Column
     private String referralCode;
 
+    // 盘口的返点信息
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "t_member_proportion",joinColumns = @JoinColumn(name = "member_id"),
+            inverseJoinColumns = @JoinColumn(name = " proportion_id"))
+    private Set<Proportion> proportions;
 }

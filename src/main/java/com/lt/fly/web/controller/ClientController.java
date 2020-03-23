@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-import static com.lt.fly.utils.GlobalConstant.FananceType.*;
+import static com.lt.fly.utils.GlobalConstant.FinanceType.*;
 
 @RestController
 @RequestMapping("/client")

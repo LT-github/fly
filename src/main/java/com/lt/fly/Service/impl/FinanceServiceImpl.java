@@ -39,7 +39,7 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 
 	
 	@Override
-	public Finance add(User user, Double money,Double balance, GlobalConstant.FananceType type) throws ClientErrorException{
+	public Finance add(User user, Double money,Double balance, GlobalConstant.FinanceType type) throws ClientErrorException{
 		Finance finance = new Finance();
 		finance.setId(idWorker.nextId());
 		finance.setCreateTime(System.currentTimeMillis());

@@ -1,5 +1,6 @@
 package com.lt.fly.web.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.lt.fly.annotation.UserLoginToken;
@@ -8,23 +9,17 @@ import com.lt.fly.dao.IMemberRepository;
 import com.lt.fly.entity.Finance;
 import com.lt.fly.entity.Handicap;
 import com.lt.fly.entity.Member;
-import com.lt.fly.entity.User;
 import com.lt.fly.exception.ClientErrorException;
-import com.lt.fly.utils.GlobalConstant;
-import com.lt.fly.utils.HttpResult;
-import com.lt.fly.utils.IdWorker;
-import com.lt.fly.utils.ShareCodeUtil;
+import com.lt.fly.utils.*;
 import com.lt.fly.web.query.MemberFind;
 import com.lt.fly.web.req.MemberAddBySystem;
 import com.lt.fly.web.query.MemberFindPage;
-import com.lt.fly.web.req.MemberEditByClient;
 import com.lt.fly.web.req.MemberEditBySystem;
 import com.lt.fly.web.req.MemberTypeEdit;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.vo.MemberFinanceVo;
 import com.lt.fly.web.vo.MemberVo;
 import com.lt.fly.web.vo.ReferralMemberVo;
-import jdk.nashorn.internal.objects.Global;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -70,10 +65,10 @@ public class MemberController extends BaseController{
 		member.setId(idWorker.nextId());
 		member.setCreateTime(System.currentTimeMillis());
 		BeanUtils.copyProperties(obj, member);
-		if (null == obj.getNickname())
+		if (null == obj.getNickname() || obj.getNickname().isEmpty())
 			member.setNickname(obj.getUsername());
 
-		if (null != obj.getHandicapId()){
+		if (null != obj.getHandicapId() && !obj.getHandicapId().equals("")){
 			Handicap handicap = isNotNull(iHandicapRepository.findById(obj.getHandicapId()),"组id查询不到实体");
 			member.setHandicap(handicap);
 			member.setIsHaveHandicap(GlobalConstant.IsHaveHandicap.YSE.getCode());
@@ -248,6 +243,16 @@ public class MemberController extends BaseController{
 		//设置为推手会员
 		query.setType(GlobalConstant.MemberType.REFERRER.getCode());
 		Page<Member> page = iMemberRepository.findAll(query);
+		PageResp resp = new PageResp(page);
+		List<ReferralMemberVo> referralMemberVos = new ArrayList<>();
+
+		//总流水
+		double waterTotal = 0;
+		//总盈亏
+		double betResultTotal = 0;
+		//总分红
+		double dividendTotal = 0;
+
 		for (Member item :
 				page.getContent()) {
 			ReferralMemberVo vo = new ReferralMemberVo();
@@ -265,20 +270,39 @@ public class MemberController extends BaseController{
 				for (Member member:
 					 	members) {
 					if (null != member.getFinances() && 0 != member.getFinances().size()) {
-
+						for (Finance finance :
+								member.getFinances()) {
+							if (finance.getType().equals(GlobalConstant.FinanceType.BET.getCode())){
+								waterTotal = Arith.add(waterTotal,finance.getMoney());
+								betResultTotal = Arith.sub(betResultTotal,finance.getMoney());
+							}
+							if (finance.getType().equals(GlobalConstant.FinanceType.CANCLE.getCode())){
+								waterTotal = Arith.sub(waterTotal,finance.getMoney());
+							}
+							if (finance.getType().equals(GlobalConstant.FinanceType.BET_WIN.getCode())){
+								betResultTotal = Arith.add(betResultTotal,finance.getMoney());
+							}
+						}
 					}
-
 				}
-
+			}
+			if (null != item.getFinances() && 0 != item.getFinances().size()) {
+				for (Finance finance :
+						item.getFinances()) {
+					if (finance.getType().equals(GlobalConstant.FinanceType.REFERRAL_LIUSHUI.getCode())
+							|| finance.getType().equals(GlobalConstant.FinanceType.REFERRAL_YINGLI.getCode())){
+						dividendTotal = Arith.add(dividendTotal,finance.getMoney());
+					}
+				}
 			}
 
-
-
-
-
+			vo.setBetResultTotal(betResultTotal);
+			vo.setDividendTotal(dividendTotal);
+			vo.setWaterTotal(waterTotal);
+			referralMemberVos.add(vo);
 		}
-
-		return null;
+		resp.setData(referralMemberVos);
+		return HttpResult.success(resp,"获取推手列表成功!");
 	}
 
 }
