@@ -196,6 +196,9 @@ public class FinanceController extends BaseController{
 		return vo;
 	}
 
+	/*
+	返点金额
+	 */
 	private double getMoney(Integer type, Member member, Finance last) {
 		double money = 0;
 		List<Finance> finances;

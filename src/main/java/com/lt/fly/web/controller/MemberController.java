@@ -2,6 +2,8 @@ package com.lt.fly.web.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.lt.fly.annotation.UserLoginToken;
 import com.lt.fly.dao.IHandicapRepository;
@@ -10,6 +12,8 @@ import com.lt.fly.entity.Finance;
 import com.lt.fly.entity.Handicap;
 import com.lt.fly.entity.Member;
 import com.lt.fly.exception.ClientErrorException;
+import com.lt.fly.jpa.support.DataQueryObject;
+import com.lt.fly.jpa.support.DataQueryObjectPage;
 import com.lt.fly.utils.*;
 import com.lt.fly.web.query.MemberFind;
 import com.lt.fly.web.req.MemberAddBySystem;
@@ -304,4 +308,24 @@ public class MemberController extends BaseController{
 		return HttpResult.success(resp,"获取推手列表成功!");
 	}
 
+	/**
+	 * 被推荐的会员列表
+	 * @param query
+	 * @return
+	 * @throws ClientErrorException
+	 */
+	@GetMapping("referrer/{id}")
+	@UserLoginToken
+	public HttpResult findReferrerAll(@PathVariable Long id,DataQueryObjectPage query) throws ClientErrorException{
+		Member referrer = isNotNull(iMemberRepository.findById(id),"传递的参数未找到实体");
+		List<Member> members= iMemberRepository.findByModifyUser(referrer);
+		long count = members.stream().count();
+		int totalPageNum = (int)(count  +  query.getSize()  - 1) / query.getSize();//计算总页数
+		List<Member> memberList = members.stream().limit(query.getSize()).skip(query.getPage()).collect(Collectors.toList());
+
+		PageResp resp = new PageResp(query.getPage(), query.getSize(), totalPageNum, count, MemberFinanceVo.tovo(memberList));
+
+
+		return HttpResult.success(resp,"获取推荐详情列表成功!");
+	}
 }
