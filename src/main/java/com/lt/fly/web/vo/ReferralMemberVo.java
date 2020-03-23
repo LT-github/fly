@@ -5,6 +5,8 @@ import lombok.Data;
 @Data
 public class ReferralMemberVo {
 
+    private Long id;
+
     //推荐人用户名
     private String referralName;
 

@@ -259,7 +259,7 @@ public class MemberController extends BaseController{
 			if (null != item.getModifyUser()){
 				vo.setReferralName(item.getModifyUser().getUsername());
 			}
-
+			vo.setId(item.getId());
 			vo.setMemberName(item.getUsername());
 			vo.setNickName(item.getNickname());
 			vo.setReferralCode(item.getReferralCode());
@@ -295,7 +295,6 @@ public class MemberController extends BaseController{
 					}
 				}
 			}
-
 			vo.setBetResultTotal(betResultTotal);
 			vo.setDividendTotal(dividendTotal);
 			vo.setWaterTotal(waterTotal);
