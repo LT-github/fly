@@ -31,4 +31,7 @@ public class MemberFindPage extends DataQueryObjectPage {
 
 	@QueryField(name = "isHaveHandicap",type =QueryType.EQUAL)
 	private Integer isHaveHandicap;
+
+	@QueryField(name = "type",type = QueryType.EQUAL)
+	private Integer type;
 }

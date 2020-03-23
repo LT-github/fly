@@ -122,8 +122,8 @@ public class GlobalConstant {
 		RANGE_YINGLI(6,"区间分红"),
 		DESCEND(7,"下分"),
 		BET_WIN(8,"下注获胜"),
-		RECOMMEND_LIUSHUI(9,"推手区间回水"),
-		RECOMMEND_YINGLI(10,"推手区间盈利");
+		REFERRAL_LIUSHUI(9,"推手区间回水"),
+		REFERRAL_YINGLI(10,"推手区间盈利");
 
 
 		private int code;

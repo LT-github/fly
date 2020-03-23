@@ -33,4 +33,8 @@ public class Member extends User{
     @Column
     private Integer isHaveHandicap;
 
+    //邀请码
+    @Column
+    private String referralCode;
+
 }

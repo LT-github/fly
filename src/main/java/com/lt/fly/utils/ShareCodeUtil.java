@@ -98,10 +98,26 @@ public class ShareCodeUtil {
         return res;
     }
 
+    private static final char chars[] = {'J', '4', 'B', 'X', 'E', 'V', 'F', 'G', 'W', 'I', 'A', 'K',
+            '7', '5', 'N', 'P', 'Q', 'R', 'S', '3', 'U', '1', 'C', '2', 'T', '6', 'H', 'Y', '8', 'M', 'L', 'D'};
+
+    public static String genInviteCode(long id, int len) {
+        char[] a = new char[len];
+        for (int i = 0; i < a.length; i++) {
+            int pow = (int) Math.pow(chars.length, i);
+            a[i] = charAtStuff((int) (id / pow % chars.length) + i);
+        }
+        return String.valueOf(a);
+    }
+
+    private static char charAtStuff(int index) {
+        return index < chars.length ? chars[index] : chars[index - chars.length];
+    }
+
     public static void main(String[] args) {
-        String code = toSerialCode(1638544160802816l);
-        Long id = codeToId(code);
+        String code = genInviteCode(6640942651279360l,6);
+//        Long id = codeToId(code);
         System.out.println(code);
-        System.out.println(id);
+//        System.out.println(id);
     }
 }

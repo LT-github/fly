@@ -5,6 +5,7 @@ import java.util.List;
 import com.lt.fly.annotation.UserLoginToken;
 import com.lt.fly.dao.IHandicapRepository;
 import com.lt.fly.dao.IMemberRepository;
+import com.lt.fly.entity.Finance;
 import com.lt.fly.entity.Handicap;
 import com.lt.fly.entity.Member;
 import com.lt.fly.entity.User;
@@ -22,6 +23,8 @@ import com.lt.fly.web.req.MemberTypeEdit;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.vo.MemberFinanceVo;
 import com.lt.fly.web.vo.MemberVo;
+import com.lt.fly.web.vo.ReferralMemberVo;
+import jdk.nashorn.internal.objects.Global;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -79,10 +82,20 @@ public class MemberController extends BaseController{
 		}
 
 		//设置推荐人
-		if (null != obj.getReferralCode()){
-            Long memberId = ShareCodeUtil.codeToId(obj.getReferralCode());
-            Member modifyUser = isNotNull(iMemberRepository.findById(memberId),"邀请码不正确!");
+		if (null != obj.getReferralCode() && !obj.getReferralCode().isEmpty()){
+            Member modifyUser = iMemberRepository.findByReferralCode(obj.getReferralCode());
+            if (null == modifyUser){
+            	throw new ClientErrorException("邀请码不正确");
+			}
+            if (!modifyUser.getType().equals(GlobalConstant.MemberType.REFERRER.getCode())){
+            	throw new ClientErrorException("邀请码为'"+obj.getReferralCode()+"'的用户不是推手");
+			}
             member.setModifyUser(modifyUser);
+		}
+
+		//设置推手会员
+		if (obj.getType().equals(GlobalConstant.MemberType.REFERRER.getCode())) {
+			member.setReferralCode(ShareCodeUtil.genInviteCode(member.getId(),6));
 		}
 
 		member.setCreateTime(System.currentTimeMillis());
@@ -206,6 +219,11 @@ public class MemberController extends BaseController{
 
 		Member member = isNotNull(iMemberRepository.findById(id),"会员id查询不到实体");
 		member.setType(req.getType());
+		//设置推手会员
+		if (req.getType().equals(GlobalConstant.MemberType.REFERRER.getCode())) {
+			member.setReferralCode(ShareCodeUtil.genInviteCode(member.getId(),6));
+		}
+
 
 		String msg = null;
 		if (req.getType().equals(GlobalConstant.MemberType.GENERAL.getCode())){
@@ -216,6 +234,51 @@ public class MemberController extends BaseController{
 			throw new ClientErrorException("会员类型不存在");
 		}
 		return HttpResult.success(new MemberVo(member),"更新"+member.getNickname()+"成为"+msg+"成功!");
+	}
+
+
+	/**
+	 * 推手列表管理
+	 * @return
+	 * @throws ClientErrorException
+	 */
+	@UserLoginToken
+	@GetMapping("referrer")
+	public HttpResult findReferrer(MemberFindPage query) throws ClientErrorException{
+		//设置为推手会员
+		query.setType(GlobalConstant.MemberType.REFERRER.getCode());
+		Page<Member> page = iMemberRepository.findAll(query);
+		for (Member item :
+				page.getContent()) {
+			ReferralMemberVo vo = new ReferralMemberVo();
+			if (null != item.getModifyUser()){
+				vo.setReferralName(item.getModifyUser().getUsername());
+			}
+
+			vo.setMemberName(item.getUsername());
+			vo.setNickName(item.getNickname());
+			vo.setReferralCode(item.getReferralCode());
+			//被推荐的用户
+			List<Member> members = iMemberRepository.findByModifyUser(item);
+			if (null != members && 0 != members.size()){
+				vo.setReferralNumber(members.size());
+				for (Member member:
+					 	members) {
+					if (null != member.getFinances() && 0 != member.getFinances().size()) {
+
+					}
+
+				}
+
+			}
+
+
+
+
+
+		}
+
+		return null;
 	}
 
 }
