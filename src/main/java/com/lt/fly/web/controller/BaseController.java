@@ -41,7 +41,7 @@ public class BaseController {
 	}
 
 	protected <T> void existsForName(T t,String msg) throws ClientErrorException{
-		 if (null == t){
+		 if (null != t){
 		 	throw new ClientErrorException(msg);
 		 }
 	}
