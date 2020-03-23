@@ -45,6 +45,12 @@ public class MemberVo {
 
 	//盘口名称
 	private String HandicapName;
+
+	//会员类型
+	private Integer type;
+
+	//邀请码
+	private String referralCode;
 	
 	
 	public MemberVo() {
