@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,4 +21,6 @@ public class MemberAddBySystem extends MemberAddByClient{
 
 	@NotNull(message = "会员类型不能为空")
 	private Integer type;
+
+	private List<Long> proportionIds;
 }

@@ -1,15 +1,19 @@
 package com.lt.fly.web.controller;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.lt.fly.annotation.UserLoginToken;
 import com.lt.fly.dao.IHandicapRepository;
 import com.lt.fly.dao.IMemberRepository;
+import com.lt.fly.dao.IProportionRepository;
 import com.lt.fly.entity.Finance;
 import com.lt.fly.entity.Handicap;
 import com.lt.fly.entity.Member;
+import com.lt.fly.entity.Proportion;
 import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.jpa.support.DataQueryObjectPage;
 import com.lt.fly.utils.*;
@@ -50,6 +54,9 @@ public class MemberController extends BaseController{
 	
 	@Autowired
 	private IMemberRepository iMemberRepository;
+
+	@Autowired
+	private IProportionRepository iProportionRepository;
 	
 	/**
 	 *  添加会员
@@ -96,6 +103,7 @@ public class MemberController extends BaseController{
 		if (obj.getType().equals(GlobalConstant.MemberType.REFERRER.getCode())) {
 			member.setReferralCode(ShareCodeUtil.genInviteCode(member.getId(),6));
 		}
+		eidtProportion(member, obj.getProportionIds(), obj.getType());
 
 		member.setCreateTime(System.currentTimeMillis());
 		member.setCreateUser(getLoginUser());
@@ -103,7 +111,8 @@ public class MemberController extends BaseController{
 		iMemberRepository.save(member);
 		return HttpResult.success(new MemberVo(member), "添加成功");
 	}
-	
+
+
 	/**
 	 * 编辑会员信息
 	 * @param id
@@ -117,7 +126,7 @@ public class MemberController extends BaseController{
 	public HttpResult<MemberVo> editStore(@PathVariable Long id , @RequestBody @Validated MemberEditBySystem obj ,
 			BindingResult bindingResult) throws ClientErrorException{
 		this.paramsValid(bindingResult);
-		
+
 		Member objEdit = isNotNull(iMemberRepository.findById(id),"会员id查询不到实体");
 		BeanUtils.copyProperties(obj, objEdit);
 		if (null == obj.getNickname())
@@ -132,11 +141,14 @@ public class MemberController extends BaseController{
 			objEdit.setIsHaveHandicap(GlobalConstant.IsHaveHandicap.NOT.getCode());
 		}
 
+		// 设置返点
+		eidtProportion(objEdit, obj.getProportionIds(), obj.getType());
+
 		iMemberRepository.save(objEdit);
-		
+
 		return HttpResult.success(new MemberVo(objEdit), "编辑成功");
 	}
-	
+
 	/**
 	 * 查询所有会员-分页
 	 * @param query
@@ -157,7 +169,7 @@ public class MemberController extends BaseController{
 
 		return HttpResult.success(prp, "查询成功");
 	}
-	
+
 	/**
 	 * 查询所有会员,不分页
 	 * @return
@@ -172,7 +184,7 @@ public class MemberController extends BaseController{
 		List<Member> list = iMemberRepository.findAll(query);
 		return HttpResult.success(MemberVo.toVo(list), "查询成功");
 	}
-	
+
 	/**
 	 * 停封会员
 	 * @param id
@@ -186,10 +198,10 @@ public class MemberController extends BaseController{
 
 		member.setStatus(GlobalConstant.UserStatus.PROHIBIT.getCode());
 		iMemberRepository.save(member);
-		
+
 		return HttpResult.success(new MemberVo(member), "会员" + member.getNickname() + "被停封");
 	}
-	
+
 	/**
 	 *  按照id查询
 	 * @param id
@@ -201,7 +213,7 @@ public class MemberController extends BaseController{
 	public HttpResult<MemberVo> findById(@PathVariable Long id)throws ClientErrorException{
 
 		Member member = isNotNull(iMemberRepository.findById(id),"会员id查询不到实体");
-		
+
 		return HttpResult.success(new MemberVo(member), "查询成功");
 	}
 
@@ -331,6 +343,13 @@ public class MemberController extends BaseController{
 	}
 
 
+	/**
+	 * 推手详情页
+	 * @param id
+	 * @param req
+	 * @return
+	 * @throws ClientErrorException
+	 */
 	@PutMapping("referrer/{id}")
 	@UserLoginToken
 	public HttpResult putProportion(@PathVariable Long id, @RequestBody ReferrerEdit req) throws ClientErrorException {
@@ -339,5 +358,21 @@ public class MemberController extends BaseController{
 			throw new ClientErrorException("此会员不是推手会员");
 		}
 		return null;
+	}
+
+	// 设置返点
+	private void eidtProportion(Member member, List<Long> proportionIds2, Integer type) throws ClientErrorException {
+		if (null != proportionIds2 && 0 != proportionIds2.size()) {
+			if (type.equals(GlobalConstant.MemberType.GENERAL.getCode())) {
+				throw new ClientErrorException("普通会员无权设置返点!");
+			}
+			List<Long> proportionIds = proportionIds2;
+			Set<Proportion> pro = new HashSet<>();
+			for (Long proportionId : proportionIds) {
+				Proportion proportion = isNotNull(iProportionRepository.findById(proportionId), "添加的返点不存在");
+				pro.add(proportion);
+			}
+			member.setProportions(pro);
+		}
 	}
 }
