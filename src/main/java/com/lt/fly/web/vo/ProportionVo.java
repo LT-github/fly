@@ -14,7 +14,7 @@ public class ProportionVo{
 	private Double proportionVal;
 	private DataDictionaryVo returnPointType;
 	private String description;
-	private String moneyRange;
+	private String rangeMoney;
 	public ProportionVo() {}
 	
 	public ProportionVo(Proportion proportion) {
@@ -23,7 +23,7 @@ public class ProportionVo{
 		this.proportionVal = proportion.getProportionVal();
 		this.returnPointType = new DataDictionaryVo(proportion.getReturnPoint());
 		if(null != proportion.getRanges()) {
-			this.moneyRange = proportion.getRanges();
+			this.rangeMoney = proportion.getRanges();
 		}
 		
 	}

@@ -56,7 +56,8 @@ public class ProportionController extends BaseController {
         Proportion objSave = new Proportion();
         DataDictionary returnPoint = isNotNull(iDataDictionaryRepository.findById(obj.getReturnPointTypeId()),"返点比例不存在");
 
-        if(CommonsUtil.RANGE_LIUSHUI_RETURN_POINT .equals(returnPoint.getId()) || CommonsUtil.RANGE_YINGLI_RETURN_POINT .equals(returnPoint.getId())) {
+        if(CommonsUtil.RANGE_LIUSHUI_RETURN_POINT .equals(returnPoint.getId()) || CommonsUtil.RANGE_YINGLI_RETURN_POINT .equals(returnPoint.getId())
+        ||CommonsUtil.REFERRAL_LIUSHUI_RETURN_POINT.equals(returnPoint.getId()) || CommonsUtil.REFERRAL_YINGLI_RETURN_POINT.equals(returnPoint.getId())) {
             if(null != obj.getRangeMoney()) {
                 objSave.setRanges(obj.getRangeMoney());
             }else {
