@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.lt.fly.entity.Member;
+import com.lt.fly.utils.GlobalConstant;
+import jdk.nashorn.internal.objects.Global;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.catalina.Store;
@@ -54,6 +56,8 @@ public class MemberVo {
 
 	//邀请码
 	private String referralCode;
+
+	private List<ProportionVo> proportionVos;
 	
 	
 	public MemberVo() {
@@ -66,6 +70,9 @@ public class MemberVo {
 		}
 		if (null != obj.getModifyUser()){
 			this.referrerName = obj.getModifyUser().getUsername();
+		}
+		if (null != obj.getProportions() && 0 !=obj.getProportions().size()){
+			this.setProportionVos(ProportionVo.toVo(new ArrayList<>(obj.getProportions())));
 		}
 	}
 	

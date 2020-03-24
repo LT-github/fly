@@ -6,6 +6,7 @@ import com.lt.fly.entity.*;
 import com.lt.fly.utils.*;
 import com.lt.fly.web.query.FinanceFind;
 import com.lt.fly.web.query.ReturnPointFindPage;
+import com.lt.fly.web.req.FinanceAdd;
 import com.lt.fly.web.req.ReturnSettle;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.vo.ReturnPointVo;
@@ -121,9 +122,6 @@ public class FinanceController extends BaseController{
 		return HttpResult.success(resp,"获取待结算列表成功!");
 	}
 
-
-
-
 	/**
 	 * 结算返点
 	 * @param memberId
@@ -134,7 +132,7 @@ public class FinanceController extends BaseController{
 	 */
 	@PutMapping("/return/{memberId}")
 	@UserLoginToken
-	HttpResult settle(@PathVariable Long memberId, @RequestBody @Validated ReturnSettle req, BindingResult bindingResult) throws ClientErrorException{
+	public HttpResult settle(@PathVariable Long memberId, @RequestBody @Validated ReturnSettle req, BindingResult bindingResult) throws ClientErrorException{
 		this.paramsValid(bindingResult);
 		GlobalConstant.FinanceType type = null;
 		if (req.getType().equals(RANGE_LIUSHUI.getCode())) {
@@ -167,6 +165,12 @@ public class FinanceController extends BaseController{
 		return HttpResult.success(new FinanceVo(finance),"结算成功");
 	}
 
+	@PutMapping("score")
+	@UserLoginToken
+	public HttpResult updateScore(@RequestBody FinanceAdd req) throws ClientErrorException{
+
+		return null;
+	}
 
 	/**
 	 * 会员用户的返点Vo
