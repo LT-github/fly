@@ -2,6 +2,8 @@ package com.lt.fly.web.vo;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class ReferrerMemberVo {
 
@@ -33,5 +35,8 @@ public class ReferrerMemberVo {
 
     //状态
     private Integer status;
+
+    //返点比例
+    private List<ProportionVo> proportionVos;
 
 }

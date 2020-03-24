@@ -26,6 +26,7 @@ import com.lt.fly.web.req.ReferrerEdit;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.vo.MemberFinanceVo;
 import com.lt.fly.web.vo.MemberVo;
+import com.lt.fly.web.vo.ProportionVo;
 import com.lt.fly.web.vo.ReferrerMemberVo;
 import org.apache.dubbo.remoting.Client;
 import org.springframework.beans.BeanUtils;
@@ -280,6 +281,9 @@ public class MemberController extends BaseController{
 			vo.setNickName(item.getNickname());
 			vo.setReferralCode(item.getReferralCode());
 			vo.setStatus(item.getStatus());
+			if (null != item.getProportions() && 0 !=item.getProportions().size()){
+				vo.setProportionVos(ProportionVo.toVo(new ArrayList<>(item.getProportions())));
+			}
 			//被推荐的用户
 			List<Member> members = iMemberRepository.findByModifyUser(item);
 			if (null != members && 0 != members.size()){
@@ -337,7 +341,6 @@ public class MemberController extends BaseController{
 		List<Member> memberList = members.stream().limit(query.getSize()).skip(query.getPage()).collect(Collectors.toList());
 
 		PageResp resp = new PageResp(query.getPage(), query.getSize(), totalPageNum, count, MemberFinanceVo.tovo(memberList));
-
 
 		return HttpResult.success(resp,"获取推荐详情列表成功!");
 	}
