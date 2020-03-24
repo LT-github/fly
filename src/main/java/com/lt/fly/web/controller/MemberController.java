@@ -267,6 +267,7 @@ public class MemberController extends BaseController{
 			vo.setMemberName(item.getUsername());
 			vo.setNickName(item.getNickname());
 			vo.setReferralCode(item.getReferralCode());
+			vo.setStatus(item.getStatus());
 			//被推荐的用户
 			List<Member> members = iMemberRepository.findByModifyUser(item);
 			if (null != members && 0 != members.size()){
