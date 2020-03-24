@@ -22,6 +22,7 @@ import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.web.req.JudgeAuditFinanceReq;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.lt.fly.utils.GlobalConstant.FinanceType.*;
 
@@ -93,10 +94,18 @@ public class FinanceController extends BaseController{
 		//找到所有会员
 		Page<Member> page = iMemberRepository.findAll(query);
 		PageResp resp = new PageResp(page);
+		List<Member> members = page.getContent();
+
 		List<ReturnPointVo> list = new ArrayList<>();
 		List<ReturnPointVo> allList = new ArrayList<>();
+		if (query.getType().equals(REFERRAL_LIUSHUI.getCode()) || query.getType().equals(REFERRAL_YINGLI.getCode())) {
+			members = page.getContent().stream()
+					.filter((Member member) -> member.getType().equals(GlobalConstant.MemberType.REFERRER.getCode()))
+					.collect(Collectors.toList());
+		}
+
 		for (Member item :
-				page.getContent()) {
+				members) {
 			ReturnPointVo vo = getReturnPointVo(query.getType(), item);
 			if (vo.getTime().equals(0l) && vo.getMoney()>0) {
 				list.add(vo);
@@ -160,7 +169,7 @@ public class FinanceController extends BaseController{
 
 
 	/**
-	 * 普通会员用户的返点Vo
+	 * 会员用户的返点Vo
 	 */
 	private ReturnPointVo getReturnPointVo(Integer type, Member member) throws ClientErrorException {
 
@@ -172,11 +181,18 @@ public class FinanceController extends BaseController{
 		List<Finance> finances = null;
 		//上次结算财务记录
 		Finance last = iFinanceRepository.findNew(type,member.getId());
-		money = getMoney(type, member, last);
+
 
 		//找到返点值
 		Handicap handicap = member.getHandicap();
-		Set<Proportion> proportions = handicap.getProportions();
+		Set<Proportion> proportions = null;
+		if (type.equals(REFERRAL_LIUSHUI.getCode()) || type.equals(REFERRAL_YINGLI.getCode())) {
+			proportions = member.getProportions();
+			money = getAllMoney(type,member,last);
+		} else {
+			money = getMoney(type, member, last);
+			proportions = handicap.getProportions();
+		}
 		for (Proportion proportion :
 				proportions) {
 			if (type.equals(RANGE_LIUSHUI.getCode())) {
@@ -197,7 +213,7 @@ public class FinanceController extends BaseController{
 	}
 
 	/*
-	返点金额
+	普通会员的返点金额
 	 */
 	private double getMoney(Integer type, Member member, Finance last) {
 		double money = 0;
@@ -228,15 +244,16 @@ public class FinanceController extends BaseController{
 	}
 
 	/*
-	推手会员的返点vo
+	推手会员的返点金额
 	 */
-	private ReturnPointVo getReturnpointVo(Integer type,List<Member> members){
-		ReturnPointVo vo = new ReturnPointVo();
-		double returnPoint = 0;
-
+	private double getAllMoney(Integer type, Member member, Finance last) {
 		double money = 0;
-
-		return vo;
+		List<Member> members = iMemberRepository.findByModifyUser(member);
+		for (Member item :
+				members) {
+			money = Arith.add(money,getMoney(type,item,last));
+		}
+		return money;
 	}
 
 

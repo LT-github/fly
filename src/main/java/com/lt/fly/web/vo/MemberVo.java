@@ -49,6 +49,9 @@ public class MemberVo {
 	//会员类型
 	private Integer type;
 
+	//推荐人
+	private String referrerName;
+
 	//邀请码
 	private String referralCode;
 	
@@ -60,6 +63,9 @@ public class MemberVo {
 		if (null != obj.getHandicap()) {
 			this.HandicapId = obj.getHandicap().getId();
 			this.HandicapName = obj.getHandicap().getName();
+		}
+		if (null != obj.getModifyUser()){
+			this.referrerName = obj.getModifyUser().getUsername();
 		}
 	}
 	

@@ -3,7 +3,7 @@ package com.lt.fly.web.vo;
 import lombok.Data;
 
 @Data
-public class ReferralMemberVo {
+public class ReferrerMemberVo {
 
     private Long id;
 
@@ -30,5 +30,8 @@ public class ReferralMemberVo {
 
     //推荐码
     private String referralCode;
+
+    //状态
+    private Integer status;
 
 }

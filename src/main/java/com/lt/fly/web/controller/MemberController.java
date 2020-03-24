@@ -3,7 +3,6 @@ package com.lt.fly.web.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.lt.fly.annotation.UserLoginToken;
 import com.lt.fly.dao.IHandicapRepository;
@@ -12,7 +11,6 @@ import com.lt.fly.entity.Finance;
 import com.lt.fly.entity.Handicap;
 import com.lt.fly.entity.Member;
 import com.lt.fly.exception.ClientErrorException;
-import com.lt.fly.jpa.support.DataQueryObject;
 import com.lt.fly.jpa.support.DataQueryObjectPage;
 import com.lt.fly.utils.*;
 import com.lt.fly.web.query.MemberFind;
@@ -20,10 +18,12 @@ import com.lt.fly.web.req.MemberAddBySystem;
 import com.lt.fly.web.query.MemberFindPage;
 import com.lt.fly.web.req.MemberEditBySystem;
 import com.lt.fly.web.req.MemberTypeEdit;
+import com.lt.fly.web.req.ReferrerEdit;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.vo.MemberFinanceVo;
 import com.lt.fly.web.vo.MemberVo;
-import com.lt.fly.web.vo.ReferralMemberVo;
+import com.lt.fly.web.vo.ReferrerMemberVo;
+import org.apache.dubbo.remoting.Client;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -248,7 +248,7 @@ public class MemberController extends BaseController{
 		query.setType(GlobalConstant.MemberType.REFERRER.getCode());
 		Page<Member> page = iMemberRepository.findAll(query);
 		PageResp resp = new PageResp(page);
-		List<ReferralMemberVo> referralMemberVos = new ArrayList<>();
+		List<ReferrerMemberVo> referralMemberVos = new ArrayList<>();
 
 		//总流水
 		double waterTotal = 0;
@@ -259,7 +259,7 @@ public class MemberController extends BaseController{
 
 		for (Member item :
 				page.getContent()) {
-			ReferralMemberVo vo = new ReferralMemberVo();
+			ReferrerMemberVo vo = new ReferrerMemberVo();
 			if (null != item.getModifyUser()){
 				vo.setReferralName(item.getModifyUser().getUsername());
 			}
@@ -327,5 +327,16 @@ public class MemberController extends BaseController{
 
 
 		return HttpResult.success(resp,"获取推荐详情列表成功!");
+	}
+
+
+	@PutMapping("referrer/{id}")
+	@UserLoginToken
+	public HttpResult putProportion(@PathVariable Long id, @RequestBody ReferrerEdit req) throws ClientErrorException {
+		Member member = isNotNull(iMemberRepository.findById(id),"传递的推手id不存在实体");
+		if (null == member.getType() || member.getType().equals(GlobalConstant.MemberType.GENERAL.getCode())) {
+			throw new ClientErrorException("此会员不是推手会员");
+		}
+		return null;
 	}
 }
