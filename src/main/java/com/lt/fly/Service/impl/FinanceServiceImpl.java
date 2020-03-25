@@ -66,13 +66,20 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 			case BET:
 				finance.setCountType(GlobalConstant.CountType.SUBTRACT.getCode());
 				break;
-			//撤销,下注获胜
-			case CANCLE:case BET_WIN:
+			//撤销,下注获胜,//返点
+			case CANCLE:case BET_WIN:case TIMELY_LIUSHUI:case RANGE_LIUSHUI:case RANGE_YINGLI:
+			case REFERRAL_YINGLI:case REFERRAL_LIUSHUI:
 				finance.setCountType(GlobalConstant.CountType.ADD.getCode());
 				break;
-			//返点
-			case TIMELY_LIUSHUI:case RANGE_LIUSHUI:case RANGE_YINGLI:
+			//系统上分
+			case SYSTEM_RECHARGE:
 				finance.setCountType(GlobalConstant.CountType.ADD.getCode());
+				finance.setModifyUser(getLoginUser());
+				break;
+			//系统下分
+			case SYSTEM_DESCEND:
+				finance.setCountType(GlobalConstant.CountType.SUBTRACT.getCode());
+				finance.setModifyUser(getLoginUser());
 				break;
 			default:
 				break;

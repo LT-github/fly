@@ -23,7 +23,7 @@ public class MemberVo {
 	
 	// 密码
 	private String password;
-	
+
 	// 昵称
 	private String nickname;
 	
@@ -71,7 +71,7 @@ public class MemberVo {
 		if (null != obj.getModifyUser()){
 			this.referrerName = obj.getModifyUser().getUsername();
 		}
-		if (null != obj.getProportions() && 0 !=obj.getProportions().size()){
+		if (type.equals(GlobalConstant.MemberType.REFERRER.getCode()) && null != obj.getProportions() && 0 !=obj.getProportions().size()){
 			this.setProportionVos(ProportionVo.toVo(new ArrayList<>(obj.getProportions())));
 		}
 	}

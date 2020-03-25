@@ -22,4 +22,7 @@ public class MemberAddByClient {
 
     //推荐码
     private String referralCode;
+
+    //确认密码
+    private String confirmPassword;
 }

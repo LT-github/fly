@@ -165,11 +165,40 @@ public class FinanceController extends BaseController{
 		return HttpResult.success(new FinanceVo(finance),"结算成功");
 	}
 
-	@PutMapping("score")
+	/**
+	 * 系统上分
+	 * @param id
+	 * @param req
+	 * @return
+	 * @throws ClientErrorException
+	 */
+	@PutMapping("recharge/{id}")
 	@UserLoginToken
-	public HttpResult updateScore(@RequestBody FinanceAdd req) throws ClientErrorException{
+	public HttpResult recharge(@PathVariable Long id,@RequestBody FinanceAdd req) throws ClientErrorException{
+		Member member = isNotNull(iMemberRepository.findById(id),"传递的会员id没有实体");
+		Finance finance = iFinanceService.add(member,req.getMoney(),null, SYSTEM_RECHARGE);
+		return HttpResult.success(new FinanceVo(finance),"给"+member.getUsername()+"上分"+req.getMoney()+"成功");
+	}
 
-		return null;
+	/**
+	 * 系统下分
+	 * @param id
+	 * @param req
+	 * @return
+	 * @throws ClientErrorException
+	 */
+	@PutMapping("descend/{id}")
+	@UserLoginToken
+	public HttpResult descend(@PathVariable Long id,@RequestBody FinanceAdd req) throws ClientErrorException{
+		Member member = isNotNull(iMemberRepository.findById(id),"传递的会员id没有实体");
+		//先查余额
+		double balance = iFinanceService.reckonBalance(member.getId());
+		if(balance<req.getMoney()){
+			throw new ClientErrorException("余额不足");
+		}
+		Finance finance = iFinanceService.add(member,req.getMoney(),balance, SYSTEM_DESCEND);
+		iFinanceRepository.save(finance);
+		return HttpResult.success(new FinanceVo(finance),"给"+member.getUsername()+"下分"+req.getMoney()+"成功");
 	}
 
 	/**
@@ -182,7 +211,6 @@ public class FinanceController extends BaseController{
 
 		double money = 0;
 
-		List<Finance> finances = null;
 		//上次结算财务记录
 		Finance last = iFinanceRepository.findNew(type,member.getId());
 
@@ -190,6 +218,7 @@ public class FinanceController extends BaseController{
 		//找到返点值
 		Handicap handicap = member.getHandicap();
 		Set<Proportion> proportions = null;
+		//普通会员与推手会员的返点
 		if (type.equals(REFERRAL_LIUSHUI.getCode()) || type.equals(REFERRAL_YINGLI.getCode())) {
 			proportions = member.getProportions();
 			money = getAllMoney(type,member,last);

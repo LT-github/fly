@@ -73,6 +73,12 @@ public class MemberController extends BaseController{
 		this.paramsValid(bindingResult);
 
 		existsForName(iMemberRepository.findByUsername(obj.getUsername()),"会员名已经存在");
+
+		//判断两次密码是否一致
+		if (!obj.getPassword().equals(obj.getConfirmPassword())) {
+			throw new ClientErrorException("两次密码不一致");
+		}
+
 		Member member = new Member();
 		member.setId(idWorker.nextId());
 		member.setCreateTime(System.currentTimeMillis());

@@ -120,11 +120,21 @@ public class GlobalConstant {
 		DESCEND(7,"下分"),
 		BET_WIN(8,"下注获胜"),
 		REFERRAL_LIUSHUI(9,"推手区间回水"),
-		REFERRAL_YINGLI(10,"推手区间盈利");
+		REFERRAL_YINGLI(10,"推手区间盈利"),
+		SYSTEM_RECHARGE(11,"系统上分"),
+		SYSTEM_DESCEND(12,"系统下分");
 
 
 		private int code;
 		private String msg;
+
+		public static FinanceType getFinanceTypeByCode(int code){
+			for (FinanceType type : values()) {
+				if(type.getCode() == (code))
+					return type;
+			}
+			return  null;
+		}
 
 		FinanceType(int code, String msg) {
 			this.code = code;

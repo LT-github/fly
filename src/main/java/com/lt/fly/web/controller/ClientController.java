@@ -88,6 +88,10 @@ public class ClientController extends BaseController{
 
         existsForName(iMemberRepository.findByUsername(obj.getUsername()),"会员名已经存在");
 
+        //判断两次密码是否一致
+        if (!obj.getPassword().equals(obj.getConfirmPassword())) {
+            throw new ClientErrorException("两次密码不一致");
+        }
         Member member = new Member();
         member.setId(idWorker.nextId());
         member.setCreateTime(System.currentTimeMillis());
@@ -97,12 +101,19 @@ public class ClientController extends BaseController{
             member.setNickname(obj.getUsername());
         }
 
-        if (null != obj.getReferralCode()){
-            Long memberId = ShareCodeUtil.codeToId(obj.getReferralCode());
-            Member modifyUser = isNotNull(iMemberRepository.findById(memberId),"邀请码不正确!");
+        //设置推荐人
+        if (null != obj.getReferralCode() && !obj.getReferralCode().isEmpty()){
+            Member modifyUser = iMemberRepository.findByReferralCode(obj.getReferralCode());
+            if (null == modifyUser){
+                throw new ClientErrorException("邀请码不正确");
+            }
+            if (!modifyUser.getType().equals(GlobalConstant.MemberType.REFERRER.getCode())){
+                throw new ClientErrorException("邀请码为'"+obj.getReferralCode()+"'的用户不是推手");
+            }
             member.setModifyUser(modifyUser);
         }
 
+        member.setIsHaveHandicap(GlobalConstant.IsHaveHandicap.NOT.getCode());
         member.setCreateTime(System.currentTimeMillis());
 
         iMemberRepository.save(member);
@@ -285,7 +296,7 @@ public class ClientController extends BaseController{
         if(balance<req.getMoney()){
             throw new ClientErrorException("余额不足");
         }
-        Finance finance = iFinanceService.add((Member) getLoginUser(),req.getMoney(),null, DESCEND);
+        Finance finance = iFinanceService.add((Member) getLoginUser(),req.getMoney(),balance, DESCEND);
         iFinanceRepository.save(finance);
         return HttpResult.success(new FinanceVo(finance),"下分申请提交成功");
     }

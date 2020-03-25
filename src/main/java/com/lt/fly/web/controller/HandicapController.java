@@ -104,10 +104,10 @@ public class HandicapController extends BaseController {
 
         // 设置返点
         List<Long> proportionIds = obj.getProportionIds();
-        Set<Proportion> pro=new HashSet<>();
-        for(Long proportionId : proportionIds) {
-            Proportion proportion = isNotNull(iProportionRepository.findById(proportionId),"添加的返点不存在");
-            pro.add(proportion);
+            Set<Proportion> pro=new HashSet<>();
+            for(Long proportionId : proportionIds) {
+                Proportion proportion = isNotNull(iProportionRepository.findById(proportionId),"添加的返点不存在");
+                pro.add(proportion);
 
         }
         objSave.setProportions(pro);
