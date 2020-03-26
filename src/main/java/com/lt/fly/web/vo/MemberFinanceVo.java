@@ -90,12 +90,12 @@ public class MemberFinanceVo extends MemberVo {
                     balance = Arith.add(balance,item.getMoney());
                 }
                 //系统下分
-                if (item.getType().equals(SYSTEM_DESCEND)) {
+                if (item.getType().equals(SYSTEM_DESCEND.getCode())) {
                     //余额-
                     balance = Arith.sub(balance,item.getMoney());
                 }
                 //系统上分
-                if (item.getType().equals(SYSTEM_RECHARGE)) {
+                if (item.getType().equals(SYSTEM_RECHARGE.getCode())) {
                     //余额+
                     balance = Arith.add(balance,item.getMoney());
                 }
