@@ -89,6 +89,17 @@ public class MemberFinanceVo extends MemberVo {
                     //余额+
                     balance = Arith.add(balance,item.getMoney());
                 }
+                //系统下分
+                if (item.getType().equals(SYSTEM_DESCEND)) {
+                    //余额-
+                    balance = Arith.sub(balance,item.getMoney());
+                }
+                //系统上分
+                if (item.getType().equals(SYSTEM_RECHARGE)) {
+                    //余额+
+                    balance = Arith.add(balance,item.getMoney());
+                }
+
             }
         }
     }
