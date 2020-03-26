@@ -9,6 +9,7 @@ import com.lt.fly.web.query.ReturnPointFindPage;
 import com.lt.fly.web.req.FinanceAdd;
 import com.lt.fly.web.req.ReturnSettle;
 import com.lt.fly.web.resp.PageResp;
+import com.lt.fly.web.vo.MemberVo;
 import com.lt.fly.web.vo.ReturnPointVo;
 import com.lt.fly.web.vo.FinanceVo;
 import com.sun.org.apache.regexp.internal.RE;
@@ -177,7 +178,7 @@ public class FinanceController extends BaseController{
 	public HttpResult recharge(@PathVariable Long id,@RequestBody FinanceAdd req) throws ClientErrorException{
 		Member member = isNotNull(iMemberRepository.findById(id),"传递的会员id没有实体");
 		Finance finance = iFinanceService.add(member,req.getMoney(),null, SYSTEM_RECHARGE);
-		return HttpResult.success(new FinanceVo(finance),"给"+member.getUsername()+"上分"+req.getMoney()+"成功");
+		return HttpResult.success(new MemberVo(member),"给"+member.getUsername()+"上分"+req.getMoney()+"成功");
 	}
 
 	/**
@@ -198,7 +199,7 @@ public class FinanceController extends BaseController{
 		}
 		Finance finance = iFinanceService.add(member,req.getMoney(),balance, SYSTEM_DESCEND);
 		iFinanceRepository.save(finance);
-		return HttpResult.success(new FinanceVo(finance),"给"+member.getUsername()+"下分"+req.getMoney()+"成功");
+		return HttpResult.success(new MemberVo(member),"给"+member.getUsername()+"下分"+req.getMoney()+"成功");
 	}
 
 	/**
