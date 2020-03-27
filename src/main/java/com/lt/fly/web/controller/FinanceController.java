@@ -75,7 +75,6 @@ public class FinanceController extends BaseController{
 	@GetMapping
 	@UserLoginToken
 	public HttpResult find(FinanceFind query) throws ClientErrorException{
-		query.setPropertyName("createTime");
 		return HttpResult.success(iFinanceService.findAll(query),"查询财务列表成功!");
 	}
 
@@ -88,6 +87,10 @@ public class FinanceController extends BaseController{
 	@UserLoginToken
 	public HttpResult canReturnFind(ReturnPointFindPage query) throws ClientErrorException{
 
+		if(null == query.getFindType() || null == query.getType()){
+			throw new ClientErrorException("参数不能为空");
+		}
+
 		if (!query.getType().equals(RANGE_LIUSHUI.getCode())
 		&& !query.getType().equals(RANGE_YINGLI.getCode())
 		&& !query.getType().equals(REFERRAL_LIUSHUI.getCode())
@@ -96,35 +99,39 @@ public class FinanceController extends BaseController{
 		}
 
 		//找到所有会员
-		Page<Member> page = iMemberRepository.findAll(query);
-		PageResp resp = new PageResp(page);
-		List<Member> members = page.getContent();
+		List<Member> members = iMemberRepository.findAll(query);
 
 		List<ReturnPointVo> list = new ArrayList<>();
-		List<ReturnPointVo> allList = new ArrayList<>();
 		if (query.getType().equals(REFERRAL_LIUSHUI.getCode()) || query.getType().equals(REFERRAL_YINGLI.getCode())) {
-			members = page.getContent().stream()
+			members = members.stream()
 					.filter((Member member) -> member.getType().equals(GlobalConstant.MemberType.REFERRER.getCode()))
 					.collect(Collectors.toList());
 		}
 
 		for (Member item :
 				members) {
-			ReturnPointVo vo = getReturnPointVo(query.getType(), item);
-			if (vo.getTime().equals(0l) && vo.getMoney()>0) {
-				list.add(vo);
-			}
-			allList.add(vo);
+			list.add(getReturnPointVo(query.getType(), item));
 		}
 
-		if (query.getFindStatus()){
-			resp.setData(allList);
-		}else {
-			resp.setData(list);
-			resp.setEleTotalNum((long)list.size());
-			resp.setTotalPage((list.size()  +  query.getSize()  - 1) / query.getSize());
+		list = list.stream()
+				.filter((ReturnPointVo vo) -> vo.getMoney() > 0)
+				.collect(Collectors.toList());//过滤money<0或等于0的
+
+		if (query.getFindType().equals(GlobalConstant.FindReturnType.CAN.getCode())){
+			list = list.stream()
+					.filter((ReturnPointVo vo) -> vo.getTime() == 0)
+					.collect(Collectors.toList());
+		} else if (query.getFindType().equals(GlobalConstant.FindReturnType.WAIT.getCode())){
+			list = list.stream()
+					.filter((ReturnPointVo vo) -> vo.getTime() > 0)
+					.collect(Collectors.toList());
 		}
-		return HttpResult.success(resp,"获取待结算列表成功!");
+		list = list.stream()
+				.sorted(Comparator.comparing(ReturnPointVo::getMoney,Comparator.reverseOrder()).thenComparing(ReturnPointVo::getTime))//先按money降序,再按time升序
+				.skip(query.getPage() * (query.getSize() - 1))//分页
+				.limit(query.getSize())
+				.collect(Collectors.toList());
+		return HttpResult.success(new PageResp(query.getPage(), query.getSize(), (list.size()  +  query.getSize()  - 1) / query.getSize(), (long)list.size(), list),"获取待结算列表成功!");
 	}
 
 	/**
@@ -257,17 +264,25 @@ public class FinanceController extends BaseController{
 			money = getAllMoney(type,member,last);
 		} else {
 			money = getMoney(type, member, last);
-			proportions = handicap.getProportions();
+			if (null != handicap) {
+				proportions = handicap.getProportions();
+			}
 		}
-		for (Proportion proportion :
-				proportions) {
-			if (type.equals(RANGE_LIUSHUI.getCode())) {
-				returnPoint = getReturnPoint(money, proportion, CommonsUtil.RANGE_LIUSHUI_RETURN_POINT);
-			}
-			if (type.equals(RANGE_YINGLI.getCode())){
-				returnPoint = getReturnPoint(money, proportion, CommonsUtil.RANGE_YINGLI_RETURN_POINT);
-			}
 
+		if (null != proportions && 0 != proportions.size()){
+			for (Proportion proportion :
+					proportions) {
+				if (type.equals(RANGE_LIUSHUI.getCode())) {
+					returnPoint = getReturnPoint(money, proportion, CommonsUtil.RANGE_LIUSHUI_RETURN_POINT);
+				}
+				if (type.equals(RANGE_YINGLI.getCode())){
+					returnPoint = getReturnPoint(money, proportion, CommonsUtil.RANGE_YINGLI_RETURN_POINT);
+				}
+				if (returnPoint != 0){
+					break;
+				}
+
+			}
 		}
 
 		vo.setMoney(money);
