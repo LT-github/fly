@@ -1,19 +1,13 @@
 package com.lt.fly.web.controller;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.lt.fly.annotation.UserLoginToken;
 import com.lt.fly.dao.IHandicapRepository;
 import com.lt.fly.dao.IMemberRepository;
 import com.lt.fly.dao.IProportionRepository;
-import com.lt.fly.entity.Finance;
-import com.lt.fly.entity.Handicap;
-import com.lt.fly.entity.Member;
-import com.lt.fly.entity.Proportion;
+import com.lt.fly.entity.*;
 import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.jpa.support.DataQueryObjectPage;
 import com.lt.fly.utils.*;
@@ -79,10 +73,24 @@ public class MemberController extends BaseController{
 			throw new ClientErrorException("两次密码不一致");
 		}
 
+
 		Member member = new Member();
 		member.setId(idWorker.nextId());
 		member.setCreateTime(System.currentTimeMillis());
 		BeanUtils.copyProperties(obj, member);
+
+		try {
+			Map<String, Object> initKey = RsaUtils.initKey();
+			Security security = new Security();
+			security.setId(idWorker.nextId());
+			security.setPublicKey(RsaUtils.getPublicKey(initKey));
+			security.setPrivateKey(RsaUtils.getPrivateKey(initKey));
+			member.setSecurity(security);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ClientErrorException("生成秘钥异常");
+		}
+
 		if (null == obj.getNickname() || obj.getNickname().isEmpty())
 			member.setNickname(obj.getUsername());
 
@@ -352,22 +360,22 @@ public class MemberController extends BaseController{
 	}
 
 
-	/**
-	 * 推手详情页
-	 * @param id
-	 * @param req
-	 * @return
-	 * @throws ClientErrorException
-	 */
-	@PutMapping("referrer/{id}")
-	@UserLoginToken
-	public HttpResult putProportion(@PathVariable Long id, @RequestBody ReferrerEdit req) throws ClientErrorException {
-		Member member = isNotNull(iMemberRepository.findById(id),"传递的推手id不存在实体");
-		if (null == member.getType() || member.getType().equals(GlobalConstant.MemberType.GENERAL.getCode())) {
-			throw new ClientErrorException("此会员不是推手会员");
-		}
-		return null;
-	}
+//	/**
+//	 * 推手详情页
+//	 * @param id
+//	 * @param req
+//	 * @return
+//	 * @throws ClientErrorException
+//	 */
+//	@PutMapping("referrer/{id}")
+//	@UserLoginToken
+//	public HttpResult putProportion(@PathVariable Long id, @RequestBody ReferrerEdit req) throws ClientErrorException {
+//		Member member = isNotNull(iMemberRepository.findById(id),"传递的推手id不存在实体");
+//		if (null == member.getType() || member.getType().equals(GlobalConstant.MemberType.GENERAL.getCode())) {
+//			throw new ClientErrorException("此会员不是推手会员");
+//		}
+//		return null;
+//	}
 
 	// 设置返点
 	private void eidtProportion(Member member, List<Long> proportionIds2, Integer type) throws ClientErrorException {

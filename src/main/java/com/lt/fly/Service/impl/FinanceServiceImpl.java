@@ -3,6 +3,7 @@ package com.lt.fly.Service.impl;
 import java.math.BigDecimal;
 import com.lt.fly.dao.IMemberRepository;
 import com.lt.fly.entity.Member;
+import com.lt.fly.utils.Arith;
 import com.lt.fly.utils.GlobalConstant;
 import com.lt.fly.web.query.FinanceFind;
 import com.lt.fly.web.resp.PageResp;
@@ -91,21 +92,21 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 	@Override
 	public Double reckonBalance(Long userId) throws ClientErrorException {
 		Member member = isNotNull(iMemberRepository.findById(userId),"会员不存在");
-		BigDecimal sum = new BigDecimal(0);
+		double balance = 0;
 		for(Finance item:member.getFinances()){
 			if(item.getCountType().equals(GlobalConstant.CountType.ADD.getCode())){
-				sum = sum.add(new BigDecimal(item.getMoney().toString()));
+				balance = Arith.add(balance,item.getMoney());
 				if (null != item.getAuditStatus() && !item.getAuditStatus().equals(GlobalConstant.AuditStatus.AUDIT_PASS.getCode())) {
-					sum = sum.subtract(new BigDecimal(item.getMoney().toString()));
+					balance = Arith.sub(balance,item.getMoney());
 				}
 			} else {
-				sum = sum.subtract(new BigDecimal(item.getMoney().toString()));
+				balance = Arith.sub(balance,item.getMoney());
 				if (null != item.getAuditStatus() && !item.getAuditStatus().equals(GlobalConstant.AuditStatus.AUDIT_PASS.getCode())) {
-					sum = sum.add(new BigDecimal(item.getMoney().toString()));
+					balance = Arith.add(balance,item.getMoney());
 				}
 			}
 		}
-		return sum.doubleValue();
+		return balance;
 	}
 	
 	@Override

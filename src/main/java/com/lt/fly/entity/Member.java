@@ -42,4 +42,8 @@ public class Member extends User{
     @JoinTable(name = "t_member_proportion",joinColumns = @JoinColumn(name = "member_id"),
             inverseJoinColumns = @JoinColumn(name = " proportion_id"))
     private Set<Proportion> proportions;
+
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name = "security_id")
+    private Security security;
 }

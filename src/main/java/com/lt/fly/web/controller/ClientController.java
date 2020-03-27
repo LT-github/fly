@@ -92,11 +92,24 @@ public class ClientController extends BaseController{
         if (!obj.getPassword().equals(obj.getConfirmPassword())) {
             throw new ClientErrorException("两次密码不一致");
         }
+
         Member member = new Member();
         member.setId(idWorker.nextId());
         member.setCreateTime(System.currentTimeMillis());
-        member.setCreateUser(this.getLoginUser());
         BeanUtils.copyProperties(obj, member);
+
+        try {
+            Map<String, Object> initKey = RsaUtils.initKey();
+            Security security = new Security();
+            security.setId(idWorker.nextId());
+            security.setPublicKey(RsaUtils.getPublicKey(initKey));
+            security.setPrivateKey(RsaUtils.getPrivateKey(initKey));
+            member.setSecurity(security);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ClientErrorException("生成秘钥异常");
+        }
+
         if (null == obj.getNickname()){
             member.setNickname(obj.getUsername());
         }
@@ -223,7 +236,7 @@ public class ClientController extends BaseController{
                         order.setBetOdd(odd.getOddValue());
                     }
                 }
-                }
+            }
 
             if(balance<gp.getMoney()) {
                 throw new ClientErrorException("余额不足,请充值!");
