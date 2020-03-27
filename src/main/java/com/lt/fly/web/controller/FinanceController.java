@@ -263,7 +263,8 @@ public class FinanceController extends BaseController{
 				proportions) {
 			if (type.equals(RANGE_LIUSHUI.getCode())) {
 				returnPoint = getReturnPoint(money, proportion, CommonsUtil.RANGE_LIUSHUI_RETURN_POINT);
-			}else{
+			}
+			if (type.equals(RANGE_YINGLI.getCode())){
 				returnPoint = getReturnPoint(money, proportion, CommonsUtil.RANGE_YINGLI_RETURN_POINT);
 			}
 
