@@ -1,6 +1,5 @@
 package com.lt.fly.web.controller;
 
-import com.lt.fly.annotation.RequiredPermission;
 import com.lt.fly.annotation.UserLoginToken;
 import com.lt.fly.dao.IDataDictionaryRepository;
 import com.lt.fly.dao.IProportionRepository;
@@ -21,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 返点
@@ -99,11 +99,14 @@ public class ProportionController extends BaseController {
      * 获取返点比例列表.不分页
      * @return
      */
-    @GetMapping("/all")
+    @GetMapping("/all/{parentId}")
     @UserLoginToken
-    public HttpResult proportionList(){
+    public HttpResult proportionList(@PathVariable Long parentId){
         List<Proportion> proportions = iProportionRepository.findAll();
 
+        proportions = proportions.stream()
+                .filter(proportion -> proportion.getReturnPoint().getParent().getId().equals(parentId))
+                .collect(Collectors.toList());
         return HttpResult.success(ProportionVo.toVo(proportions),"获取返点规则列表成功");
     }
 
