@@ -229,9 +229,9 @@ public class GlobalConstant {
 
 	@Getter
 	public enum FindReturnType{
-		CAN(1,"可以操作的"),
-		WAIT(2,"等待操作的"),
-		ALL(3,"所有");
+		CAN(0,"可以操作的"),
+		WAIT(1,"等待操作的"),
+		ALL(2,"所有");
 
 		private Integer code;
 		private String msg;
