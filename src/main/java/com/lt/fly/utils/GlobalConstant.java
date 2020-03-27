@@ -227,4 +227,19 @@ public class GlobalConstant {
 		}
 	}
 
+	@Getter
+	public enum FindReturnType{
+		CAN(1,"可以操作的"),
+		WAIT(2,"等待操作的"),
+		ALL(3,"所有");
+
+		private Integer code;
+		private String msg;
+
+		FindReturnType(Integer code, String msg) {
+			this.code = code;
+			this.msg = msg;
+		}
+	}
+
 }
