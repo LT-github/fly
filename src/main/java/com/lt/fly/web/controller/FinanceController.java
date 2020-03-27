@@ -75,6 +75,7 @@ public class FinanceController extends BaseController{
 	@GetMapping
 	@UserLoginToken
 	public HttpResult find(FinanceFind query) throws ClientErrorException{
+		query.setPropertyName("createTime");
 		return HttpResult.success(iFinanceService.findAll(query),"查询财务列表成功!");
 	}
 
