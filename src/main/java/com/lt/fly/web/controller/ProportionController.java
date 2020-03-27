@@ -137,7 +137,7 @@ public class ProportionController extends BaseController {
         this.paramsValid(bindingResult);
 
         Proportion editObj = isNotNull(iProportionRepository.findById(id),"编辑的返点比例不存在");
-        if (null != editObj.getHandicaps() || 0 < editObj.getHandicaps().size())
+        if (null != editObj.getHandicaps() || 0 != editObj.getHandicaps().size())
             throw new ClientErrorException("该返点比例还有盘口在使用,请移除后在操作!");
 
         editObj.setDescription(obj.getDescription());
