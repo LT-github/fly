@@ -173,7 +173,7 @@ public class ProportionController extends BaseController {
             throws ClientErrorException{
 
         Proportion objDelete = isNotNull(iProportionRepository.findById(id),"编辑的返点比例不存在");
-        if (null != objDelete.getHandicaps() || 0 < objDelete.getHandicaps().size())
+        if (null != objDelete.getHandicaps() || 0 != objDelete.getHandicaps().size())
             throw new ClientErrorException("该返点比例还有盘口在使用,请移除后在操作!");
 
         objDelete.getHandicaps().clear();
