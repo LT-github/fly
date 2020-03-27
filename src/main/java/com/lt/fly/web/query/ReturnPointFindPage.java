@@ -7,6 +7,6 @@ public class ReturnPointFindPage extends MemberFindPage {
 
     private Integer type;
 
-    private Boolean findStatus = true;
+    private Boolean findStatus = false;
 
 }
