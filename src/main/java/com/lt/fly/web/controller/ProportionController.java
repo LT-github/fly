@@ -1,5 +1,6 @@
 package com.lt.fly.web.controller;
 
+import com.lt.fly.annotation.RequiredPermission;
 import com.lt.fly.annotation.UserLoginToken;
 import com.lt.fly.dao.IDataDictionaryRepository;
 import com.lt.fly.dao.IProportionRepository;
@@ -10,6 +11,7 @@ import com.lt.fly.jpa.support.DataQueryObjectPage;
 import com.lt.fly.utils.CommonsUtil;
 import com.lt.fly.utils.HttpResult;
 import com.lt.fly.utils.IdWorker;
+import com.lt.fly.web.query.ProportionFind;
 import com.lt.fly.web.req.ProportionAdd;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.vo.ProportionVo;
@@ -82,7 +84,7 @@ public class ProportionController extends BaseController {
 //    @RequiredPermission(value="findProportionAll")
     @GetMapping
     @UserLoginToken
-    public HttpResult<PageResp<ProportionVo, Proportion>> findProportionAll(DataQueryObjectPage req){
+    public HttpResult<PageResp<ProportionVo, Proportion>> findProportionAll(ProportionFind req){
         Page<Proportion> page = iProportionRepository.findAll(req);
         PageResp<ProportionVo, Proportion> resp=  new PageResp<ProportionVo,Proportion>(page).getPageVo(new PageResp.PageGenerator<ProportionVo,Proportion>(){
 
