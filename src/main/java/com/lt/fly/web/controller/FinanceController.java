@@ -8,6 +8,7 @@ import com.lt.fly.web.query.FinanceFind;
 import com.lt.fly.web.query.ReturnPointFindPage;
 import com.lt.fly.web.req.FinanceAdd;
 import com.lt.fly.web.req.ReturnSettle;
+import com.lt.fly.web.req.ReturnSettleMulity;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.vo.MemberVo;
 import com.lt.fly.web.vo.ReturnPointVo;
@@ -119,6 +120,8 @@ public class FinanceController extends BaseController{
 			resp.setData(allList);
 		}else {
 			resp.setData(list);
+			resp.setEleTotalNum((long)list.size());
+			resp.setTotalPage((list.size()  +  query.getSize()  - 1) / query.getSize());
 		}
 		return HttpResult.success(resp,"获取待结算列表成功!");
 	}
@@ -135,22 +138,50 @@ public class FinanceController extends BaseController{
 	@UserLoginToken
 	public HttpResult settle(@PathVariable Long memberId, @RequestBody @Validated ReturnSettle req, BindingResult bindingResult) throws ClientErrorException{
 		this.paramsValid(bindingResult);
-		GlobalConstant.FinanceType type = null;
-		if (req.getType().equals(RANGE_LIUSHUI.getCode())) {
-			type = RANGE_LIUSHUI;
-		} else if (req.getType().equals(RANGE_YINGLI.getCode())){
-			type = RANGE_YINGLI;
-		} else if (req.getType().equals(REFERRAL_LIUSHUI.getCode())) {
-			type = REFERRAL_LIUSHUI;
-		} else if (req.getType().equals(REFERRAL_YINGLI.getCode())) {
-			type = REFERRAL_YINGLI;
-		}else {
-			throw new ClientErrorException("返点类型错误");
+		Finance finance = getFinance(memberId, req);
+
+
+		return HttpResult.success(new FinanceVo(finance),"结算成功");
+	}
+
+
+
+	/**
+	 * 批量结算返点
+	 * @param req
+	 * @return
+	 * @throws ClientErrorException
+	 */
+	@PostMapping
+	@UserLoginToken
+	public HttpResult settleMultiy(@RequestBody ReturnSettleMulity req) throws ClientErrorException{
+		if (req.getIds().size() == 0 ){
+			throw new ClientErrorException("请选择将要操作的用户");
 		}
+		for (Long id :
+				req.getIds()) {
+			Member member = isNotNull(iMemberRepository.findById(id),"传递的用户参数没有实体");
+
+		}
+
+		return HttpResult.success(null,"操作成功,共操作"+req.getIds().size()+"条数据");
+	}
+
+
+	/**
+	 * 结算返点
+	 * @param memberId
+	 * @param req
+	 * @return
+	 * @throws ClientErrorException
+	 */
+	private Finance getFinance(@PathVariable Long memberId, @Validated @RequestBody ReturnSettle req) throws ClientErrorException {
+		GlobalConstant.FinanceType type = GlobalConstant.FinanceType.getFinanceTypeByCode(req.getType());
+
 
 		Long time = getReturnTime(memberId,req.getType());
 		if (!time.equals(0l)){
-			throw new ClientErrorException("据下次结算"+type.getMsg()+"还有"+DateUtil.formatDateTime(time));
+			throw new ClientErrorException("据下次结算"+type.getMsg()+"还有"+ DateUtil.formatDateTime(time));
 		}
 
 		Member member = isNotNull(iMemberRepository.findById(memberId),"无此用户");
@@ -161,10 +192,10 @@ public class FinanceController extends BaseController{
 		finance.setModifyUser(getLoginUser());
 		finance.setModifyTime(System.currentTimeMillis());
 		iFinanceRepository.save(finance);
-
-
-		return HttpResult.success(new FinanceVo(finance),"结算成功");
+		return finance;
 	}
+
+
 
 	/**
 	 * 系统上分
