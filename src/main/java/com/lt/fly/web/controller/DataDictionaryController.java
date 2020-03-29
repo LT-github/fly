@@ -1,5 +1,6 @@
 package com.lt.fly.web.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,7 +52,13 @@ public class DataDictionaryController extends BaseController{
 	public HttpResult<List<DataDictionaryVo>> findAll(DataDictionaryFind query){
 		
 		List<DataDictionary> list = iDataDictionaryRepository.findAll(query);
-		return HttpResult.success(DataDictionaryVo.toVo(list), "查询成功");
+		List<DataDictionaryVo> vos = new ArrayList<>();
+		for (DataDictionary item :
+				list) {
+			vos.add(new DataDictionaryVo(item,iDataDictionaryRepository.findByParentId(item.getId())));
+		}
+
+		return HttpResult.success(vos, "查询成功");
 	}
 	
 	@PostMapping
