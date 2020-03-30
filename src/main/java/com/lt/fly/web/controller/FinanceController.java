@@ -85,7 +85,6 @@ public class FinanceController extends BaseController{
 	@UserLoginToken
 	public HttpResult canReturnFind(ReturnPointFindPage query) throws ClientErrorException{
 
-		query.setPage(query.getPage()-1);
 
 		if(null == query.getFindType() || null == query.getType()){
 			throw new ClientErrorException("参数不能为空");
@@ -187,7 +186,8 @@ public class FinanceController extends BaseController{
 
 		Long time = getReturnTime(memberId,req.getType());
 		if (!time.equals(0l)){
-			throw new ClientErrorException("据下次结算"+type.getMsg()+"还有"+ DateUtil.formatDateTime(time));
+			Member member = isNotNull(iMemberRepository.findById(memberId),"传递的memberId没有实体");
+			throw new ClientErrorException("据下次结算"+member.getUsername()+"的"+type.getMsg()+"还有"+ DateUtil.formatDateTime(time));
 		}
 
 		Member member = isNotNull(iMemberRepository.findById(memberId),"无此用户");
