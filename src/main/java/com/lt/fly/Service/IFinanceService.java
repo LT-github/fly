@@ -9,6 +9,8 @@ import com.lt.fly.web.query.FinanceFind;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.vo.FinanceVo;
 
+import java.util.Set;
+
 
 public interface IFinanceService {
 	//按照类型添加财务
@@ -18,4 +20,6 @@ public interface IFinanceService {
 	//所有财务信息
 	PageResp<FinanceVo,Finance> findAll(FinanceFind query);
 
+
+	Double getReduce(Set<Finance> finances, GlobalConstant.FinanceType financeType);
 }

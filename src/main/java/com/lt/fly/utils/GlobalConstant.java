@@ -113,16 +113,17 @@ public class GlobalConstant {
 	public enum FinanceType {
 		RECHARGE(1,"上分"),
 		BET(2,"下注"),
-		CANCLE(3,"撤销"),
+		BET_CANCLE(3,"撤销"),
 		TIMELY_LIUSHUI(4,"实时流水"),
 		RANGE_LIUSHUI(5,"区间回水"),
 		RANGE_YINGLI(6,"区间分红"),
 		DESCEND(7,"下分"),
-		BET_WIN(8,"下注获胜"),
+		BET_RESULT(8,"战果"),
 		REFERRAL_LIUSHUI(9,"推手区间回水"),
 		REFERRAL_YINGLI(10,"推手区间盈利"),
 		SYSTEM_RECHARGE(11,"系统上分"),
-		SYSTEM_DESCEND(12,"系统下分");
+		SYSTEM_DESCEND(12,"系统下分"),
+		TIMELY_LISHUI_CANCLE(13,"实时流水撤销");
 
 
 		private int code;

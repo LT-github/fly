@@ -311,12 +311,12 @@ public class MemberController extends BaseController{
 								waterTotal = Arith.add(waterTotal,finance.getMoney());
 								betResultTotal = Arith.sub(betResultTotal,finance.getMoney());
 							}
-							if (finance.getType().equals(GlobalConstant.FinanceType.CANCLE.getCode())){
-								waterTotal = Arith.sub(waterTotal,finance.getMoney());
-							}
-							if (finance.getType().equals(GlobalConstant.FinanceType.BET_WIN.getCode())){
-								betResultTotal = Arith.add(betResultTotal,finance.getMoney());
-							}
+//							if (finance.getType().equals(GlobalConstant.FinanceType.CANCLE.getCode())){
+//								waterTotal = Arith.sub(waterTotal,finance.getMoney());
+//							}
+//							if (finance.getType().equals(GlobalConstant.FinanceType.BET_WIN.getCode())){
+//								betResultTotal = Arith.add(betResultTotal,finance.getMoney());
+//							}
 						}
 					}
 				}

@@ -342,11 +342,11 @@ public class ClientController extends BaseController{
             if (item.getType().equals(BET.getCode())) {
                 betTotal = Arith.add(betTotal,item.getMoney());
             }
-            //飞单盈亏
-            if(item.getType().equals(BET_WIN.getCode())){
-                betResult = Arith.add(betResult,item.getMoney());
-
-            }
+//            //飞单盈亏
+//            if(item.getType().equals(BET_WIN.getCode())){
+//                betResult = Arith.add(betResult,item.getMoney());
+//
+//            }
             //区间流水
             if (item.getType().equals(RANGE_LIUSHUI.getCode())) {
                 rangeTotal = Arith.add(rangeTotal,item.getMoney());
@@ -359,10 +359,10 @@ public class ClientController extends BaseController{
             if (item.getType().equals(TIMELY_LIUSHUI.getCode())) {
                 timelyTotal = Arith.add(timelyTotal,item.getMoney());
             }
-            //撤销
-            if(item.getType().equals(CANCLE.getCode())){
-                timelyTotal = Arith.sub(timelyTotal,item.getMoney());
-            }
+//            //撤销
+//            if(item.getType().equals(CANCLE.getCode())){
+//                timelyTotal = Arith.sub(timelyTotal,item.getMoney());
+//            }
         }
         Set<Long> issues = new HashSet<>();
 

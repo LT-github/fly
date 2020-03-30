@@ -1,5 +1,9 @@
 package com.lt.fly.utils;
-import   java.math.BigDecimal;  
+import   java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**  
  *   由于Java的简单类型不能够精确的对浮点数进行运算，这个工具类提供精  
  *   确的浮点数运算，包括加减乘除和四舍五入。  
@@ -22,11 +26,28 @@ public   class   Arith{
 	 *   @param   v2   加数  
 	 *   @return   两个参数的和  
 	 */  
-	public   static   double   add(double   v1,double   v2){  
+	public   static   double   add(double   v1,double   v2){
 		BigDecimal   b1   =   new   BigDecimal(Double.toString(v1));  
 		BigDecimal   b2   =   new   BigDecimal(Double.toString(v2));  
 		return   b1.add(b2).doubleValue();  
-	}  
+	}
+
+	/**
+	 * 连续几个数相加
+	 * @param doubles
+	 * @return
+	 */
+	public   static   double   add(double...doubles){
+		if (doubles.length < 2) {
+			return doubles[0];
+		}
+		List<Double> list = new ArrayList<>();
+		for (double item :
+				doubles) {
+			list.add(item);
+		}
+		return list.stream().reduce(0.0,(a,b) -> add(a,b));
+	}
 
 	/**  
 	 *   提供精确的减法运算。  
@@ -38,7 +59,24 @@ public   class   Arith{
 		BigDecimal   b1   =   new   BigDecimal(Double.toString(v1));  
 		BigDecimal   b2   =   new   BigDecimal(Double.toString(v2));  
 		return   b1.subtract(b2).doubleValue();  
-	}    
+	}
+
+	/**
+	 *  连续几个数相减
+	 * @param doubles
+	 * @return
+	 */
+	public   static   double   sub(double...doubles){
+		if (doubles.length < 2) {
+			return doubles[0];
+		}
+		List<Double> list = new ArrayList<>();
+		for (int i = 1; i < doubles.length; i++) {
+			list.add(doubles[i]);
+		}
+		//由第一个数加上后面所有的差
+		return Arith.add(doubles[0],list.stream().reduce(0.0,(a,b) -> sub(a,b)));
+	}
 
 	/**  
 	 *   提供精确的乘法运算。  

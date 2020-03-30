@@ -13,9 +13,7 @@ import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.vo.MemberVo;
 import com.lt.fly.web.vo.ReturnPointVo;
 import com.lt.fly.web.vo.FinanceVo;
-import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -87,6 +85,8 @@ public class FinanceController extends BaseController{
 	@UserLoginToken
 	public HttpResult canReturnFind(ReturnPointFindPage query) throws ClientErrorException{
 
+		query.setPage(query.getPage()-1);
+
 		if(null == query.getFindType() || null == query.getType()){
 			throw new ClientErrorException("参数不能为空");
 		}
@@ -146,8 +146,7 @@ public class FinanceController extends BaseController{
 	@UserLoginToken
 	public HttpResult settle(@PathVariable Long memberId, @RequestBody @Validated ReturnSettle req, BindingResult bindingResult) throws ClientErrorException{
 		this.paramsValid(bindingResult);
-		Finance finance = getFinance(memberId, req);
-
+		Finance finance = settleFinance(memberId, req);
 
 		return HttpResult.success(new FinanceVo(finance),"结算成功");
 	}
@@ -168,8 +167,7 @@ public class FinanceController extends BaseController{
 		}
 		for (Long id :
 				req.getIds()) {
-			Member member = isNotNull(iMemberRepository.findById(id),"传递的用户参数没有实体");
-
+			Finance finance = settleFinance(id, req);
 		}
 
 		return HttpResult.success(null,"操作成功,共操作"+req.getIds().size()+"条数据");
@@ -183,7 +181,7 @@ public class FinanceController extends BaseController{
 	 * @return
 	 * @throws ClientErrorException
 	 */
-	private Finance getFinance(@PathVariable Long memberId, @Validated @RequestBody ReturnSettle req) throws ClientErrorException {
+	private Finance settleFinance(@PathVariable Long memberId, @Validated @RequestBody ReturnSettle req) throws ClientErrorException {
 		GlobalConstant.FinanceType type = GlobalConstant.FinanceType.getFinanceTypeByCode(req.getType());
 
 
@@ -305,24 +303,15 @@ public class FinanceController extends BaseController{
 		}else {
 			finances = iFinanceRepository.findByCreateUser(member);
 		}
+
 		if (null != finances && 0 != finances.size()){
-			for (Finance finance :
-					finances) {
-				if (finance.getType().equals(BET.getCode())) {
-					money = Arith.add(money,finance.getMoney());
-				}
-				if (type.equals(RANGE_YINGLI.getCode())) {
-					//分红
-					if (finance.getType().equals(BET_WIN.getCode())){
-						money = Arith.sub(money,finance.getMoney());
-					}
-				}
-				if (finance.getType().equals(CANCLE.getCode())){
-					money = Arith.sub(money,finance.getMoney());
-				}
+			money =  Arith.sub(iFinanceService.getReduce(new HashSet<>(finances), BET_RESULT),
+					Arith.sub(iFinanceService.getReduce(new HashSet<>(finances), BET),iFinanceService.getReduce(new HashSet<>(finances), BET_CANCLE)));
+			if (money < 0) {
+				return money;
 			}
 		}
-		return money;
+		return 0;
 	}
 
 	/*

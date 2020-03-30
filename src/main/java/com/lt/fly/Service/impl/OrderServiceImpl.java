@@ -60,15 +60,12 @@ public class OrderServiceImpl extends BaseService implements IOrderService {
         Long start =  System.currentTimeMillis();
         Set<Long> issueNumberSet = new HashSet<>();
 
-        FinanceAdd add = new FinanceAdd();
         //修改betOrder
         for ( Long key : map.keySet()) {
             try {
                 iOrderRepository.updateById(map.get(key).getLotteryResult(),map.get(key).getBattleResult(),map.get(key).getExchangeDetail(),key);
-                if (map.get(key).getLotteryResult().equals(GlobalConstant.LotteryResult.WIN.getCode())) {
-                    Order order = isNotNull(iOrderRepository.findById(map.get(key).getId()),"传递得到参数没有实体类");
-                    iFinanceService.add(order.getCreateUser(),map.get(key).getBattleResult(),null, GlobalConstant.FinanceType.BET_WIN);
-                }
+                Order order = isNotNull(iOrderRepository.findById(map.get(key).getId()),"传递得到参数没有实体类");
+                iFinanceService.add(order.getCreateUser(),map.get(key).getBattleResult(),null, GlobalConstant.FinanceType.BET_RESULT);
 
                 issueNumberSet.add(map.get(key).getIssueNumber());
             } catch (Exception e) {

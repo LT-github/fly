@@ -1,6 +1,8 @@
 package com.lt.fly.Service.impl;
 
 import java.math.BigDecimal;
+import java.util.Set;
+
 import com.lt.fly.dao.IMemberRepository;
 import com.lt.fly.entity.Member;
 import com.lt.fly.utils.Arith;
@@ -20,6 +22,9 @@ import com.lt.fly.dao.IUserRepository;
 import com.lt.fly.entity.Finance;
 import com.lt.fly.entity.User;
 import com.lt.fly.exception.ClientErrorException;
+
+import static com.lt.fly.utils.GlobalConstant.FinanceType.DESCEND;
+import static com.lt.fly.utils.GlobalConstant.FinanceType.RECHARGE;
 
 
 @Service
@@ -63,12 +68,12 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 				finance.setCountType(GlobalConstant.CountType.SUBTRACT.getCode());
 				finance.setAuditStatus(GlobalConstant.AuditStatus.IN_AUDIT.getCode());
 				break;
-			//下注
-			case BET:
+			//下注//撤销流水
+			case BET:case TIMELY_LISHUI_CANCLE:
 				finance.setCountType(GlobalConstant.CountType.SUBTRACT.getCode());
 				break;
-			//撤销,下注获胜,//返点
-			case CANCLE:case BET_WIN:case TIMELY_LIUSHUI:case RANGE_LIUSHUI:case RANGE_YINGLI:
+			//撤销//返点
+			case BET_CANCLE:case BET_RESULT:case TIMELY_LIUSHUI:case RANGE_LIUSHUI:case RANGE_YINGLI:
 			case REFERRAL_YINGLI:case REFERRAL_LIUSHUI:
 				finance.setCountType(GlobalConstant.CountType.ADD.getCode());
 				break;
@@ -93,6 +98,9 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 	public Double reckonBalance(Long userId) throws ClientErrorException {
 		Member member = isNotNull(iMemberRepository.findById(userId),"会员不存在");
 		double balance = 0;
+		if (null == member.getFinances() || member.getFinances().isEmpty()){
+			return balance;
+		}
 		for(Finance item:member.getFinances()){
 			if(item.getCountType().equals(GlobalConstant.CountType.ADD.getCode())){
 				balance = Arith.add(balance,item.getMoney());
@@ -115,5 +123,18 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 		PageResp<FinanceVo, Finance> resp = new PageResp<>(page);
 		resp.setData(FinanceVo.tovo(page.getContent()));
 		return resp;
+	}
+
+	@Override
+	public Double getReduce(Set<Finance> finances, GlobalConstant.FinanceType financeType) {
+		if (financeType.equals(RECHARGE) || financeType.equals(DESCEND)){
+			return finances.stream().filter(finance -> finance.getType().equals(financeType.getCode())
+					&& finance.getAuditStatus().equals(GlobalConstant.AuditStatus.AUDIT_PASS.getCode()))
+					.map(Finance::getMoney)
+					.reduce(0.0, (a, b) -> Arith.add(a, b));
+		}
+		return finances.stream().filter(finance -> finance.getType().equals(financeType.getCode()))
+				.map(Finance::getMoney)
+				.reduce(0.0, (a, b) -> Arith.add(a, b));
 	}
 }

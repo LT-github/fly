@@ -8,6 +8,8 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Stream;
 
 import static com.lt.fly.utils.GlobalConstant.FinanceType.*;
 
@@ -16,7 +18,7 @@ public class MemberFinanceVo extends MemberVo {
 
     //余额
     private Double balance = 0.0;
-    //总飞单金额
+    //总流水
     private Double waterTotal = 0.0;
     //总盈亏
     private Double betResultTotal = 0.0;
@@ -32,76 +34,27 @@ public class MemberFinanceVo extends MemberVo {
     public MemberFinanceVo(Member obj) {
         super(obj);
         if (null != obj.getFinances() && 0 != obj.getFinances().size()) {
-            for (Finance item :
-                    obj.getFinances()) {
-                //上分
-                if (item.getType().equals(RECHARGE.getCode())
-                        && item.getAuditStatus().equals(GlobalConstant.AuditStatus.AUDIT_PASS.getCode())){
-                    //上分+
-                    rechargeTotal = Arith.add(rechargeTotal,item.getMoney());
-                    //余额+
-                    balance = Arith.add(balance,item.getMoney());
-                }
-                //下分
-                if (item.getType().equals(DESCEND.getCode())) {
-                    //下分+
-                    descendTotal = Arith.add(descendTotal,item.getMoney());
-                    //余额-
-                    balance = Arith.sub(balance,item.getMoney());
-                }
-                //下注
-                if (item.getType().equals(BET.getCode())){
-                    //流水+
-                    waterTotal = Arith.add(waterTotal,item.getMoney());
-                    //余额-
-                    balance = Arith.sub(balance,item.getMoney());
-                    //盈利-
-                    betResultTotal = Arith.sub(betResultTotal,item.getMoney());
-                }
-                //撤销
-                if (item.getType().equals(CANCLE.getCode())){
-                    //流水-
-                    waterTotal = Arith.sub(waterTotal,item.getMoney());
-                    //余额+
-                    balance = Arith.add(balance,item.getMoney());
-                    //盈利+
-                    betResultTotal = Arith.add(betResultTotal,item.getMoney());
-                }
-                //下注获胜
-                if (item.getType().equals(BET_WIN.getCode())) {
-                    //余额+
-                    balance = Arith.add(balance,item.getMoney());
-                    //盈利+
-                    betResultTotal = Arith.add(betResultTotal,item.getMoney());
-                }
-                //实时流水返水//区间流水返点
-                if (item.getType().equals(TIMELY_LIUSHUI.getCode())
-                        || item.getType().equals(RANGE_LIUSHUI.getCode())) {
-                    //回水+
-                    huiShuiTotal = Arith.add(huiShuiTotal,item.getMoney());
-                    //余额+
-                    balance = Arith.add(balance,item.getMoney());
-                }
-                //区间分红
-                if (item.getType().equals(RANGE_YINGLI.getCode())) {
-                    //分红+
-                    fenHongTotal = Arith.add(fenHongTotal,item.getMoney());
-                    //余额+
-                    balance = Arith.add(balance,item.getMoney());
-                }
-                //系统下分
-                if (item.getType().equals(SYSTEM_DESCEND.getCode())) {
-                    //余额-
-                    balance = Arith.sub(balance,item.getMoney());
-                }
-                //系统上分
-                if (item.getType().equals(SYSTEM_RECHARGE.getCode())) {
-                    //余额+
-                    balance = Arith.add(balance,item.getMoney());
-                }
-
-            }
+            Set<Finance> finances = obj.getFinances();
+            this.rechargeTotal = Arith.add( getReduce(finances, RECHARGE),getReduce(finances, SYSTEM_RECHARGE));
+            this.descendTotal = Arith.add(getReduce(finances, DESCEND),getReduce(finances, SYSTEM_DESCEND));
+            this.waterTotal = Arith.sub(getReduce(finances, BET),getReduce(finances, BET_CANCLE));
+            this.betResultTotal = Arith.sub(getReduce(finances, BET_RESULT),waterTotal);
+            this.huiShuiTotal = Arith.sub(Arith.add(getReduce(finances, RANGE_LIUSHUI),getReduce(finances, TIMELY_LIUSHUI)),getReduce(finances,TIMELY_LISHUI_CANCLE));
+            this.fenHongTotal = getReduce(finances, RANGE_YINGLI);
+            this.balance = Arith.sub(Arith.add(fenHongTotal,huiShuiTotal,betResultTotal,rechargeTotal),waterTotal,descendTotal);
         }
+    }
+
+    private Double getReduce(Set<Finance> finances, GlobalConstant.FinanceType financeType) {
+        if (financeType.equals(RECHARGE) || financeType.equals(DESCEND)){
+            return finances.stream().filter(finance -> finance.getType().equals(financeType.getCode())
+                    && finance.getAuditStatus().equals(GlobalConstant.AuditStatus.AUDIT_PASS.getCode()))
+                    .map(Finance::getMoney)
+                    .reduce(0.0, (a, b) -> Arith.add(a, b));
+        }
+        return finances.stream().filter(finance -> finance.getType().equals(financeType.getCode()))
+                .map(Finance::getMoney)
+                .reduce(0.0, (a, b) -> Arith.add(a, b));
     }
 
     public static List<MemberFinanceVo> tovo(List<Member> members){
