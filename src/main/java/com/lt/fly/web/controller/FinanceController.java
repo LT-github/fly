@@ -126,12 +126,14 @@ public class FinanceController extends BaseController{
 					.filter((ReturnPointVo vo) -> vo.getTime() > 0)
 					.collect(Collectors.toList());
 		}
+		long size = (long) list.size();
+
 		list = list.stream()
 				.sorted(Comparator.comparing(ReturnPointVo::getMoney,Comparator.reverseOrder()).thenComparing(ReturnPointVo::getTime))//先按money降序,再按time升序
 				.skip(query.getPage() * (query.getSize() - 1))//分页
 				.limit(query.getSize())
 				.collect(Collectors.toList());
-		return HttpResult.success(new PageResp(query.getPage(), query.getSize(), (list.size()  +  query.getSize()  - 1) / query.getSize(), (long)list.size(), list),"获取待结算列表成功!");
+		return HttpResult.success(new PageResp(query.getPage(), query.getSize(), (list.size()  +  query.getSize()  - 1) / query.getSize(), size, list),"获取待结算列表成功!");
 	}
 
 	/**
