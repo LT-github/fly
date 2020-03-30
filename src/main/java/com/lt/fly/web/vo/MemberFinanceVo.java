@@ -41,7 +41,7 @@ public class MemberFinanceVo extends MemberVo {
             this.betResultTotal = Arith.sub(getReduce(finances, BET_RESULT),waterTotal);
             this.huiShuiTotal = Arith.sub(Arith.add(getReduce(finances, RANGE_LIUSHUI),getReduce(finances, TIMELY_LIUSHUI)),getReduce(finances,TIMELY_LISHUI_CANCLE));
             this.fenHongTotal = getReduce(finances, RANGE_YINGLI);
-            this.balance = Arith.sub(Arith.add(fenHongTotal,huiShuiTotal,betResultTotal,rechargeTotal),waterTotal,descendTotal);
+            this.balance = Arith.sub(Arith.add(fenHongTotal,huiShuiTotal,betResultTotal,rechargeTotal),descendTotal);
         }
     }
 
