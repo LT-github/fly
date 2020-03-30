@@ -309,7 +309,7 @@ public class FinanceController extends BaseController{
 			money =  Arith.sub(iFinanceService.getReduce(new HashSet<>(finances), BET_RESULT),
 					Arith.sub(iFinanceService.getReduce(new HashSet<>(finances), BET),iFinanceService.getReduce(new HashSet<>(finances), BET_CANCLE)));
 			if (money < 0) {
-				return Math.abs(money);
+				return Arith.round(Math.abs(money),2);
 			}
 		}
 		return 0;
