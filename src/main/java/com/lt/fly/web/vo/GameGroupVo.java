@@ -1,6 +1,7 @@
 package com.lt.fly.web.vo;
 
 import com.lt.fly.entity.GameGroup;
+import com.lt.fly.utils.MyBeanUtils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +17,7 @@ public class GameGroupVo {
     private String type;
     private String pingYinName;
     private Integer status;
+    private String description;
 
 
 
@@ -25,11 +27,7 @@ public class GameGroupVo {
 
     public GameGroupVo(GameGroup obj) {
         super();
-        this.id = obj.getId();
-        this.name = obj.getName();
-        this.type = obj.getType();
-        this.pingYinName = obj.getPingYinName();
-        this.status = obj.getStatus();
+        MyBeanUtils.copyProperties(obj,this);
     }
 
     public static List<GameGroupVo> tovo(List<GameGroup> gameGroups) {
