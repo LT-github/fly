@@ -85,6 +85,7 @@ public class FinanceController extends BaseController{
 	@UserLoginToken
 	public HttpResult canReturnFind(ReturnPointFindPage query) throws ClientErrorException{
 
+		query.setPage(query.getPage()-1);
 
 		if(null == query.getFindType() || null == query.getType()){
 			throw new ClientErrorException("参数不能为空");
@@ -308,7 +309,7 @@ public class FinanceController extends BaseController{
 			money =  Arith.sub(iFinanceService.getReduce(new HashSet<>(finances), BET_RESULT),
 					Arith.sub(iFinanceService.getReduce(new HashSet<>(finances), BET),iFinanceService.getReduce(new HashSet<>(finances), BET_CANCLE)));
 			if (money < 0) {
-				return money;
+				return Math.abs(money);
 			}
 		}
 		return 0;
