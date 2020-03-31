@@ -57,7 +57,7 @@ public class AdminController extends BaseController {
      * @return
      * @throws ClientErrorException
      */
-    @RequiredPermission(value="addUser-add")
+//    @RequiredPermission(value="addUser-add")
     @PostMapping
     @UserLoginToken
     public HttpResult<AdminVo> addAdmin(@RequestBody @Validated AdminAdd obj ,
@@ -77,7 +77,7 @@ public class AdminController extends BaseController {
      * @return
      * @throws ClientErrorException
      */
-    @RequiredPermission(value="editUser-edit")
+//    @RequiredPermission(value="editUser-edit")
     @PutMapping("/{id}")
     @UserLoginToken
     public HttpResult<AdminVo> editAdmin(@PathVariable Long id,@RequestBody @Validated AdminEdit obj ,
@@ -94,7 +94,7 @@ public class AdminController extends BaseController {
      * @return
      * @throws ClientErrorException
      */
-    @RequiredPermission(value="deleteAdmin")
+//    @RequiredPermission(value="deleteAdmin")
     @DeleteMapping("/{id}")
     @UserLoginToken
     public HttpResult<Object> deleteAdmin(@PathVariable Long id) throws ClientErrorException{
@@ -110,7 +110,7 @@ public class AdminController extends BaseController {
      * @param query
      * @return
      */
-    @RequiredPermission(value="getUser")
+//    @RequiredPermission(value="getUser")
     @GetMapping("/all")
     @UserLoginToken
     public HttpResult<PageResp<AdminVo, Admin>> findAllByPage(DataQueryObjectPage query){
