@@ -122,7 +122,7 @@ public class RoleController extends BaseController {
 //	@RequiredPermission(value = "findAllRole")
 	@GetMapping("/all")
 	@UserLoginToken
-	public HttpResult<Object> findAll(@RequestBody RoleQueryReq query){
+	public HttpResult<Object> findAll(RoleQueryReq query){
 		 Page<Role> page = iRoleRepository.findAll(query);
 		 PageResp<RoleVo, Role> prp = new PageResp<RoleVo, Role>(page);
 			prp.setData(RoleVo.toVo(page.getContent()));
