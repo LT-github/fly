@@ -391,19 +391,11 @@ public class FinanceController extends BaseController{
 		}	
 		if(last.getCreateTime()>=settleTime) throw new ClientErrorException("该盘口按时间已结算");
 			if (null != finances && 0 != finances.size()){
-				for (Finance finance :
-						finances) {
-					if (finance.getType().equals(BET.getCode())) {
-						money = Arith.add(money,finance.getMoney());
-					}
-					if (type.equals(RANGE_YINGLI.getCode())) {
-						//分红
-						if (finance.getType().equals(BET.getCode())){
-							money = Arith.sub(money,finance.getMoney());
-						}
-					}
-					if (finance.getType().equals(BET_CANCLE.getCode())){
-						money = Arith.sub(money,finance.getMoney());
+				if (null != finances && 0 != finances.size()){
+					money =  Arith.sub(iFinanceService.getReduce(new HashSet<>(finances), BET_RESULT),
+							Arith.sub(iFinanceService.getReduce(new HashSet<>(finances), BET),iFinanceService.getReduce(new HashSet<>(finances), BET_CANCLE)));
+					if (money < 0) {
+						return Arith.round(Math.abs(money),2);
 					}
 				}
 			}

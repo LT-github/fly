@@ -74,7 +74,7 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 				break;
 			//撤销//返点
 			case BET_CANCLE:case BET_RESULT:case TIMELY_LIUSHUI:case RANGE_LIUSHUI:case RANGE_YINGLI:
-			case REFERRAL_YINGLI:case REFERRAL_LIUSHUI:
+			case REFERRAL_YINGLI:case REFERRAL_LIUSHUI:case SETTLEMENT_TYPE_HAND:
 				finance.setCountType(GlobalConstant.CountType.ADD.getCode());
 				break;
 			//系统上分
