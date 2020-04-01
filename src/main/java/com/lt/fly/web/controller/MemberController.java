@@ -1,8 +1,5 @@
 package com.lt.fly.web.controller;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 import com.lt.fly.annotation.UserLoginToken;
 import com.lt.fly.dao.IFinanceRepository;
 import com.lt.fly.dao.IHandicapRepository;
@@ -13,27 +10,26 @@ import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.jpa.support.DataQueryObjectPage;
 import com.lt.fly.utils.*;
 import com.lt.fly.web.query.MemberFind;
+import com.lt.fly.web.query.MemberFindPage;
 import com.lt.fly.web.query.MemberReportFind;
 import com.lt.fly.web.req.MemberAddBySystem;
-import com.lt.fly.web.query.MemberFindPage;
 import com.lt.fly.web.req.MemberEditBySystem;
 import com.lt.fly.web.req.MemberTypeEdit;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.resp.ReportResp;
-import com.lt.fly.web.vo.*;
+import com.lt.fly.web.vo.MemberFinanceVo;
+import com.lt.fly.web.vo.MemberReportVo;
+import com.lt.fly.web.vo.MemberVo;
+import com.lt.fly.web.vo.ReferrerMemberVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/member")
@@ -331,7 +327,6 @@ public class MemberController extends BaseController{
 	@GetMapping("report")
 	@UserLoginToken
 	public HttpResult memberReport(MemberReportFind query) throws ClientErrorException{
-		ReportResp resp = new ReportResp();
 		List<MemberReportVo> vos = new ArrayList<>();
 		iMemberRepository.findAll(query).forEach(member -> {
 			Map<String, List<Finance>> financeMap = member.getFinances().stream()
@@ -343,7 +338,37 @@ public class MemberController extends BaseController{
 				vos.add(new MemberReportVo(s,finances,member));
 			});
 		});
-		resp.setData(vos);
+
+
+		List<MemberReportVo> memberReportVos = vos.stream()
+				.sorted(new Comparator<MemberReportVo>() {
+					@Override
+					public int compare(MemberReportVo o1, MemberReportVo o2) {
+						try {
+							Date d1 = DateUtil.parseDate(o1.getDateTime(), DateUtil.DEFAULT_FORMATS);
+							Date d2 = DateUtil.parseDate(o2.getDateTime(), DateUtil.DEFAULT_FORMATS);
+							return d2.compareTo(d1);
+						} catch (Exception e){
+							e.printStackTrace();
+						}
+						return 0;
+					}
+				})
+				.skip((query.getPage()-1) * query.getSize())//分页
+				.limit(query.getSize())
+				.collect(Collectors.toList());
+
+		ReportResp resp = new ReportResp(query.getPage(), query.getSize(),(vos.size()  +  query.getSize()  - 1) / query.getSize(), (long)vos.size(), memberReportVos);
+
+		resp.setFenHongTotal(vos.stream().map(MemberReportVo::getFengHong).reduce(0.0,(a,b) -> Arith.add(a,b)));
+		resp.setHuiShuiTotal(vos.stream().map(MemberReportVo::getHuiShui).reduce(0.0,(a,b) -> Arith.add(a,b)));
+		resp.setDescendTotal(vos.stream().map(MemberReportVo::getDescend).reduce(0.0,(a,b) -> Arith.add(a,b)));
+		resp.setRechargeTotal(vos.stream().map(MemberReportVo::getRecharge).reduce(0.0,(a,b) -> Arith.add(a,b)));
+		resp.setWaterTotal(vos.stream().map(MemberReportVo::getWater).reduce(0.0,(a,b) -> Arith.add(a,b)));
+		resp.setWinMoneyTotal(vos.stream().map(MemberReportVo::getWinMoney).reduce(0.0,(a,b) -> Arith.add(a,b)));
+		resp.setBetResultTotal(vos.stream().map(MemberReportVo::getBetResult).reduce(0.0,(a,b) -> Arith.add(a,b)));
+		resp.setBetCountTotal(vos.stream().map(MemberReportVo::getBetCount).reduce(0l,(a,b) -> a + b));
+
 		return HttpResult.success(resp,"获取会员报表成功");
 	}
 
