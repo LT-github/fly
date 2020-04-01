@@ -87,8 +87,8 @@ public class OrderServiceImpl extends BaseService implements IOrderService {
     @Override
     public ReportResp findReport(BetReportFind query) throws ClientErrorException {
         PageRequest pageRequest = PageRequest.of(query.getPage(), query.getSize());//借助计算起始位置
-        long total=iFinanceRepository.countByReport(query.getStart(),query.getEnd());// 计算数据总条数
-        List<Object[]> records=iFinanceRepository.findReport(query.getStart(),query.getEnd(),pageRequest.getOffset(),pageRequest.getPageSize());// 获取分页数据
+        long total=iFinanceRepository.countByReport(query.getBefore(),query.getAfter());// 计算数据总条数
+        List<Object[]> records=iFinanceRepository.findReport(query.getBefore(),query.getAfter(),pageRequest.getOffset(),pageRequest.getPageSize());// 获取分页数据
         int totalPageNum = (int)(total  +  query.getSize()  - 1) / query.getSize();//计算总页数
 
         ReportResp betReportResp = new ReportResp(query.getPage(), query.getSize(), totalPageNum, total, records);

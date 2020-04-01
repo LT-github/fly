@@ -1,6 +1,5 @@
 package com.lt.fly.web.controller;
 
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,11 +18,9 @@ import com.lt.fly.web.req.MemberAddBySystem;
 import com.lt.fly.web.query.MemberFindPage;
 import com.lt.fly.web.req.MemberEditBySystem;
 import com.lt.fly.web.req.MemberTypeEdit;
-import com.lt.fly.web.req.ReferrerEdit;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.resp.ReportResp;
 import com.lt.fly.web.vo.*;
-import org.apache.dubbo.remoting.Client;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -338,8 +335,8 @@ public class MemberController extends BaseController{
 		List<MemberReportVo> vos = new ArrayList<>();
 		iMemberRepository.findAll(query).forEach(member -> {
 			Map<String, List<Finance>> financeMap = member.getFinances().stream()
-					.filter(finance -> finance.getCreateTime() < query.getEnd() &&
-							finance.getCreateTime() > query.getStart())
+					.filter(finance -> finance.getCreateTime() < query.getAfter() &&
+							finance.getCreateTime() > query.getBefore())
 					.collect(Collectors.groupingBy(Finance -> DateUtil.timestampToString(Finance.getCreateTime(), DateUtil.DEFAULT_FORMATS)));
 
 			financeMap.forEach((s, finances) -> {
@@ -347,22 +344,6 @@ public class MemberController extends BaseController{
 			});
 		});
 		resp.setData(vos);
-
-
-
-
-//			Map<Long, List<Finance>> map = member.getFinances().stream()
-//					.filter(finance -> finance.getCreateTime() < query.getEnd() &&
-//							finance.getCreateTime() > query.getStart())
-//					.collect(Collectors.toMap(Finance::getCreateTime,
-//							Finance -> Arrays.asList(Finance),
-//							(List<Finance> oldList, List<Finance> newList) -> {
-//								oldList.addAll(newList);
-//								return oldList;
-//							}));
-//		});
-
-
 		return HttpResult.success(resp,"获取会员报表成功");
 	}
 
