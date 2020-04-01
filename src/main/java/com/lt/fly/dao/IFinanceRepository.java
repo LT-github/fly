@@ -69,5 +69,6 @@ public interface IFinanceRepository extends BaseRepository<Finance, Long> {
             "order by t1.dat ) as t3")
     Long countByReport(long start,long end);
 
-
+    List<Finance> findByCreateUserAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(User user,Long start,Long end);
+    List<Finance> findByCreateUserAndCreateTimeBefore(User user,Long createTime);
 }

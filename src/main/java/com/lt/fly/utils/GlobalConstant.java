@@ -123,7 +123,8 @@ public class GlobalConstant {
 		REFERRAL_YINGLI(10,"推手区间盈利"),
 		SYSTEM_RECHARGE(11,"系统上分"),
 		SYSTEM_DESCEND(12,"系统下分"),
-		TIMELY_LISHUI_CANCLE(13,"实时流水撤销");
+		TIMELY_LISHUI_CANCLE(13,"实时流水撤销"),
+		SETTLEMENT_TYPE_HAND(14,"按时间结算");
 
 
 		private int code;

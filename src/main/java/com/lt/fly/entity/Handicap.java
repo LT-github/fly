@@ -1,9 +1,12 @@
 package com.lt.fly.entity;
 
+
+
+import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.util.Set;
 
 /**
@@ -11,8 +14,8 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "t_handicap")
-@Getter
 @Setter
+@Getter
 public class Handicap extends BasicEntity{
 	
 	// 盘口名称
@@ -47,5 +50,18 @@ public class Handicap extends BasicEntity{
 	@OneToOne
 	@JoinColumn(name = "odd_group_id", referencedColumnName = "id")
 	private OddGroup oddGroup;
+	//<------------------------>
+	
+	//该盘口按时间结算
+	@Column(name = "settlement_time")
+	private Long settlementTime;
+	//该盘口按时间结算类型（0：手动结算 1：自动结算）
+	@Column(name = "settlement_type")
+	private Integer settlementType;
+		
+		
+		
+	
+
 	
 }
