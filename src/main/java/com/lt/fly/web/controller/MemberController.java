@@ -328,7 +328,7 @@ public class MemberController extends BaseController{
 	@UserLoginToken
 	public HttpResult memberReport(MemberReportFind query) throws ClientErrorException{
 		List<MemberReportVo> vos = new ArrayList<>();
-		iMemberRepository.findAll().forEach(member -> {
+		iMemberRepository.findAll(query).forEach(member -> {
 			Map<String, List<Finance>> financeMap = member.getFinances().stream()
 					.filter(finance -> finance.getCreateTime() < query.getAfter() &&
 							finance.getCreateTime() > query.getBefore())
