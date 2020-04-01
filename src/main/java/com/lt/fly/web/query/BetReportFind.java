@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class BetReportFind extends DataQueryObjectPage {
 
-   private Long start = DateUtil.getDayStartTime(System.currentTimeMillis());
+   private Long before = DateUtil.getDayStartTime(System.currentTimeMillis());
 
-   private Long end = System.currentTimeMillis();
+   private Long after = System.currentTimeMillis();
 }
