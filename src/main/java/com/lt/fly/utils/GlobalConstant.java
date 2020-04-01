@@ -118,7 +118,7 @@ public class GlobalConstant {
 		RANGE_LIUSHUI(5,"区间回水"),
 		RANGE_YINGLI(6,"区间分红"),
 		DESCEND(7,"下分"),
-		BET_RESULT(8,"战果"),
+		BET_RESULT(8,"获胜得分"),
 		REFERRAL_LIUSHUI(9,"推手区间回水"),
 		REFERRAL_YINGLI(10,"推手区间盈利"),
 		SYSTEM_RECHARGE(11,"系统上分"),

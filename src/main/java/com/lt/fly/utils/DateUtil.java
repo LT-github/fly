@@ -369,4 +369,16 @@ public class DateUtil {
 
 	}
 
+
+    /**
+     * 时间戳转换为String 带格式
+     * @param timestamp 时间戳
+     * @param format  格式
+     * @return
+     */
+	public static String timestampToString(Long timestamp,String format){
+        SimpleDateFormat simpleDateFormat =  new SimpleDateFormat(format); //设置格式
+        return simpleDateFormat.format(timestamp);
+    }
+
 }

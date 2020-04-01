@@ -1,16 +1,9 @@
 package com.lt.fly.dao;
 
-import com.lt.fly.jpa.support.DataQueryObjectPage;
-import com.lt.fly.utils.GlobalConstant;
-import com.lt.fly.web.query.BetReportFind;
-import com.lt.fly.web.resp.BetReportResp;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.lt.fly.entity.Order;
-import com.lt.fly.entity.User;
 import com.lt.fly.jpa.BaseRepository;
 import org.springframework.transaction.annotation.Transactional;
 

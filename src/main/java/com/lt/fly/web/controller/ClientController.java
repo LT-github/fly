@@ -16,6 +16,7 @@ import com.lt.fly.utils.gameUtils.GameUtil;
 import com.lt.fly.web.req.*;
 import com.lt.fly.web.resp.ClientShowResp;
 import com.lt.fly.web.vo.FinanceVo;
+import com.lt.fly.web.vo.MemberFinanceVo;
 import com.lt.fly.web.vo.MemberVo;
 import com.lt.fly.web.vo.OrderVo;
 import com.lt.lxc.pojo.OrderDTO;
@@ -29,6 +30,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.lt.fly.utils.GlobalConstant.FinanceType.*;
 
@@ -60,7 +65,7 @@ public class ClientController extends BaseController{
     @Autowired
     private IMemberRepository iMemberRepository;
 
-    @Reference(version = "1.0.0",url="dubbo://localhost:23457",check = false)
+    @Reference(version = "1.0.0",url="dubbo://localhost:23456",check = false)
     private OpenDataISV openData;
 
 
@@ -227,16 +232,16 @@ public class ClientController extends BaseController{
             //赔率
             Handicap handicap = member.getHandicap();
             OddGroup oddGroup = handicap.getOddGroup();
-            for (Odd odd :
-                    oddGroup.getOdds()) {
-                if (odd.getBetGroup().getId().equals(betGroup.getId())) {
-                    if (null != odd.getSpecificOdd()){
-                        order.setSpecificOdd(odd.getSpecificOdd());
-                    }else {
-                        order.setBetOdd(odd.getOddValue());
-                    }
-                }
-            }
+            oddGroup.getOdds().stream()
+                    .filter(odd -> odd.getBetGroup().getId().equals(betGroup.getId()))
+                    .forEach(odd -> {
+                        if (null != odd.getSpecificOdd()){
+                            order.setSpecificOdd(odd.getSpecificOdd());
+                        }else {
+                            order.setBetOdd(odd.getOddValue());
+                        }
+                    });
+
 
             if(balance<gp.getMoney()) {
                 throw new ClientErrorException("余额不足,请充值!");
@@ -255,8 +260,7 @@ public class ClientController extends BaseController{
             //生成返点财务记录
             iFinanceService.add(member,Arith.mul(gp.getMoney(),proportion),Arith.sub(balance,gp.getMoney()), TIMELY_LIUSHUI);
             orders.add(order);
-
-            balance = Arith.sub(balance,gp.getMoney())+gp.getMoney()*proportion;
+            balance = Arith.add(Arith.sub(balance,gp.getMoney()),Arith.mul(gp.getMoney(),proportion));
         }
         iOrderRepository.saveAll(orders);
 
@@ -321,63 +325,25 @@ public class ClientController extends BaseController{
     @GetMapping
     @UserLoginToken
     public HttpResult index() throws ClientErrorException{
+        ClientShowResp resp = new ClientShowResp();
+
         //现在时间戳
         long now = System.currentTimeMillis();
         //获取今日零点时间戳
         long zero = DateUtil.getDayStartTime(System.currentTimeMillis());
 
         List<Order> orders = iOrderRepository.findByUserAndTime(ContextHolderUtil.getTokenUserId(),zero,now);
+        resp.setIssueCount((int)orders.stream().map(Order::getIssueNumber).distinct().count());
 
-        List<Finance> finances = iFinanceRepository.findByCreateTimeBetweenAndCreateUser(zero,now,getLoginUser());
 
 
-        double betResult = 0;
-        double betTotal = 0;
-        double timelyTotal = 0;
-        double rangeTotal = 0;
-        double dividendTotal = 0;
-        for (Finance item :
-                finances) {
-            //下注金额
-            if (item.getType().equals(BET.getCode())) {
-                betTotal = Arith.add(betTotal,item.getMoney());
-            }
-//            //飞单盈亏
-//            if(item.getType().equals(BET_WIN.getCode())){
-//                betResult = Arith.add(betResult,item.getMoney());
-//
-//            }
-            //区间流水
-            if (item.getType().equals(RANGE_LIUSHUI.getCode())) {
-                rangeTotal = Arith.add(rangeTotal,item.getMoney());
-            }
-            //区间分红
-            if (item.getType().equals(RANGE_YINGLI.getCode())) {
-                dividendTotal = Arith.add(dividendTotal,item.getMoney());
-            }
-            //实时流水
-            if (item.getType().equals(TIMELY_LIUSHUI.getCode())) {
-                timelyTotal = Arith.add(timelyTotal,item.getMoney());
-            }
-//            //撤销
-//            if(item.getType().equals(CANCLE.getCode())){
-//                timelyTotal = Arith.sub(timelyTotal,item.getMoney());
-//            }
-        }
-        Set<Long> issues = new HashSet<>();
+        Set<Finance> finances = new HashSet<>(iFinanceRepository.findByCreateTimeBetweenAndCreateUser(zero,now,getLoginUser()));
 
-        for (Order item :
-                orders) {
-            issues.add(item.getIssueNumber());
-        }
-
-        ClientShowResp resp = new ClientShowResp();
-        resp.setBetResult(Arith.sub(betResult,betTotal));
-        resp.setBetTotal(betTotal);
-        resp.setIssueCount(issues.size());
-        resp.setRangeTotal(rangeTotal);
-        resp.setTimelyTotal(timelyTotal);
-        resp.setDividendTotal(dividendTotal);
+        resp.setBetTotal(Arith.sub(getReduce(finances, BET),getReduce(finances,BET_CANCLE)));
+        resp.setBetResult(Arith.sub(getReduce(finances, BET_RESULT),resp.getBetTotal()));
+        resp.setRangeTotal(getReduce(finances, RANGE_LIUSHUI));
+        resp.setTimelyTotal(Arith.sub(getReduce(finances, TIMELY_LIUSHUI),getReduce(finances,TIMELY_LISHUI_CANCLE)));
+        resp.setDividendTotal(getReduce(finances, RANGE_YINGLI));
         return HttpResult.success(resp,"查询今日数据成功");
     }
 
@@ -388,5 +354,18 @@ public class ClientController extends BaseController{
         return HttpResult.success(iFinanceService.reckonBalance(ContextHolderUtil.getTokenUserId()),"查询成功");
     }
 
+
+
+    private Double getReduce(Set<Finance> finances, GlobalConstant.FinanceType financeType) {
+        if (financeType.equals(RECHARGE) || financeType.equals(DESCEND)){
+            return finances.stream().filter(finance -> finance.getType().equals(financeType.getCode())
+                    && finance.getAuditStatus().equals(GlobalConstant.AuditStatus.AUDIT_PASS.getCode()))
+                    .map(Finance::getMoney)
+                    .reduce(0.0, (a, b) -> Arith.add(a, b));
+        }
+        return finances.stream().filter(finance -> finance.getType().equals(financeType.getCode()))
+                .map(Finance::getMoney)
+                .reduce(0.0, (a, b) -> Arith.add(a, b));
+    }
 
 }

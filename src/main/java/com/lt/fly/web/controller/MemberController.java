@@ -1,9 +1,11 @@
 package com.lt.fly.web.controller;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import com.lt.fly.annotation.UserLoginToken;
+import com.lt.fly.dao.IFinanceRepository;
 import com.lt.fly.dao.IHandicapRepository;
 import com.lt.fly.dao.IMemberRepository;
 import com.lt.fly.dao.IProportionRepository;
@@ -12,16 +14,15 @@ import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.jpa.support.DataQueryObjectPage;
 import com.lt.fly.utils.*;
 import com.lt.fly.web.query.MemberFind;
+import com.lt.fly.web.query.MemberReportFind;
 import com.lt.fly.web.req.MemberAddBySystem;
 import com.lt.fly.web.query.MemberFindPage;
 import com.lt.fly.web.req.MemberEditBySystem;
 import com.lt.fly.web.req.MemberTypeEdit;
 import com.lt.fly.web.req.ReferrerEdit;
 import com.lt.fly.web.resp.PageResp;
-import com.lt.fly.web.vo.MemberFinanceVo;
-import com.lt.fly.web.vo.MemberVo;
-import com.lt.fly.web.vo.ProportionVo;
-import com.lt.fly.web.vo.ReferrerMemberVo;
+import com.lt.fly.web.resp.ReportResp;
+import com.lt.fly.web.vo.*;
 import org.apache.dubbo.remoting.Client;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,9 @@ public class MemberController extends BaseController{
 
 	@Autowired
 	private IProportionRepository iProportionRepository;
+
+	@Autowired
+	private IFinanceRepository iFinanceRepository;
 	
 	/**
 	 *  添加会员
@@ -277,63 +281,25 @@ public class MemberController extends BaseController{
 		PageResp resp = new PageResp(page);
 		List<ReferrerMemberVo> referralMemberVos = new ArrayList<>();
 
-		//总流水
-		double waterTotal = 0;
-		//总盈亏
-		double betResultTotal = 0;
-		//总分红
-		double dividendTotal = 0;
-
 		for (Member item :
 				page.getContent()) {
-			ReferrerMemberVo vo = new ReferrerMemberVo();
-			if (null != item.getModifyUser()){
-				vo.setReferralName(item.getModifyUser().getUsername());
-			}
-			vo.setId(item.getId());
-			vo.setMemberName(item.getUsername());
-			vo.setNickName(item.getNickname());
-			vo.setReferralCode(item.getReferralCode());
-			vo.setStatus(item.getStatus());
-			if (null != item.getProportions() && 0 !=item.getProportions().size()){
-				vo.setProportionVos(ProportionVo.toVo(new ArrayList<>(item.getProportions())));
-			}
+			ReferrerMemberVo referrerMemberVo = new ReferrerMemberVo(item);
 			//被推荐的用户
 			List<Member> members = iMemberRepository.findByModifyUser(item);
 			if (null != members && 0 != members.size()){
-				vo.setReferralNumber(members.size());
-				for (Member member:
-					 	members) {
-					if (null != member.getFinances() && 0 != member.getFinances().size()) {
-						for (Finance finance :
-								member.getFinances()) {
-							if (finance.getType().equals(GlobalConstant.FinanceType.BET.getCode())){
-								waterTotal = Arith.add(waterTotal,finance.getMoney());
-								betResultTotal = Arith.sub(betResultTotal,finance.getMoney());
-							}
-//							if (finance.getType().equals(GlobalConstant.FinanceType.CANCLE.getCode())){
-//								waterTotal = Arith.sub(waterTotal,finance.getMoney());
-//							}
-//							if (finance.getType().equals(GlobalConstant.FinanceType.BET_WIN.getCode())){
-//								betResultTotal = Arith.add(betResultTotal,finance.getMoney());
-//							}
-						}
-					}
-				}
+				referrerMemberVo.setReferralNumber(members.size());
+				referrerMemberVo.setBetResultTotal(MemberFinanceVo.tovo(members).stream().map(MemberFinanceVo::getBetResultTotal).reduce(0.0,(a,b) -> Arith.add(a,b)));
+				referrerMemberVo.setWaterTotal(MemberFinanceVo.tovo(members).stream().map(MemberFinanceVo::getWaterTotal).reduce(0.0,(a,b) -> Arith.add(a,b)));
 			}
 			if (null != item.getFinances() && 0 != item.getFinances().size()) {
-				for (Finance finance :
-						item.getFinances()) {
-					if (finance.getType().equals(GlobalConstant.FinanceType.REFERRAL_LIUSHUI.getCode())
-							|| finance.getType().equals(GlobalConstant.FinanceType.REFERRAL_YINGLI.getCode())){
-						dividendTotal = Arith.add(dividendTotal,finance.getMoney());
-					}
-				}
+				double dividendTotal = item.getFinances().stream()
+						.filter(finance -> finance.getType().equals(GlobalConstant.FinanceType.REFERRAL_LIUSHUI.getCode())
+								|| finance.getType().equals(GlobalConstant.FinanceType.REFERRAL_YINGLI.getCode()))
+						.map(Finance::getMoney)
+						.reduce(0.0,(a,b) -> Arith.add(a,b));
+			referrerMemberVo.setDividendTotal(dividendTotal);
 			}
-			vo.setBetResultTotal(betResultTotal);
-			vo.setDividendTotal(dividendTotal);
-			vo.setWaterTotal(waterTotal);
-			referralMemberVos.add(vo);
+			referralMemberVos.add(referrerMemberVo);
 		}
 		resp.setData(referralMemberVos);
 		return HttpResult.success(resp,"获取推手列表成功!");
@@ -359,23 +325,46 @@ public class MemberController extends BaseController{
 		return HttpResult.success(resp,"获取推荐详情列表成功!");
 	}
 
+	/**
+	 * 会员报表
+	 * @param query
+	 * @return
+	 * @throws ClientErrorException
+	 */
+	@GetMapping("report")
+	@UserLoginToken
+	public HttpResult memberReport(MemberReportFind query) throws ClientErrorException{
+		ReportResp resp = new ReportResp();
+		List<MemberReportVo> vos = new ArrayList<>();
+		iMemberRepository.findAll(query).forEach(member -> {
+			Map<String, List<Finance>> financeMap = member.getFinances().stream()
+					.filter(finance -> finance.getCreateTime() < query.getEnd() &&
+							finance.getCreateTime() > query.getStart())
+					.collect(Collectors.groupingBy(Finance -> DateUtil.timestampToString(Finance.getCreateTime(), DateUtil.DEFAULT_FORMATS)));
 
-//	/**
-//	 * 推手详情页
-//	 * @param id
-//	 * @param req
-//	 * @return
-//	 * @throws ClientErrorException
-//	 */
-//	@PutMapping("referrer/{id}")
-//	@UserLoginToken
-//	public HttpResult putProportion(@PathVariable Long id, @RequestBody ReferrerEdit req) throws ClientErrorException {
-//		Member member = isNotNull(iMemberRepository.findById(id),"传递的推手id不存在实体");
-//		if (null == member.getType() || member.getType().equals(GlobalConstant.MemberType.GENERAL.getCode())) {
-//			throw new ClientErrorException("此会员不是推手会员");
-//		}
-//		return null;
-//	}
+			financeMap.forEach((s, finances) -> {
+				vos.add(new MemberReportVo(s,finances,member));
+			});
+		});
+		resp.setData(vos);
+
+
+
+
+//			Map<Long, List<Finance>> map = member.getFinances().stream()
+//					.filter(finance -> finance.getCreateTime() < query.getEnd() &&
+//							finance.getCreateTime() > query.getStart())
+//					.collect(Collectors.toMap(Finance::getCreateTime,
+//							Finance -> Arrays.asList(Finance),
+//							(List<Finance> oldList, List<Finance> newList) -> {
+//								oldList.addAll(newList);
+//								return oldList;
+//							}));
+//		});
+
+
+		return HttpResult.success(resp,"获取会员报表成功");
+	}
 
 	// 设置返点
 	private void eidtProportion(Member member, List<Long> proportionIds2, Integer type) throws ClientErrorException {

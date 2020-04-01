@@ -1,7 +1,10 @@
 package com.lt.fly.web.vo;
 
+import com.lt.fly.entity.Member;
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -13,10 +16,10 @@ public class ReferrerMemberVo {
     private String referralName;
 
     //推手用户名
-    private String memberName;
+    private String username;
 
     //推手昵称
-    private String nickName;
+    private String nickname;
 
     //流水总额(所推荐的所有会员)
     private Double waterTotal = 0.0;
@@ -39,4 +42,14 @@ public class ReferrerMemberVo {
     //返点比例
     private List<ProportionVo> proportionVos;
 
+
+    public ReferrerMemberVo(Member obj) {
+        BeanUtils.copyProperties(obj,this);
+        if (null != obj.getModifyUser()){
+            this.referralName = obj.getModifyUser().getUsername();
+        }
+        if (null != obj.getProportions() && 0 !=obj.getProportions().size()){
+            this.proportionVos = ProportionVo.toVo(new ArrayList<>(obj.getProportions()));
+        }
+    }
 }

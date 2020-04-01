@@ -3,6 +3,7 @@ package com.lt.fly.dao;
 
 import java.util.List;
 
+import com.lt.fly.jpa.support.QueryField;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -67,4 +68,6 @@ public interface IFinanceRepository extends BaseRepository<Finance, Long> {
             "group by t1.dat\n" +
             "order by t1.dat ) as t3")
     Long countByReport(long start,long end);
+
+
 }
