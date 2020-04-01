@@ -5,24 +5,26 @@ import com.lt.fly.Service.IFinanceService;
 import com.lt.fly.Service.IOrderService;
 import com.lt.fly.dao.IFinanceRepository;
 import com.lt.fly.dao.IOrderRepository;
+import com.lt.fly.entity.Finance;
 import com.lt.fly.entity.Order;
 import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.utils.Arith;
+import com.lt.fly.utils.DateUtil;
 import com.lt.fly.utils.GlobalConstant;
 import com.lt.fly.web.query.BetReportFind;
 import com.lt.fly.web.query.OrderFind;
-import com.lt.fly.web.resp.ReportResp;
 import com.lt.fly.web.resp.PageResp;
+import com.lt.fly.web.resp.ReportResp;
 import com.lt.fly.web.vo.BetReportVo;
 import com.lt.fly.web.vo.OrderVo;
 import com.lt.lxc.pojo.OrderDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl extends BaseService implements IOrderService {
@@ -86,49 +88,34 @@ public class OrderServiceImpl extends BaseService implements IOrderService {
     //竞猜报表
     @Override
     public ReportResp findReport(BetReportFind query) throws ClientErrorException {
-        PageRequest pageRequest = PageRequest.of(query.getPage(), query.getSize());//借助计算起始位置
-        long total=iFinanceRepository.countByReport(query.getBefore(),query.getAfter());// 计算数据总条数
-        List<Object[]> records=iFinanceRepository.findReport(query.getBefore(),query.getAfter(),pageRequest.getOffset(),pageRequest.getPageSize());// 获取分页数据
-        int totalPageNum = (int)(total  +  query.getSize()  - 1) / query.getSize();//计算总页数
+        List<BetReportVo> vos = new ArrayList<>();
+        iFinanceRepository.findAll()
+                .stream()
+                .filter(finance -> finance.getCreateTime() < query.getAfter() &&
+                        finance.getCreateTime() > query.getBefore())
+                .sorted(Comparator.comparing(Finance::getCreateTime,Comparator.reverseOrder()))//按时间降序
+                .collect(Collectors.groupingBy(Finance -> DateUtil.timestampToString(Finance.getCreateTime(), DateUtil.DEFAULT_FORMATS)))
+                .forEach((s, finances) -> {
+                    vos.add(new BetReportVo(s,finances));
+                });
+        List<BetReportVo> betReportVos = vos.stream()
+                .skip(query.getPage() * (query.getSize() - 1))//分页
+                .limit(query.getSize())
+                .collect(Collectors.toList());
 
-        ReportResp betReportResp = new ReportResp(query.getPage(), query.getSize(), totalPageNum, total, records);
+        ReportResp reportResp = new ReportResp(query.getPage(), query.getSize(),(vos.size()  +  query.getSize() - 1) / query.getSize(), (long)vos.size(), betReportVos);
 
-        List<BetReportVo> betReportVos = new ArrayList<>();
+        reportResp.setData(vos);
+        reportResp.setFenHongTotal(vos.stream().map(BetReportVo::getFengHong).reduce(0.0,(a,b) -> Arith.add(a,b)));
+        reportResp.setHuiShuiTotal(vos.stream().map(BetReportVo::getHuiShui).reduce(0.0,(a,b) -> Arith.add(a,b)));
+        reportResp.setDescendTotal(vos.stream().map(BetReportVo::getDescend).reduce(0.0,(a,b) -> Arith.add(a,b)));
+        reportResp.setRechargeTotal(vos.stream().map(BetReportVo::getRecharge).reduce(0.0,(a,b) -> Arith.add(a,b)));
+        reportResp.setWaterTotal(vos.stream().map(BetReportVo::getWater).reduce(0.0,(a,b) -> Arith.add(a,b)));
+        reportResp.setWinMoneyTotal(vos.stream().map(BetReportVo::getWinMoney).reduce(0.0,(a,b) -> Arith.add(a,b)));
+        reportResp.setBetResultTotal(vos.stream().map(BetReportVo::getBetResult).reduce(0.0,(a,b) -> Arith.add(a,b)));
+        reportResp.setBetCountTotal(vos.stream().map(BetReportVo::getBetCount).reduce(0l,(a,b) -> a + b));
 
 
-        for (Object[] objArr:
-                records) {
-            BetReportVo betReportVo = new BetReportVo();
-            betReportVo.setDateTime(objArr[0].toString());
-            //下注数
-            betReportVo.setBetCount((int) Math.floor(Double.parseDouble(objArr[1].toString())));
-            betReportResp.setBetCountTotal(betReportResp.getBetCountTotal()+(int) Math.floor(Double.parseDouble(objArr[1].toString())));
-            //盈利
-            betReportVo.setBetResult(Double.parseDouble(objArr[2].toString()));
-            betReportResp.setBetResultTotal(Arith.add(betReportResp.getBetResultTotal(),Double.parseDouble(objArr[2].toString())));
-            //流水
-            betReportVo.setWater(Double.parseDouble(objArr[3].toString()));
-            betReportResp.setWaterTotal(Arith.add(betReportResp.getWaterTotal(),Double.parseDouble(objArr[3].toString())));
-            //上分
-            betReportVo.setRecharge(Double.parseDouble(objArr[4].toString()));
-            betReportResp.setRechargeTotal(Arith.add(betReportResp.getRechargeTotal(),Double.parseDouble(objArr[4].toString())));
-            //下分
-            betReportVo.setDescend(Double.parseDouble(objArr[5].toString()));
-            betReportResp.setDescendTotal(Arith.add(betReportResp.getDescendTotal(),Double.parseDouble(objArr[5].toString())));
-            //回水
-            betReportVo.setHuiShui(Double.parseDouble(objArr[6].toString()));
-            betReportResp.setHuiShuiTotal(Arith.add(betReportResp.getHuiShuiTotal(),Double.parseDouble(objArr[6].toString())));
-            //分红
-            betReportVo.setFengHong(Double.parseDouble(objArr[7].toString()));
-            betReportResp.setFenHongTotal(Arith.add(betReportResp.getFenHongTotal(),Double.parseDouble(objArr[7].toString())));
-            //战果
-            betReportVo.setWinMoney(Double.parseDouble(objArr[8].toString()));
-            betReportResp.setWinMoneyTotal(Arith.add(betReportResp.getWinMoneyTotal(),Double.parseDouble(objArr[8].toString())));
-
-            betReportVos.add(betReportVo);
-        }
-
-        betReportResp.setData(betReportVos);
-        return betReportResp;
+        return reportResp;
     }
 }

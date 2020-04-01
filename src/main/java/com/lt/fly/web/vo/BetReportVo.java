@@ -18,7 +18,7 @@ public class BetReportVo {
     //日期
     private String dateTime;
     //飞单数
-    private Integer betCount;
+    private Long betCount;
     //飞单流水
     private Double water;
     //飞单战果
@@ -46,6 +46,7 @@ public class BetReportVo {
         this.betResult = Arith.sub(winMoney,water);
         this.huiShui = Arith.sub(Arith.add(getReduce(finances, RANGE_LIUSHUI),getReduce(finances, TIMELY_LIUSHUI)),getReduce(finances,TIMELY_LISHUI_CANCLE));
         this.fengHong = getReduce(finances, RANGE_YINGLI);
+        this.betCount = finances.stream().filter(finance -> finance.getType().equals(BET.getCode())).count()-finances.stream().filter(finance -> finance.getType().equals(BET_CANCLE.getCode())).count();
     }
 
 
