@@ -16,6 +16,7 @@ import com.lt.fly.web.query.OrderFind;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.resp.ReportResp;
 import com.lt.fly.web.vo.BetReportVo;
+import com.lt.fly.web.vo.MemberReportVo;
 import com.lt.fly.web.vo.OrderVo;
 import com.lt.lxc.pojo.OrderDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,13 +94,25 @@ public class OrderServiceImpl extends BaseService implements IOrderService {
                 .stream()
                 .filter(finance -> finance.getCreateTime() < query.getAfter() &&
                         finance.getCreateTime() > query.getBefore())
-                .sorted(Comparator.comparing(Finance::getCreateTime,Comparator.reverseOrder()))//按时间降序
                 .collect(Collectors.groupingBy(Finance -> DateUtil.timestampToString(Finance.getCreateTime(), DateUtil.DEFAULT_FORMATS)))
                 .forEach((s, finances) -> {
                     vos.add(new BetReportVo(s,finances));
                 });
         List<BetReportVo> betReportVos = vos.stream()
-                .skip(query.getPage() * (query.getSize() - 1))//分页
+                .sorted(new Comparator<BetReportVo>() {
+                    @Override
+                    public int compare(BetReportVo o1, BetReportVo o2) {
+                        try {
+                            Date d1 = DateUtil.parseDate(o1.getDateTime(), DateUtil.DEFAULT_FORMATS);
+                            Date d2 = DateUtil.parseDate(o2.getDateTime(), DateUtil.DEFAULT_FORMATS);
+                            return d2.compareTo(d1);
+                        } catch (Exception e){
+                            e.printStackTrace();
+                        }
+                        return 0;
+                    }
+                })
+                .skip((query.getPage()-1) * query.getSize())//分页
                 .limit(query.getSize())
                 .collect(Collectors.toList());
 
