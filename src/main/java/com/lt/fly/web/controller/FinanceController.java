@@ -400,7 +400,7 @@ public class FinanceController extends BaseController{
 				}
 			}
 					
-		return money;
+		return 0;
 	}
 	
 	/*
