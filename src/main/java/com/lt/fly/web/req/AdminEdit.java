@@ -9,8 +9,8 @@ import java.util.List;
 @Getter
 @Setter
 public class AdminEdit {
-	@NotNull(message = "密码不能为空")
-	private String password;
+//	@NotNull(message = "密码不能为空")
+//	private String password;
 	
 	@NotNull(message = "昵称不能为空")
 	private String nickname;

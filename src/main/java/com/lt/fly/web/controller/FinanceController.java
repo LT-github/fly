@@ -7,17 +7,20 @@ import com.lt.fly.utils.*;
 import com.lt.fly.web.query.FinanceFind;
 import com.lt.fly.web.query.ReturnPointFindPage;
 import com.lt.fly.web.req.FinanceAdd;
+import com.lt.fly.web.req.HandicapSettlementReq;
 import com.lt.fly.web.req.ReturnSettle;
 import com.lt.fly.web.req.ReturnSettleMulity;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.vo.MemberVo;
 import com.lt.fly.web.vo.ReturnPointVo;
+import com.lt.fly.web.vo.ReturnPointVoByTime;
 import com.lt.fly.web.vo.FinanceVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import com.google.common.collect.Lists;
 import com.lt.fly.Service.IFinanceService;
 import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.web.req.JudgeAuditFinanceReq;
@@ -373,4 +376,115 @@ public class FinanceController extends BaseController{
 		}
 		return 0l;
 	}
+	@Autowired
+	private IHandicapRepository handicapRepository;
+	/*
+	普通会员按时间的返点金额
+	 */
+	private double getMoneyByTime(Integer type, Member member, Finance last,Long settleTime) throws ClientErrorException {
+		double money = 0;
+		List<Finance> finances;
+		if (null != last){
+			finances = iFinanceRepository.findByCreateUserAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(member,last.getCreateTime(),settleTime);
+		}else {
+			finances = iFinanceRepository.findByCreateUserAndCreateTimeBefore(member,settleTime);
+		}	
+		if(last.getCreateTime()>=settleTime) throw new ClientErrorException("该盘口按时间已结算");
+			if (null != finances && 0 != finances.size()){
+				for (Finance finance :
+						finances) {
+					if (finance.getType().equals(BET.getCode())) {
+						money = Arith.add(money,finance.getMoney());
+					}
+					if (type.equals(RANGE_YINGLI.getCode())) {
+						//分红
+						if (finance.getType().equals(BET.getCode())){
+							money = Arith.sub(money,finance.getMoney());
+						}
+					}
+					if (finance.getType().equals(BET_CANCLE.getCode())){
+						money = Arith.sub(money,finance.getMoney());
+					}
+				}
+			}
+					
+		return money;
+	}
+	
+	/*
+	推手会员按时间的返点金额
+	 */
+	private double getAllMoneyByTime(Integer type, Member member, Finance last,Long settleTime) throws ClientErrorException{
+		double money = 0;
+		List<Member> members = iMemberRepository.findByModifyUser(member);
+		for (Member item :
+				members) {
+			money = Arith.add(money,getMoneyByTime(type,item,last,settleTime));
+		}
+		return money;
+	}
+	private ReturnPointVoByTime getReturnPointVoByTime(Integer type, Member member,Long settleTime) throws ClientErrorException{
+		
+		ReturnPointVoByTime vo = new ReturnPointVoByTime();
+		double returnPoint = 0;
+		double money = 0;
+		//上次结算财务记录
+		Finance last = iFinanceRepository.findNew(type,member.getId());
+      // if(last!=null) {}
+		
+		//找到返点值
+		Handicap handicap = member.getHandicap();
+		Set<Proportion> proportions = null;
+		//普通会员与推手会员的返点
+		if (type.equals(SETTLEMENT_TYPE_HAND.getCode())) {
+			proportions = member.getProportions();
+			money = getAllMoneyByTime(type,member,last,settleTime);
+		} else {
+			money = getMoneyByTime(type, member, last,settleTime);
+			proportions = handicap.getProportions();
+		}
+		if(proportions!=null) {
+		for (Proportion proportion :
+				proportions) {
+			if (type.equals(RANGE_LIUSHUI.getCode())) {
+				returnPoint = getReturnPoint(money, proportion, CommonsUtil.RANGE_LIUSHUI_RETURN_POINT);
+			}			
+		 }
+		}
+		vo.setMoney(money);
+		vo.setUsername(member.getUsername());
+		vo.setNikename(member.getNickname());
+		vo.setReturnMoney(Arith.mul(money,returnPoint));
+		vo.setMemberId(member.getId());
+		vo.setTime(settleTime);
+		return vo;
+		
+		
+	}
+	     
+	    //手动结算
+	   @PostMapping("/addByTime")
+		public HttpResult<Object> addTime(@Validated @RequestBody HandicapSettlementReq req) throws ClientErrorException {
+			
+			List<Handicap> handicaps=Lists.newArrayList();
+			List<Finance> fi=Lists.newArrayList();
+			GlobalConstant.FinanceType type = GlobalConstant.FinanceType.getFinanceTypeByCode(req.getSettlementType());
+			
+			if(null==req.getHandicapIds()) { handicaps = handicapRepository.findAll();}else {handicaps = handicapRepository.findAllById(req.getHandicapIds());}
+			if(handicaps== null || handicaps.size()==0) throw new ClientErrorException("暂时无任何盘口");
+			for (Handicap handicap : handicaps) {
+				Set<Member> members = handicap.getMembers();
+				if(members==null || members.size()==0) continue;
+				for (Member member : members) {																			
+					ReturnPointVoByTime vo = getReturnPointVoByTime(req.getSettlementType(), member,req.getSettlementTime()); 					
+					Finance finance = iFinanceService.add(member,vo.getReturnMoney(),iFinanceService.reckonBalance(member.getId()), type);
+					finance.setModifyUser(getLoginUser());
+					finance.setModifyTime(System.currentTimeMillis());
+					iFinanceRepository.save(finance);
+					fi.add(finance);
+				}
+			}
+			
+			return HttpResult.success(fi,"按时间结算成功!");
+		}
 }
