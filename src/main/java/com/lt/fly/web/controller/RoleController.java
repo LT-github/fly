@@ -128,7 +128,7 @@ public class RoleController extends BaseController {
 			prp.setData(RoleVo.toVo(page.getContent()));
 		return HttpResult.success(prp, "查询成功");
 	}
-	
+	  
 	private Role addOrEditRole(RoleAdd obj , Long id) throws ClientErrorException {
 		
 		// 设置基本信息
