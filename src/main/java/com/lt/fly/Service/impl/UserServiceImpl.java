@@ -29,6 +29,8 @@ public class UserServiceImpl implements IUserService {
 
         if(!StringUtils.equals(req.getPassword(), dbUser.getPassword()))
             throw new RuntimeException("登录失败，密码错误");
+        if(dbUser.getStatus()==null) throw new RuntimeException("用户 “"+dbUser.getUsername()+"”未激活，请联系管理员");
+        if(dbUser.getStatus()!=1) throw new RuntimeException("用户 “"+dbUser.getUsername()+"”被禁用，请联系管理员");
         String token = tokenUtil.getToken(dbUser, GlobalUtil.getCliectIp(ContextHolderUtil.getRequest()));
         return new UserLoginResp(dbUser.getId(), dbUser.getNickname(), dbUser.getUsername(),token);
     }

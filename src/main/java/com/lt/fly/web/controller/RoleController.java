@@ -8,14 +8,19 @@ import com.lt.fly.annotation.UserLoginToken;
 import com.lt.fly.dao.IAuthorityRepository;
 import com.lt.fly.dao.IRoleRepository;
 import com.lt.fly.entity.Authority;
+import com.lt.fly.entity.Member;
 import com.lt.fly.entity.Role;
 import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.jpa.support.DataQueryObjectSort;
 import com.lt.fly.utils.HttpResult;
 import com.lt.fly.utils.IdWorker;
 import com.lt.fly.web.req.RoleAdd;
+import com.lt.fly.web.req.RoleQueryReq;
+import com.lt.fly.web.resp.PageResp;
+import com.lt.fly.web.vo.MemberFinanceVo;
 import com.lt.fly.web.vo.RoleVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -117,9 +122,11 @@ public class RoleController extends BaseController {
 //	@RequiredPermission(value = "findAllRole")
 	@GetMapping("/all")
 	@UserLoginToken
-	public HttpResult<List<RoleVo>> findAll(DataQueryObjectSort query){
-		List<Role> roles = iRoleRepository.findAll(query);
-		return HttpResult.success(RoleVo.toVo(roles), "查询成功");
+	public HttpResult<Object> findAll(@RequestBody RoleQueryReq query){
+		 Page<Role> page = iRoleRepository.findAll(query);
+		 PageResp<RoleVo, Role> prp = new PageResp<RoleVo, Role>(page);
+			prp.setData(RoleVo.toVo(page.getContent()));
+		return HttpResult.success(prp, "查询成功");
 	}
 	
 	private Role addOrEditRole(RoleAdd obj , Long id) throws ClientErrorException {

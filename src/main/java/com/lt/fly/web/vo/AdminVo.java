@@ -15,7 +15,6 @@ public class AdminVo {
 	private Long id;
 	private String username;
 	private String nickname;
-	private String realname;
 	private String mobile;
 	private Integer status;
 	private Long lastLoginTime;
