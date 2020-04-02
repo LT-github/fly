@@ -433,6 +433,7 @@ public class FinanceController extends BaseController{
 			money = getAllMoneyByTime(type,member,last,settleTime);
 		} else {
 			money = getMoneyByTime(type, member, last,settleTime);
+			if(handicap!=null)
 			proportions = handicap.getProportions();
 		}
 		if(proportions!=null) {
@@ -440,7 +441,10 @@ public class FinanceController extends BaseController{
 				proportions) {
 			if (type.equals(RANGE_LIUSHUI.getCode())) {
 				returnPoint = getReturnPoint(money, proportion, CommonsUtil.RANGE_LIUSHUI_RETURN_POINT);
-			}			
+			}	
+			if (returnPoint != 0){
+				break;
+			}
 		 }
 		}
 		vo.setMoney(money);
@@ -479,4 +483,6 @@ public class FinanceController extends BaseController{
 			
 			return HttpResult.success(fi,"按时间结算成功!");
 		}
+	   
+	   
 }
