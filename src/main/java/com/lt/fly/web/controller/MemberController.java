@@ -9,6 +9,7 @@ import com.lt.fly.entity.*;
 import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.jpa.support.DataQueryObjectPage;
 import com.lt.fly.utils.*;
+import com.lt.fly.web.log.Log;
 import com.lt.fly.web.query.MemberFind;
 import com.lt.fly.web.query.MemberFindPage;
 import com.lt.fly.web.query.MemberReportFind;
@@ -59,6 +60,7 @@ public class MemberController extends BaseController{
 	 */
 	@PostMapping
 	@UserLoginToken
+	@Log(value = "添加会员")
 	public HttpResult<MemberVo> addMember(@RequestBody @Validated MemberAddBySystem obj ,
 										  BindingResult bindingResult) throws ClientErrorException {
 		this.paramsValid(bindingResult);
@@ -135,6 +137,7 @@ public class MemberController extends BaseController{
 	 */
 	@PutMapping("/{id}")
 	@UserLoginToken
+	@Log(value = "修改会员信息")
 	public HttpResult<MemberVo> editStore(@PathVariable Long id , @RequestBody @Validated MemberEditBySystem obj ,
 			BindingResult bindingResult) throws ClientErrorException{
 		this.paramsValid(bindingResult);
@@ -168,6 +171,7 @@ public class MemberController extends BaseController{
 	 */
 	@GetMapping
 	@UserLoginToken
+	@Log(value = "查询会员列表")
 	public HttpResult findAllPage(MemberFindPage query){
 
 		if (null != query.getHandicapId() && query.getHandicapId().equals(GlobalConstant.NoMemberHandicap.ID.getCode())){
@@ -205,6 +209,7 @@ public class MemberController extends BaseController{
 	 */
 	@DeleteMapping("/{id}")
 	@UserLoginToken
+	@Log(value = "停封会员")
 	public HttpResult<Object> deleteStore(@PathVariable Long id) throws ClientErrorException{
 		Member member = isNotNull(iMemberRepository.findById(id),"会员id查询不到实体");
 
@@ -238,6 +243,7 @@ public class MemberController extends BaseController{
 	 */
 	@UserLoginToken
 	@PutMapping("type/{id}")
+	@Log(value = "更改会员类型")
 	public HttpResult updateType(@PathVariable Long id,@RequestBody MemberTypeEdit req) throws ClientErrorException{
 
 		Member member = isNotNull(iMemberRepository.findById(id),"会员id查询不到实体");
@@ -267,6 +273,7 @@ public class MemberController extends BaseController{
 	 */
 	@UserLoginToken
 	@GetMapping("referrer")
+	@Log(value = "查询推手列表")
 	public HttpResult findReferrer(MemberFindPage query) throws ClientErrorException{
 		//设置为推手会员
 		query.setType(GlobalConstant.MemberType.REFERRER.getCode());
@@ -306,6 +313,7 @@ public class MemberController extends BaseController{
 	 */
 	@GetMapping("referrer/{id}")
 	@UserLoginToken
+	@Log(value = "查推手详情列表")
 	public HttpResult findReferrerAll(@PathVariable Long id,DataQueryObjectPage query) throws ClientErrorException{
 		Member referrer = isNotNull(iMemberRepository.findById(id),"传递的参数未找到实体");
 		List<Member> members= iMemberRepository.findByModifyUser(referrer);
@@ -326,6 +334,7 @@ public class MemberController extends BaseController{
 	 */
 	@GetMapping("report")
 	@UserLoginToken
+	@Log(value = "查询会员报表")
 	public HttpResult memberReport(MemberReportFind query) throws ClientErrorException{
 		List<MemberReportVo> vos = new ArrayList<>();
 		iMemberRepository.findAll(query).forEach(member -> {
@@ -358,16 +367,7 @@ public class MemberController extends BaseController{
 				.limit(query.getSize())
 				.collect(Collectors.toList());
 
-		ReportResp resp = new ReportResp(query.getPage(), query.getSize(),(vos.size()  +  query.getSize()  - 1) / query.getSize(), (long)vos.size(), memberReportVos);
-
-		resp.setFenHongTotal(vos.stream().map(MemberReportVo::getFengHong).reduce(0.0,(a,b) -> Arith.add(a,b)));
-		resp.setHuiShuiTotal(vos.stream().map(MemberReportVo::getHuiShui).reduce(0.0,(a,b) -> Arith.add(a,b)));
-		resp.setDescendTotal(vos.stream().map(MemberReportVo::getDescend).reduce(0.0,(a,b) -> Arith.add(a,b)));
-		resp.setRechargeTotal(vos.stream().map(MemberReportVo::getRecharge).reduce(0.0,(a,b) -> Arith.add(a,b)));
-		resp.setWaterTotal(vos.stream().map(MemberReportVo::getWater).reduce(0.0,(a,b) -> Arith.add(a,b)));
-		resp.setWinMoneyTotal(vos.stream().map(MemberReportVo::getWinMoney).reduce(0.0,(a,b) -> Arith.add(a,b)));
-		resp.setBetResultTotal(vos.stream().map(MemberReportVo::getBetResult).reduce(0.0,(a,b) -> Arith.add(a,b)));
-		resp.setBetCountTotal(vos.stream().map(MemberReportVo::getBetCount).reduce(0l,(a,b) -> a + b));
+		ReportResp resp = new ReportResp(query.getPage(), query.getSize(),(vos.size()+query.getSize()-1)/query.getSize(), (long)vos.size(), memberReportVos,vos);
 
 		return HttpResult.success(resp,"获取会员报表成功");
 	}
@@ -376,7 +376,7 @@ public class MemberController extends BaseController{
 	private void eidtProportion(Member member, List<Long> proportionIds2, Integer type) throws ClientErrorException {
 		if (null != proportionIds2 && 0 != proportionIds2.size()) {
 			if (type.equals(GlobalConstant.MemberType.GENERAL.getCode())) {
-				throw new ClientErrorException("普通会员无权设置返点!");
+				throw new ClientErrorException("只可给推手设置返点!");
 			}
 			List<Long> proportionIds = proportionIds2;
 			Set<Proportion> pro = new HashSet<>();

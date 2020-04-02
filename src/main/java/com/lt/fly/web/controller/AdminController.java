@@ -1,7 +1,6 @@
 package com.lt.fly.web.controller;
 
 import com.lt.fly.Service.IUserService;
-import com.lt.fly.annotation.RequiredPermission;
 import com.lt.fly.annotation.UserLoginToken;
 import com.lt.fly.dao.IAdminRepository;
 import com.lt.fly.dao.IRoleRepository;
@@ -12,6 +11,7 @@ import com.lt.fly.jpa.support.DataQueryObjectPage;
 import com.lt.fly.utils.GlobalConstant;
 import com.lt.fly.utils.HttpResult;
 import com.lt.fly.utils.IdWorker;
+import com.lt.fly.web.log.Log;
 import com.lt.fly.web.req.AdminAdd;
 import com.lt.fly.web.req.AdminEdit;
 import com.lt.fly.web.req.UserLogin;
@@ -26,7 +26,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+
+import static com.lt.fly.utils.GlobalConstant.LogType.LOGIN;
 
 @RestController
 @RequestMapping("/admin")
@@ -45,6 +46,7 @@ public class AdminController extends BaseController {
     private IRoleRepository iRoleRepository;
 
     //系统用户登录
+    @Log(value = "系统用户登录",type = LOGIN)
     @PostMapping("/login")
     public HttpResult<UserLoginResp> login(@RequestBody UserLogin req) {
         return HttpResult.success(iUserService.login(req),"登录成功");
@@ -58,6 +60,7 @@ public class AdminController extends BaseController {
      * @throws ClientErrorException
      */
 //    @RequiredPermission(value="addUser-add")
+    @Log(value = "添加系统用户")
     @PostMapping
     @UserLoginToken
     public HttpResult<AdminVo> addAdmin(@RequestBody @Validated AdminAdd obj ,
@@ -78,6 +81,7 @@ public class AdminController extends BaseController {
      * @throws ClientErrorException
      */
 //    @RequiredPermission(value="editUser-edit")
+    @Log(value = "修改系统用户")
     @PutMapping("/{id}")
     @UserLoginToken
     public HttpResult<AdminVo> editAdmin(@PathVariable Long id,@RequestBody @Validated AdminEdit obj ,
@@ -89,12 +93,13 @@ public class AdminController extends BaseController {
     }
 
     /**
-     * 编辑系统用户状态
+     * 封停系统用户
      * @param id
      * @return
      * @throws ClientErrorException
      */
 //    @RequiredPermission(value="deleteAdmin")
+    @Log(value = "封停系统用户")
     @DeleteMapping("/{id}")
     @UserLoginToken
     public HttpResult<Object> deleteAdmin(@PathVariable Long id) throws ClientErrorException{
@@ -111,6 +116,7 @@ public class AdminController extends BaseController {
      * @return
      */
 //    @RequiredPermission(value="getUser")
+    @Log(value = "查询系统用户列表")
     @GetMapping("/all")
     @UserLoginToken
     public HttpResult<PageResp<AdminVo, Admin>> findAllByPage(DataQueryObjectPage query){

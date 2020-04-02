@@ -116,19 +116,7 @@ public class OrderServiceImpl extends BaseService implements IOrderService {
                 .limit(query.getSize())
                 .collect(Collectors.toList());
 
-        ReportResp reportResp = new ReportResp(query.getPage(), query.getSize(),(vos.size()  +  query.getSize() - 1) / query.getSize(), (long)vos.size(), betReportVos);
-
-        reportResp.setData(vos);
-        reportResp.setFenHongTotal(vos.stream().map(BetReportVo::getFengHong).reduce(0.0,(a,b) -> Arith.add(a,b)));
-        reportResp.setHuiShuiTotal(vos.stream().map(BetReportVo::getHuiShui).reduce(0.0,(a,b) -> Arith.add(a,b)));
-        reportResp.setDescendTotal(vos.stream().map(BetReportVo::getDescend).reduce(0.0,(a,b) -> Arith.add(a,b)));
-        reportResp.setRechargeTotal(vos.stream().map(BetReportVo::getRecharge).reduce(0.0,(a,b) -> Arith.add(a,b)));
-        reportResp.setWaterTotal(vos.stream().map(BetReportVo::getWater).reduce(0.0,(a,b) -> Arith.add(a,b)));
-        reportResp.setWinMoneyTotal(vos.stream().map(BetReportVo::getWinMoney).reduce(0.0,(a,b) -> Arith.add(a,b)));
-        reportResp.setBetResultTotal(vos.stream().map(BetReportVo::getBetResult).reduce(0.0,(a,b) -> Arith.add(a,b)));
-        reportResp.setBetCountTotal(vos.stream().map(BetReportVo::getBetCount).reduce(0l,(a,b) -> a + b));
-
-
+        ReportResp reportResp = new ReportResp(query.getPage(), query.getSize(),(vos.size()  +  query.getSize() - 1) / query.getSize(), (long)vos.size(), betReportVos,vos);
         return reportResp;
     }
 }

@@ -1,9 +1,5 @@
 package com.lt.fly.web.controller;
 
-import java.util.List;
-import java.util.Optional;
-
-import com.lt.fly.annotation.RequiredPermission;
 import com.lt.fly.annotation.UserLoginToken;
 import com.lt.fly.dao.IAdminRepository;
 import com.lt.fly.dao.IAuthorityRepository;
@@ -12,6 +8,7 @@ import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.jpa.support.DataQueryObjectPage;
 import com.lt.fly.utils.HttpResult;
 import com.lt.fly.utils.IdWorker;
+import com.lt.fly.web.log.Log;
 import com.lt.fly.web.req.AuthorityAdd;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.vo.AuthorityVo;
@@ -19,14 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -49,6 +42,7 @@ public class AuthorityController extends BaseController{
 	 * @throws ClientErrorException
 	 */
 //	@RequiredPermission(value="addAuthority")
+	@Log(value = "添加权限")
 	@PostMapping
 	@UserLoginToken
 	public HttpResult<AuthorityVo> addAuthority(@RequestBody @Validated AuthorityAdd obj ,
@@ -72,6 +66,7 @@ public class AuthorityController extends BaseController{
 	 * @throws ClientErrorException
 	 */
 //	@RequiredPermission(value="editAuthority")
+	@Log(value = "修改权限信息")
 	@PutMapping("/{id}")
 	@UserLoginToken
 	public HttpResult<AuthorityVo> editAuthority(@PathVariable Long id,@RequestBody @Validated AuthorityAdd obj ,
@@ -91,6 +86,7 @@ public class AuthorityController extends BaseController{
 	 * @throws ClientErrorException
 	 */
 //	@RequiredPermission(value="deleteAuthority")
+	@Log(value = "删除权限")
 	@DeleteMapping("/{id}")
 	@UserLoginToken
 	public HttpResult<Object> deleteAuthority(@PathVariable Long id)
@@ -115,6 +111,7 @@ public class AuthorityController extends BaseController{
 	 * @return
 	 */
 //	@RequiredPermission(value="findAllAuthority")
+	@Log(value = "查询权限列表")
 	@GetMapping("/all")
 	@UserLoginToken
 	public HttpResult<PageResp<AuthorityVo,Authority>> findAll(DataQueryObjectPage query){

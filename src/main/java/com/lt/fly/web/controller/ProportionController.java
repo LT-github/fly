@@ -1,16 +1,15 @@
 package com.lt.fly.web.controller;
 
-import com.lt.fly.annotation.RequiredPermission;
 import com.lt.fly.annotation.UserLoginToken;
 import com.lt.fly.dao.IDataDictionaryRepository;
 import com.lt.fly.dao.IProportionRepository;
 import com.lt.fly.entity.DataDictionary;
 import com.lt.fly.entity.Proportion;
 import com.lt.fly.exception.ClientErrorException;
-import com.lt.fly.jpa.support.DataQueryObjectPage;
 import com.lt.fly.utils.CommonsUtil;
 import com.lt.fly.utils.HttpResult;
 import com.lt.fly.utils.IdWorker;
+import com.lt.fly.web.log.Log;
 import com.lt.fly.web.query.ProportionFind;
 import com.lt.fly.web.req.ProportionAdd;
 import com.lt.fly.web.resp.PageResp;
@@ -49,6 +48,7 @@ public class ProportionController extends BaseController {
      */
     @PostMapping()
     @UserLoginToken
+    @Log(value = "添加返点比例")
     public HttpResult<ProportionVo> addProportion(@RequestBody @Validated ProportionAdd obj, BindingResult bindingResult)
             throws ClientErrorException {
         this.paramsValid(bindingResult);
@@ -84,6 +84,7 @@ public class ProportionController extends BaseController {
 //    @RequiredPermission(value="findProportionAll")
     @GetMapping
     @UserLoginToken
+    @Log(value = "查询返点比例列表")
     public HttpResult<PageResp<ProportionVo, Proportion>> findProportionAll(ProportionFind req){
         Page<Proportion> page = iProportionRepository.findAll(req);
         PageResp<ProportionVo, Proportion> resp=  new PageResp<ProportionVo,Proportion>(page).getPageVo(new PageResp.PageGenerator<ProportionVo,Proportion>(){
@@ -137,6 +138,7 @@ public class ProportionController extends BaseController {
 //    @RequiredPermission(value="editProportion")
     @PutMapping("/{id}")
     @UserLoginToken
+    @Log(value = "修改返点比例")
     public HttpResult<ProportionVo> editProportion(@PathVariable Long id ,@RequestBody @Validated ProportionAdd obj ,
                                                    BindingResult bindingResult)throws ClientErrorException{
         this.paramsValid(bindingResult);
@@ -175,6 +177,7 @@ public class ProportionController extends BaseController {
 //    @RequiredPermission(value="deleteProportion")
     @DeleteMapping("/{id}")
     @UserLoginToken
+    @Log(value = "删除返点比例")
     public HttpResult<Object> deleteProportion(@PathVariable Long id)
             throws ClientErrorException{
 

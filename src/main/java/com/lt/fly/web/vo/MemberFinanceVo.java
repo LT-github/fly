@@ -3,6 +3,7 @@ package com.lt.fly.web.vo;
 import com.lt.fly.entity.Finance;
 import com.lt.fly.entity.Member;
 import com.lt.fly.utils.Arith;
+import com.lt.fly.utils.FinanceUtil;
 import com.lt.fly.utils.GlobalConstant;
 import lombok.Data;
 
@@ -34,27 +35,15 @@ public class MemberFinanceVo extends MemberVo {
     public MemberFinanceVo(Member obj) {
         super(obj);
         if (null != obj.getFinances() && 0 != obj.getFinances().size()) {
-            Set<Finance> finances = obj.getFinances();
-            this.rechargeTotal = Arith.add( getReduce(finances, RECHARGE),getReduce(finances, SYSTEM_RECHARGE));
-            this.descendTotal = Arith.add(getReduce(finances, DESCEND),getReduce(finances, SYSTEM_DESCEND));
-            this.waterTotal = Arith.sub(getReduce(finances, BET),getReduce(finances, BET_CANCLE));
-            this.betResultTotal = Arith.sub(getReduce(finances, BET_RESULT),waterTotal);
-            this.huiShuiTotal = Arith.sub(Arith.add(getReduce(finances, RANGE_LIUSHUI),getReduce(finances, TIMELY_LIUSHUI)),getReduce(finances,TIMELY_LISHUI_CANCLE));
-            this.fenHongTotal = getReduce(finances, RANGE_YINGLI);
+            List<Finance> finances = new ArrayList<>(obj.getFinances());
+            this.rechargeTotal = Arith.add(FinanceUtil.getReduce(finances, RECHARGE),FinanceUtil.getReduce(finances, SYSTEM_RECHARGE));
+            this.descendTotal = Arith.add(FinanceUtil.getReduce(finances, DESCEND),FinanceUtil.getReduce(finances, SYSTEM_DESCEND));
+            this.waterTotal = Arith.sub(FinanceUtil.getReduce(finances, BET),FinanceUtil.getReduce(finances, BET_CANCLE));
+            this.betResultTotal = Arith.sub(FinanceUtil.getReduce(finances, BET_RESULT),waterTotal);
+            this.huiShuiTotal = Arith.sub(Arith.add(FinanceUtil.getReduce(finances, RANGE_LIUSHUI),FinanceUtil.getReduce(finances, TIMELY_LIUSHUI)),FinanceUtil.getReduce(finances,TIMELY_LISHUI_CANCLE));
+            this.fenHongTotal = FinanceUtil.getReduce(finances, RANGE_YINGLI);
             this.balance = Arith.sub(Arith.add(fenHongTotal,huiShuiTotal,betResultTotal,rechargeTotal),descendTotal);
         }
-    }
-
-    private Double getReduce(Set<Finance> finances, GlobalConstant.FinanceType financeType) {
-        if (financeType.equals(RECHARGE) || financeType.equals(DESCEND)){
-            return finances.stream().filter(finance -> finance.getType().equals(financeType.getCode())
-                    && finance.getAuditStatus().equals(GlobalConstant.AuditStatus.AUDIT_PASS.getCode()))
-                    .map(Finance::getMoney)
-                    .reduce(0.0, (a, b) -> Arith.add(a, b));
-        }
-        return finances.stream().filter(finance -> finance.getType().equals(financeType.getCode()))
-                .map(Finance::getMoney)
-                .reduce(0.0, (a, b) -> Arith.add(a, b));
     }
 
     public static List<MemberFinanceVo> tovo(List<Member> members){

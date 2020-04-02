@@ -11,19 +11,17 @@ import com.lt.fly.entity.OddGroup;
 import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.utils.HttpResult;
 import com.lt.fly.utils.IdWorker;
+import com.lt.fly.web.log.Log;
 import com.lt.fly.web.req.OddAdd;
-import com.lt.fly.web.query.OddFind;
 import com.lt.fly.web.req.OddGroupAdd;
 import com.lt.fly.web.req.OddGroupEdit;
 import com.lt.fly.web.vo.OddGroupVo;
 import com.lt.fly.web.vo.OddVo;
-import org.apache.dubbo.remoting.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,6 +48,7 @@ public class OddController extends BaseController {
 
     @PostMapping
     @UserLoginToken
+    @Log(value = "添加赔率")
     public HttpResult addOdd(@RequestBody @Validated OddAdd req, BindingResult bindingResult) throws ClientErrorException {
         this.paramsValid(bindingResult);
         BetGroup betGroup = isNotNull(iBetGroupRepository.findById(req.getBetGroupId()),"传递的参数没有实体");
@@ -110,6 +109,7 @@ public class OddController extends BaseController {
      */
     @DeleteMapping("/{id}")
     @UserLoginToken
+    @Log(value = "删除赔率")
     public HttpResult delete(@PathVariable Long id) throws ClientErrorException{
         Odd odd = isNotNull(iOddRepository.findById(id),"传递的参数没有实体");
         if (null != odd.getOddGroups() && !odd.getOddGroups().isEmpty())
@@ -128,6 +128,7 @@ public class OddController extends BaseController {
      */
     @PostMapping("/group")
     @UserLoginToken
+    @Log(value = "添加赔率组")
     public HttpResult addOddGroup(@RequestBody @Validated OddGroupAdd req, BindingResult bindingResult)throws ClientErrorException {
         this.paramsValid(bindingResult);
         existsForName(iOddGroupRepository.findByName(req.getName()),"赔率组名已经存在");
@@ -153,6 +154,7 @@ public class OddController extends BaseController {
      */
     @GetMapping("/group")
     @UserLoginToken
+    @Log(value = "查询赔率组列表")
     public HttpResult findOddGroups() throws ClientErrorException{
         List<OddGroup> oddGroups = iOddGroupRepository.findAll();
         return HttpResult.success(OddGroupVo.tovo(oddGroups),"查询赔率组成功");
@@ -165,6 +167,7 @@ public class OddController extends BaseController {
      */
     @DeleteMapping("/group/{id}")
     @UserLoginToken
+    @Log(value = "删除赔率组")
     public HttpResult deleteOddGroup(@PathVariable Long id) throws ClientErrorException{
         OddGroup oddGroup = isNotNull(iOddGroupRepository.findById(id),"传递的参数没有实体");
         if (null != oddGroup.getHandicap())

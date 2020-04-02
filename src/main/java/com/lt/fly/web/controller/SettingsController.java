@@ -7,6 +7,7 @@ import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.utils.HttpResult;
 import com.lt.fly.utils.IdWorker;
 import com.lt.fly.utils.MyBeanUtils;
+import com.lt.fly.web.log.Log;
 import com.lt.fly.web.req.SettingAdd;
 import com.lt.fly.web.req.SettingEdit;
 import com.lt.fly.web.vo.SettingsVo;
@@ -37,6 +38,7 @@ public class SettingsController extends BaseController {
 
     @PutMapping("/{id}")
     @UserLoginToken
+    @Log(value = "修改设置项")
     public HttpResult edit(@RequestBody SettingEdit req, @PathVariable Long id) throws ClientErrorException {
         Settings settings = isNotNull(iSettingsRepository.findById(id),"传递参数没有实体!");
         settings.setDataValue(req.getDataValue());

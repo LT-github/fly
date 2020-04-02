@@ -16,6 +16,7 @@ import com.lt.fly.utils.GlobalConstant;
 import com.lt.fly.utils.HttpResult;
 import com.lt.fly.utils.IdWorker;
 import com.lt.fly.utils.MyBeanUtils;
+import com.lt.fly.web.log.Log;
 import com.lt.fly.web.query.BetGroupFind;
 import com.lt.fly.web.query.GameGroupFind;
 import com.lt.fly.web.req.*;
@@ -87,6 +88,7 @@ public class GameController extends BaseController {
      */
     @GetMapping
     @UserLoginToken
+    @Log(value = "查询玩法组列表")
     public HttpResult gameFind(GameGroupFind req) throws ClientErrorException{
         List<GameGroup> gameGroups = iGameGroupRepository.findAll(req);
         return HttpResult.success(GameGroupVo.tovo(gameGroups),"查询玩法组成功");
@@ -101,6 +103,7 @@ public class GameController extends BaseController {
      */
     @PutMapping("/{id}")
     @UserLoginToken
+    @Log(value = "修改玩法组信息")
     public HttpResult gameEdit(@PathVariable Long id,@RequestBody GameGroupEdit req) throws ClientErrorException{
         GameGroup gameGroup = isNotNull(iGameGroupRepository.findById(id),"传递的参数没有实体");
         MyBeanUtils.copyProperties(req,gameGroup);
@@ -141,6 +144,7 @@ public class GameController extends BaseController {
 
     @PutMapping("/type")
     @UserLoginToken
+    @Log(value = "更改彩种状态")
     public HttpResult editType(@RequestBody GameTypeEdit req) throws ClientErrorException{
         List<GameGroup> gameGroups = iGameGroupRepository.findByType(req.getType());
         if(null == gameGroups || 0 == gameGroups.size())
@@ -167,6 +171,7 @@ public class GameController extends BaseController {
      */
     @PostMapping("/bet")
     @UserLoginToken
+    @Log(value = "添加下注组")
     public HttpResult add(@RequestBody BetGroupAdd req) throws ClientErrorException {
         GameGroup gameGroup = isNotNull(iGameGroupRepository.findById(req.getGameGroupId()),"传递的参数没有实体");
         BetGroup betGroup = new BetGroup();
@@ -189,6 +194,7 @@ public class GameController extends BaseController {
      */
     @GetMapping("/bet")
     @UserLoginToken
+    @Log(value = "查询下注组列表")
     public HttpResult find(BetGroupFind query) throws ClientErrorException{
         Page<BetGroup> page = iBetGroupRepository.findAll(query);
         OddGroup oddGroup = null;
@@ -232,6 +238,7 @@ public class GameController extends BaseController {
      */
     @PutMapping("/bet/{id}")
     @UserLoginToken
+    @Log(value = "查询系统用户列表")
     public HttpResult edit(@PathVariable Long id , @RequestBody BetGroupEdit req) throws ClientErrorException{
         BetGroup betGroup = isNotNull(iBetGroupRepository.findById(id),"传递的参数没有实体");
         MyBeanUtils.copyProperties(req,betGroup);
@@ -270,6 +277,7 @@ public class GameController extends BaseController {
      */
     @PostMapping("/bet/mul")
     @UserLoginToken
+    @Log(value = "多选修改下注组")
     public HttpResult editMulti(@RequestBody BetGroupEditMulti req) throws ClientErrorException{
         List<BetGroup> betGroups = iBetGroupRepository.findAllById(req.getIds());
         if(null == betGroups || 0 == betGroups.size())

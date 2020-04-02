@@ -1,36 +1,26 @@
 package com.lt.fly.web.controller;
 
-import java.util.List;
-import java.util.Optional;
-
-import com.lt.fly.annotation.RequiredPermission;
 import com.lt.fly.annotation.UserLoginToken;
 import com.lt.fly.dao.IAuthorityRepository;
 import com.lt.fly.dao.IRoleRepository;
 import com.lt.fly.entity.Authority;
-import com.lt.fly.entity.Member;
 import com.lt.fly.entity.Role;
 import com.lt.fly.exception.ClientErrorException;
-import com.lt.fly.jpa.support.DataQueryObjectSort;
 import com.lt.fly.utils.HttpResult;
 import com.lt.fly.utils.IdWorker;
+import com.lt.fly.web.log.Log;
 import com.lt.fly.web.req.RoleAdd;
 import com.lt.fly.web.req.RoleQueryReq;
 import com.lt.fly.web.resp.PageResp;
-import com.lt.fly.web.vo.MemberFinanceVo;
 import com.lt.fly.web.vo.RoleVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -56,6 +46,7 @@ public class RoleController extends BaseController {
 //	@RequiredPermission(value = "addRole")
 	@PostMapping
 	@UserLoginToken
+	@Log(value = "添加角色")
 	public HttpResult<RoleVo> addRole(@RequestBody @Validated RoleAdd obj ,
 									  BindingResult bindingResult) throws ClientErrorException {
 		this.paramsValid(bindingResult);
@@ -78,6 +69,7 @@ public class RoleController extends BaseController {
 //	@RequiredPermission(value = "editRole")
 	@PutMapping("/{id}")
 	@UserLoginToken
+	@Log(value = "修改角色信息")
 	public HttpResult<RoleVo> editRole(@PathVariable Long id,@RequestBody @Validated RoleAdd obj , 
 			BindingResult bindingResult) throws ClientErrorException{
 
@@ -101,6 +93,7 @@ public class RoleController extends BaseController {
 //	@RequiredPermission(value = "deleteRole")
 	@DeleteMapping("/{id}")
 	@UserLoginToken
+	@Log(value = "删除角色")
 	public HttpResult<Object> deleteRole(@PathVariable Long id) 
 			throws ClientErrorException{
 		
@@ -122,6 +115,7 @@ public class RoleController extends BaseController {
 //	@RequiredPermission(value = "findAllRole")
 	@GetMapping("/all")
 	@UserLoginToken
+	@Log(value = "查询所有角色列表")
 	public HttpResult<Object> findAll(RoleQueryReq query){
 		 Page<Role> page = iRoleRepository.findAll(query);
 		 PageResp<RoleVo, Role> prp = new PageResp<RoleVo, Role>(page);

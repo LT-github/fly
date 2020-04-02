@@ -1,20 +1,14 @@
 package com.lt.fly.web.controller;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import com.lt.fly.annotation.RequiredPermission;
 import com.lt.fly.annotation.UserLoginToken;
 import com.lt.fly.dao.*;
 import com.lt.fly.entity.*;
 import com.lt.fly.exception.ClientErrorException;
-import com.lt.fly.jpa.support.DataQueryObject;
 import com.lt.fly.jpa.support.DataQueryObjectPage;
 import com.lt.fly.utils.GlobalConstant;
 import com.lt.fly.utils.HttpResult;
 import com.lt.fly.utils.IdWorker;
+import com.lt.fly.web.log.Log;
 import com.lt.fly.web.query.DataDictionaryFind;
 import com.lt.fly.web.req.HandicapAdd;
 import com.lt.fly.web.resp.PageResp;
@@ -23,14 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 
 /**
@@ -70,6 +62,7 @@ public class HandicapController extends BaseController {
 //    @RequiredPermission(value="addUserGroup")
     @PostMapping
     @UserLoginToken
+    @Log(value = "添加盘口")
     public HttpResult<HandicapVo> addHandicap(@RequestBody @Validated HandicapAdd obj, BindingResult bindingResult)
             throws Exception{
         this.paramsValid(bindingResult);
@@ -200,6 +193,7 @@ public class HandicapController extends BaseController {
      */
     @GetMapping
     @UserLoginToken
+    @Log(value = "查询盘口列表")
     public HttpResult findAll(DataQueryObjectPage query){
         Page<Handicap> page = iHandicapRepository.findAll(query);
         PageResp resp = new PageResp(page);
@@ -218,6 +212,7 @@ public class HandicapController extends BaseController {
 //    @RequiredPermission(value="editUserShop-edit")
     @PutMapping("/{id}")
     @UserLoginToken
+    @Log(value = "修改盘口信息")
     public HttpResult<HandicapVo> editHandicap(@PathVariable Long id,@RequestBody @Validated HandicapAdd obj,
                                          BindingResult bindingResult) throws Exception{
         this.paramsValid(bindingResult);
@@ -234,6 +229,7 @@ public class HandicapController extends BaseController {
 //    @RequiredPermission(value="delUserShop-del")
     @DeleteMapping("/{id}")
     @UserLoginToken
+    @Log(value = "删除盘口")
     public HttpResult deleteHandicap(@PathVariable Long id) throws ClientErrorException {
         Handicap handicap = isNotNull(iHandicapRepository.findById(id),"删除的组id找不到实体");
         if (null != handicap.getMembers() && 0 != handicap.getMembers().size())

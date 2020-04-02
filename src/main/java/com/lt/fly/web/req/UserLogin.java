@@ -10,6 +10,4 @@ public class UserLogin {
 
     private String password;
 
-	
-    
 }
