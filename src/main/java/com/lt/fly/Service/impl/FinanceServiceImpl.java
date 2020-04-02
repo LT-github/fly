@@ -51,6 +51,7 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 		finance.setCreateTime(System.currentTimeMillis());
 		finance.setType(type.getCode());
 		finance.setMoney(money);
+		if(user.getNickname()!=null)
 		finance.setDescription(user.getNickname()+type.getMsg()+money+"。");
 		finance.setCreateUser(user);
 		if (null == balance)

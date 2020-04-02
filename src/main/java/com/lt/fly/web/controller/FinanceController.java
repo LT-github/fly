@@ -483,6 +483,5 @@ public class FinanceController extends BaseController{
 			
 			return HttpResult.success(fi,"按时间结算成功!");
 		}
-	   
-	   
+	  
 }
