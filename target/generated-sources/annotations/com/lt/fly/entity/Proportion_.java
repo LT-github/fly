@@ -11,6 +11,7 @@ public abstract class Proportion_ extends com.lt.fly.entity.BasicEntity_ {
 
 	public static volatile SingularAttribute<Proportion, DataDictionary> returnPoint;
 	public static volatile SingularAttribute<Proportion, String> ranges;
+	public static volatile SetAttribute<Proportion, Member> members;
 	public static volatile SingularAttribute<Proportion, String> description;
 	public static volatile SetAttribute<Proportion, Handicap> handicaps;
 	public static volatile SingularAttribute<Proportion, Double> proportionVal;

@@ -2,120 +2,39 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e219578a-48eb-44c5-a73d-053c6f922451" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/MavenWrapperDownloader.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/HELP.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/FlyApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/Service/IGameGroupService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/Service/IUserService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/Service/impl/GameGroupServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/Service/impl/UserServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/annotation/PassToken.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/annotation/RequiredPermission.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/annotation/SwaggerCustomIgnore.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/annotation/UserLoginToken.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/configuration/MySQL5InnoDBDialectUtf8mb4.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/configuration/TokenInterceptorConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/dao/IAdminRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/dao/IBetGroupRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/dao/IGameGroupRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/dao/IOddGroupRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/dao/IOddRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/dao/IUserRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/Admin.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/AuditFinance.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/Authority.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/BankCard.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/BasicEntity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/BetGroup.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/Bullent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/DataDictionary.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/Finance.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/GameGroup.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/Handicap.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/Member.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/Odd.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/OddGroup.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/Order.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/Proportion.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/Role.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/Settings.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/exception/ClientErrorException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/jpa/BaseRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/jpa/BaseRepositoryFactoryBean.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/jpa/BaseRepositoryImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/jpa/support/DataQueryObject.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/jpa/support/DataQueryObjectPage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/jpa/support/DataQueryObjectSort.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/jpa/support/QueryBetween.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/jpa/support/QueryField.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/jpa/support/QueryType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/redis/controller/OrderCacheController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/redis/service/IOrderDTOServiceCache.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/redis/service/impl/OrderDTOServiceRedisCacheImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/BarCodeUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/CommonsUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/ContextHolderUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/DateUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/GlobalConstant.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/GlobalUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/HttpResult.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/IdWorker.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/ListGrouperUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/MyBeanUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/ResultCode.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/TokenUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/gameUtils/ChineseNumToArabicNumUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/gameUtils/CombineAndArrangement.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/gameUtils/GameProperty.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/gameUtils/GameUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/AdminController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/BaseController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/BetGroupController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/GameGroupController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/HandicapController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/OddController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/OddGroupController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/interceptor/AuthenticationInterceptor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/interceptor/GloablExceptionHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/AdminAdd.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/AdminEdit.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/BetGroupAdd.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/BetsOrderAdd.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/BetsOrderFind.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/BetsOrderPrint.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/GameContentEdit.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/GameContentFind.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/GameContentMultiEdit.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/GameEdit.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/GameFind.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/GameGroupAdd.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/OddAdd.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/OddGroupAdd.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/SettingsAddOrEdit.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/TicketAdd.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/UserLogin.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/resp/PageResp.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/resp/SaveResp.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/resp/UserLoginResp.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/vo/AdminVo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/vo/AuthorityVo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/vo/BetGroupVo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/vo/GameGroupVo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/vo/OddVo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/vo/RoleVo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/lt/fly/FlyApplicationTests.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/dao/ISysLogRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/entity/SysLog.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/FinanceUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/log/Log.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/log/LogAsPect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lt/fly/Service/impl/OrderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/Service/impl/OrderServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lt/fly/dao/IFinanceRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/dao/IFinanceRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/GlobalConstant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/utils/GlobalConstant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/AdminController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/AuthorityController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/AuthorityController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/BullentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/BullentController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/FinanceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/FinanceController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/GameController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/GameController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/HandicapController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/HandicapController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/MemberController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/MemberController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/OddController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/OddController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/OrderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/ProportionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/ProportionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/RoleController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/RoleController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/SettingsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/controller/SettingsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/UserLogin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/req/UserLogin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/resp/ReportResp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/resp/ReportResp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/vo/BetReportVo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/vo/BetReportVo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/vo/MemberFinanceVo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lt/fly/web/vo/MemberFinanceVo.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
   </component>
   <component name="DatabaseView">
     <option name="SHOW_INTERMEDIATE" value="true" />
@@ -131,8 +50,17 @@
     <expand />
     <select />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="ROOT_SYNC" value="SYNC" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
@@ -165,7 +93,14 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.import" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -187,12 +122,7 @@
       <list>
         <serviceView>
           <treeState>
-            <expand>
-              <path>
-                <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
-                <item name="root:fly@localhost" type="7427dc5b:ServiceModel$ServiceGroupNode" />
-              </path>
-            </expand>
+            <expand />
             <select />
           </treeState>
         </serviceView>
@@ -210,72 +140,165 @@
       <option name="presentableId" value="Default" />
       <updated>1582856989673</updated>
       <workItem from="1582856997901" duration="1360000" />
+      <workItem from="1585728997696" duration="5442000" />
+      <workItem from="1585793752755" duration="3349000" />
+      <workItem from="1585799088986" duration="14053000" />
+      <workItem from="1585826367584" duration="506000" />
     </task>
+    <task id="LOCAL-00001" summary="会员报表">
+      <created>1585729762678</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1585729762678</updated>
+    </task>
+    <task id="LOCAL-00002" summary="会员报表">
+      <created>1585729848319</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1585729848319</updated>
+    </task>
+    <task id="LOCAL-00003" summary="会员报表">
+      <created>1585730073947</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1585730073947</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ORDER">
+      <list>
+        <option value="0" />
+        <option value="2" />
+        <option value="3" />
+        <option value="1" />
+      </list>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="会员报表" />
+    <MESSAGE value="操作日志" />
+    <option name="LAST_COMMIT_MESSAGE" value="操作日志" />
   </component>
   <component name="WindowStateProjectService">
     <state x="872" y="360" key="#Assign_Data_Sources" timestamp="1582858075215">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="872" y="360" key="#Assign_Data_Sources/0.0.2560.1400@0.0.2560.1400" timestamp="1582858075215" />
+    <state x="872" y="360" key="#Inspections" timestamp="1585812035125">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="872" y="360" key="#Inspections/0.0.2560.1400@0.0.2560.1400" timestamp="1585812035125" />
     <state x="872" y="360" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1582858063497">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="872" y="360" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1582858063497" />
-    <state x="850" y="297" key="CommitChangelistDialog2" timestamp="1582858422785">
+    <state x="1085" y="418" key="#com.intellij.ide.util.MemberChooser" timestamp="1585730637886">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="850" y="297" key="CommitChangelistDialog2/0.0.2560.1400@0.0.2560.1400" timestamp="1582858422785" />
-    <state x="1038" y="444" key="FileChooserDialogImpl" timestamp="1582858334904">
+    <state x="1085" y="418" key="#com.intellij.ide.util.MemberChooser/0.0.2560.1400@0.0.2560.1400" timestamp="1585730637886" />
+    <state x="850" y="297" key="CommitChangelistDialog2" timestamp="1585826968444">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="1038" y="444" key="FileChooserDialogImpl/0.0.2560.1400@0.0.2560.1400" timestamp="1582858334904" />
-    <state x="1080" y="614" key="Github.CreateGistDialog" timestamp="1582858311840">
+    <state x="850" y="297" key="CommitChangelistDialog2/0.0.2560.1400@0.0.2560.1400" timestamp="1585826968444" />
+    <state x="1038" y="444" key="FileChooserDialogImpl" timestamp="1585732182311">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="1080" y="614" key="Github.CreateGistDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1582858311840" />
+    <state x="1038" y="444" key="FileChooserDialogImpl/0.0.2560.1400@0.0.2560.1400" timestamp="1585732182311" />
+    <state x="1080" y="614" key="Github.CreateGistDialog" timestamp="1585808606856">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="1080" y="614" key="Github.CreateGistDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1585808606856" />
     <state x="1133" y="594" width="294" height="268" key="Github.ShareDialog" timestamp="1582858273159">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="1133" y="594" width="294" height="268" key="Github.ShareDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1582858273159" />
-    <state width="2504" height="493" key="GridCell.Tab.0.bottom" timestamp="1582858026629">
+    <state width="1260" height="487" key="GridCell.Tab.0.bottom" timestamp="1585826223390">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state width="2504" height="493" key="GridCell.Tab.0.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1582858026629" />
-    <state width="2504" height="493" key="GridCell.Tab.0.center" timestamp="1582858026629">
+    <state width="1260" height="487" key="GridCell.Tab.0.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1585826223390" />
+    <state width="1260" height="487" key="GridCell.Tab.0.center" timestamp="1585826223390">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state width="2504" height="493" key="GridCell.Tab.0.center/0.0.2560.1400@0.0.2560.1400" timestamp="1582858026629" />
-    <state width="2504" height="493" key="GridCell.Tab.0.left" timestamp="1582858026629">
+    <state width="1260" height="487" key="GridCell.Tab.0.center/0.0.2560.1400@0.0.2560.1400" timestamp="1585826223390" />
+    <state width="1260" height="487" key="GridCell.Tab.0.left" timestamp="1585826223390">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state width="2504" height="493" key="GridCell.Tab.0.left/0.0.2560.1400@0.0.2560.1400" timestamp="1582858026629" />
-    <state width="2504" height="493" key="GridCell.Tab.0.right" timestamp="1582858026629">
+    <state width="1260" height="487" key="GridCell.Tab.0.left/0.0.2560.1400@0.0.2560.1400" timestamp="1585826223390" />
+    <state width="1260" height="487" key="GridCell.Tab.0.right" timestamp="1585826223390">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state width="2504" height="493" key="GridCell.Tab.0.right/0.0.2560.1400@0.0.2560.1400" timestamp="1582858026629" />
-    <state width="2504" height="493" key="GridCell.Tab.1.bottom" timestamp="1582858026630">
+    <state width="1260" height="487" key="GridCell.Tab.0.right/0.0.2560.1400@0.0.2560.1400" timestamp="1585826223390" />
+    <state width="1260" height="487" key="GridCell.Tab.1.bottom" timestamp="1585826223390">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state width="2504" height="493" key="GridCell.Tab.1.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1582858026630" />
-    <state width="2504" height="493" key="GridCell.Tab.1.center" timestamp="1582858026629">
+    <state width="1260" height="487" key="GridCell.Tab.1.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1585826223390" />
+    <state width="1260" height="487" key="GridCell.Tab.1.center" timestamp="1585826223390">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state width="2504" height="493" key="GridCell.Tab.1.center/0.0.2560.1400@0.0.2560.1400" timestamp="1582858026629" />
-    <state width="2504" height="493" key="GridCell.Tab.1.left" timestamp="1582858026629">
+    <state width="1260" height="487" key="GridCell.Tab.1.center/0.0.2560.1400@0.0.2560.1400" timestamp="1585826223390" />
+    <state width="1260" height="487" key="GridCell.Tab.1.left" timestamp="1585826223390">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state width="2504" height="493" key="GridCell.Tab.1.left/0.0.2560.1400@0.0.2560.1400" timestamp="1582858026629" />
-    <state width="2504" height="493" key="GridCell.Tab.1.right" timestamp="1582858026630">
+    <state width="1260" height="487" key="GridCell.Tab.1.left/0.0.2560.1400@0.0.2560.1400" timestamp="1585826223390" />
+    <state width="1260" height="487" key="GridCell.Tab.1.right" timestamp="1585826223390">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state width="2504" height="493" key="GridCell.Tab.1.right/0.0.2560.1400@0.0.2560.1400" timestamp="1582858026630" />
-    <state x="813" y="331" key="SettingsEditor" timestamp="1582858198140">
+    <state width="1260" height="487" key="GridCell.Tab.1.right/0.0.2560.1400@0.0.2560.1400" timestamp="1585826223390" />
+    <state width="1260" height="487" key="GridCell.Tab.2.bottom" timestamp="1585826223391">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="813" y="331" key="SettingsEditor/0.0.2560.1400@0.0.2560.1400" timestamp="1582858198140" />
+    <state width="1260" height="487" key="GridCell.Tab.2.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1585826223391" />
+    <state width="1260" height="487" key="GridCell.Tab.2.center" timestamp="1585826223390">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1260" height="487" key="GridCell.Tab.2.center/0.0.2560.1400@0.0.2560.1400" timestamp="1585826223390" />
+    <state width="1260" height="487" key="GridCell.Tab.2.left" timestamp="1585826223390">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1260" height="487" key="GridCell.Tab.2.left/0.0.2560.1400@0.0.2560.1400" timestamp="1585826223390" />
+    <state width="1260" height="487" key="GridCell.Tab.2.right" timestamp="1585826223391">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1260" height="487" key="GridCell.Tab.2.right/0.0.2560.1400@0.0.2560.1400" timestamp="1585826223391" />
+    <state x="813" y="331" key="SettingsEditor" timestamp="1585806138895">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="813" y="331" key="SettingsEditor/0.0.2560.1400@0.0.2560.1400" timestamp="1585806138895" />
+    <state x="872" y="435" key="Vcs.Push.Dialog.v2" timestamp="1585730081189">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="872" y="435" key="Vcs.Push.Dialog.v2/0.0.2560.1400@0.0.2560.1400" timestamp="1585730081189" />
+    <state x="1050" y="620" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1585819539296">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="1050" y="620" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.2560.1400@0.0.2560.1400" timestamp="1585819539296" />
+    <state x="1050" y="505" key="git4idea.merge.GitMergeDialog" timestamp="1585826493586">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="1050" y="505" key="git4idea.merge.GitMergeDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1585826493586" />
+    <state x="976" y="505" key="git4idea.merge.GitPullDialog" timestamp="1585826599274">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="976" y="505" key="git4idea.merge.GitPullDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1585826599274" />
+    <state x="444" y="408" key="new project wizard" timestamp="1585796355737">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="444" y="408" key="new project wizard/0.0.2560.1400@0.0.2560.1400" timestamp="1585796355737" />
+    <state x="936" y="325" key="run.anything.popup" timestamp="1585811267715">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="936" y="325" key="run.anything.popup/0.0.2560.1400@0.0.2560.1400" timestamp="1585811267715" />
+    <state x="943" y="315" width="672" height="678" key="search.everywhere.popup" timestamp="1585798223573">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="943" y="315" width="672" height="678" key="search.everywhere.popup/0.0.2560.1400@0.0.2560.1400" timestamp="1585798223573" />
   </component>
 </project>

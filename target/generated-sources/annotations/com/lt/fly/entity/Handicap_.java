@@ -9,8 +9,10 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(Handicap.class)
 public abstract class Handicap_ extends com.lt.fly.entity.BasicEntity_ {
 
+	public static volatile SingularAttribute<Handicap, Integer> settlementType;
 	public static volatile SingularAttribute<Handicap, OddGroup> oddGroup;
 	public static volatile SingularAttribute<Handicap, DataDictionary> liushui;
+	public static volatile SingularAttribute<Handicap, Long> settlementTime;
 	public static volatile SetAttribute<Handicap, Member> members;
 	public static volatile SingularAttribute<Handicap, String> name;
 	public static volatile SetAttribute<Handicap, Proportion> proportions;

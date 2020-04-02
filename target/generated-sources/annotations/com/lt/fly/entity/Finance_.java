@@ -12,10 +12,8 @@ public abstract class Finance_ extends com.lt.fly.entity.BasicEntity_ {
 	public static volatile SingularAttribute<Finance, Double> balance;
 	public static volatile SingularAttribute<Finance, String> description;
 	public static volatile SingularAttribute<Finance, Integer> auditStatus;
-	public static volatile SingularAttribute<Finance, Integer> auditType;
 	public static volatile SingularAttribute<Finance, Integer> countType;
 	public static volatile SingularAttribute<Finance, Integer> type;
-	public static volatile SingularAttribute<Finance, Integer> status;
 
 }
 

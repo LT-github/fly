@@ -17,9 +17,10 @@ public abstract class Order_ extends com.lt.fly.entity.BasicEntity_ {
 	public static volatile SingularAttribute<Order, Integer> betsCount;
 	public static volatile SingularAttribute<Order, String> exchangeDetail;
 	public static volatile SingularAttribute<Order, BetGroup> betGroup;
+	public static volatile SingularAttribute<Order, String> specificOdd;
 	public static volatile SingularAttribute<Order, Double> singleBetting;
 	public static volatile SingularAttribute<Order, Integer> resultType;
-	public static volatile SingularAttribute<Order, Finance> finance;
+	public static volatile SingularAttribute<Order, Double> betOdd;
 	public static volatile SingularAttribute<Order, Integer> status;
 
 }

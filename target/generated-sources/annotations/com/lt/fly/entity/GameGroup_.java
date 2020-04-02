@@ -9,7 +9,6 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(GameGroup.class)
 public abstract class GameGroup_ extends com.lt.fly.entity.BasicEntity_ {
 
-	public static volatile SingularAttribute<GameGroup, Integer> addType;
 	public static volatile SingularAttribute<GameGroup, String> name;
 	public static volatile SingularAttribute<GameGroup, String> description;
 	public static volatile SetAttribute<GameGroup, BetGroup> betGroups;

@@ -11,13 +11,11 @@ public abstract class User_ extends com.lt.fly.entity.BasicEntity_ {
 
 	public static volatile SingularAttribute<User, Long> lastLoginTime;
 	public static volatile SingularAttribute<User, String> password;
-	public static volatile SingularAttribute<User, String> idcard;
 	public static volatile SingularAttribute<User, String> ip;
 	public static volatile SingularAttribute<User, String> nickname;
 	public static volatile SingularAttribute<User, String> mobile;
 	public static volatile SetAttribute<User, Bullent> receiveBullents;
 	public static volatile SingularAttribute<User, String> username;
-	public static volatile SingularAttribute<User, String> realname;
 	public static volatile SingularAttribute<User, Integer> status;
 	public static volatile SingularAttribute<User, String> discriminator;
 

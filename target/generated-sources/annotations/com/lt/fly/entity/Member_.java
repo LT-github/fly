@@ -9,9 +9,14 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(Member.class)
 public abstract class Member_ extends com.lt.fly.entity.User_ {
 
+	public static volatile SingularAttribute<Member, Security> security;
 	public static volatile SingularAttribute<Member, Handicap> handicap;
+	public static volatile SingularAttribute<Member, String> referralCode;
 	public static volatile SingularAttribute<Member, String> remark;
+	public static volatile SetAttribute<Member, Proportion> proportions;
 	public static volatile SetAttribute<Member, Finance> finances;
+	public static volatile SingularAttribute<Member, Integer> type;
+	public static volatile SingularAttribute<Member, Integer> isHaveHandicap;
 
 }
 

@@ -9,6 +9,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(OddGroup.class)
 public abstract class OddGroup_ extends com.lt.fly.entity.BasicEntity_ {
 
+	public static volatile SingularAttribute<OddGroup, Handicap> handicap;
 	public static volatile SetAttribute<OddGroup, Odd> odds;
 	public static volatile SingularAttribute<OddGroup, String> name;
 
