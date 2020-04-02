@@ -102,6 +102,8 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 			return balance;
 		}
 		for(Finance item:member.getFinances()){
+			if(item.getMoney()==null || item==null) continue;
+			if(item.getCountType()==null) continue;
 			if(item.getCountType().equals(GlobalConstant.CountType.ADD.getCode())){
 				balance = Arith.add(balance,item.getMoney());
 				if (null != item.getAuditStatus() && !item.getAuditStatus().equals(GlobalConstant.AuditStatus.AUDIT_PASS.getCode())) {
