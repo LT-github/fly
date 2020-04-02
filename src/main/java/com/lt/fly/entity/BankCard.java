@@ -38,5 +38,11 @@ public class BankCard extends BasicEntity{
 	@Column(name = "description")
 	private String description;
 
+	//0银行卡 1其他
+	@Column(name = "type")
+	private Integer type;
+	
+	@Column(name = "address")
+	private String address;
 
 }

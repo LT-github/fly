@@ -22,6 +22,7 @@ import com.lt.fly.utils.ListFenUtils;
 import com.lt.fly.utils.MyBeanUtils;
 import com.lt.fly.utils.PagingList;
 import com.lt.fly.web.req.BankCardAddReq;
+import com.lt.fly.web.vo.BankCardVo;
 
 
 @RestController
@@ -40,24 +41,19 @@ public class BankCardController extends BaseController {
     @UserLoginToken
     public Object addBankCard(@RequestBody BankCardAddReq req) throws ClientErrorException {
 
-        if (req.getBank() == null)
-            throw new ClientErrorException("请选择所属银行");
-        if (req.getCard() == null)
-            throw new ClientErrorException("请填写卡号");
-
-        if (!CheckBankCardUtil.checkBankCard(req.getCard()))
-            throw new ClientErrorException("银行卡格式错误！");
-
+        if (req.getBank() == null) throw new ClientErrorException("请选择所属银行");           
+        if (req.getCard() == null) throw new ClientErrorException("请填写卡号");
+        if(req.getType()==null) throw new ClientErrorException("请选择账户类型");    
+        if(req.getType()==0)        	       
+          if (!CheckBankCardUtil.checkBankCard(req.getCard())) throw new ClientErrorException("银行卡格式错误！");                    
         BankCard bankCard = new BankCard();
         BeanUtils.copyProperties(req, bankCard);
         bankCard.setStatus(0);
         bankCard.setId(idWorker.nextId());
-
         bankCard.setCreateTime(System.currentTimeMillis());
-
         BankCard bank = bankCardRepository.save(bankCard);
 
-        return HttpResult.success(bank, "添加成功");
+        return HttpResult.success(new BankCardVo(bank), "添加成功");
     }
 
     //删除银行卡
@@ -66,14 +62,10 @@ public class BankCardController extends BaseController {
     @UserLoginToken
     public Object deleteBankCard(@RequestBody BankCardAddReq req) throws ClientErrorException {
 
-        if (req.getId() == null)
-            throw new ClientErrorException("id不合法或为空");
-        Optional<BankCard> op = bankCardRepository.findById(req.getId());
-        if (!op.isPresent())
-            throw new ClientErrorException("该银行卡不存在");
-        BankCard bankCard = op.get();
-
-        bankCardRepository.delete(bankCard);
+        if (req.getId() == null) throw new ClientErrorException("id不合法或为空");           
+         Optional<BankCard> op = bankCardRepository.findById(req.getId());
+        if (!op.isPresent()) throw new ClientErrorException("该银行卡不存在");              
+        bankCardRepository.delete(op.get());
         return HttpResult.success(null, "删除成功");
     }
 
@@ -83,11 +75,11 @@ public class BankCardController extends BaseController {
     @UserLoginToken
     public HttpResult<PagingList> findAllBankCard(@RequestBody BankCardAddReq req) throws ClientErrorException {
 
-        List<BankCard> bankCards = bankCardRepository.findAll();
-        ListFenUtils<BankCard> pageList = new ListFenUtils<BankCard>();
+        List<BankCard> bankCards = bankCardRepository.findAll();             
+        ListFenUtils<BankCardVo> pageList = new ListFenUtils<BankCardVo>();
         PagingList page = new PagingList();
         page.setCurrentPage(req.getCurrentPage());
-        pageList.fen(page, bankCards);
+        pageList.fen(page,BankCardVo.toVo(bankCards));
 
         return HttpResult.success(page, "查询成功");
     }
@@ -98,17 +90,13 @@ public class BankCardController extends BaseController {
     @UserLoginToken
     public Object updateBankCard(@RequestBody BankCardAddReq req) throws ClientErrorException {
 
-        if (req.getId() == null)
-            throw new ClientErrorException("id不合法或为空");
-
+        if (req.getId() == null) throw new ClientErrorException("id不合法或为空");           
         Optional<BankCard> op = bankCardRepository.findById(req.getId());
-        if (!op.isPresent())
-            throw new ClientErrorException("该银行卡不存在");
+        if (!op.isPresent()) throw new ClientErrorException("该银行卡不存在");            
         BankCard bankCard = op.get();
-
         MyBeanUtils.copyProperties(req, bankCard);
         BankCard bank = bankCardRepository.save(bankCard);
-        return HttpResult.success(bank, "修改成功");
+        return HttpResult.success(new BankCardVo(bank), "修改成功");
     }
 
     //选择银行卡
@@ -117,20 +105,15 @@ public class BankCardController extends BaseController {
     @UserLoginToken
     public Object chooseBankCard(@RequestBody BankCardAddReq req) throws ClientErrorException {
 
-        if (req.getId() == null)
-            throw new ClientErrorException("id不合法或为空");
-        if (req.getStatus() == null)
-            throw new ClientErrorException("状态不能为空");
-
-
-        if (req.getStatus() != 1)
-            throw new ClientErrorException("状态异常，请联系管理员");
+        if (req.getId() == null) throw new ClientErrorException("id不合法或为空");           
+        if (req.getStatus() == null) throw new ClientErrorException("状态不能为空");            
+        if (req.getStatus() != 1) throw new ClientErrorException("状态异常，请联系管理员");
+            
 
         bankCardRepository.updateStatusAll();
 
         Optional<BankCard> op = bankCardRepository.findById(req.getId());
-        if (!op.isPresent())
-            throw new ClientErrorException("该银行卡不存在");
+        if (!op.isPresent()) throw new ClientErrorException("该银行卡不存在");            
         BankCard bankCard = op.get();
         bankCard.setStatus(req.getStatus());
         MyBeanUtils.copyProperties(req, bankCard);
