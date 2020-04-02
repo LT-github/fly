@@ -390,7 +390,7 @@ public class FinanceController extends BaseController{
 			finances = iFinanceRepository.findByCreateUserAndCreateTimeBefore(member,settleTime);
 		}	
 		if(last.getCreateTime()>=settleTime) throw new ClientErrorException("该盘口按时间已结算");
-			if (null != finances && 0 != finances.size()){
+			
 				if (null != finances && 0 != finances.size()){
 					money =  Arith.sub(iFinanceService.getReduce(new HashSet<>(finances), BET_RESULT),
 							Arith.sub(iFinanceService.getReduce(new HashSet<>(finances), BET),iFinanceService.getReduce(new HashSet<>(finances), BET_CANCLE)));
@@ -398,7 +398,7 @@ public class FinanceController extends BaseController{
 						return Arith.round(Math.abs(money),2);
 					}
 				}
-			}
+			
 					
 		return 0;
 	}
@@ -481,7 +481,7 @@ public class FinanceController extends BaseController{
 				}
 			}
 			
-			return HttpResult.success(fi,"按时间结算成功!");
+			return HttpResult.success(FinanceVo.tovo(fi),"按时间结算成功!");
 		}
 	  
 }
