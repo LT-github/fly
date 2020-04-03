@@ -444,7 +444,7 @@ public class FinanceController extends BaseController {
 		Handicap handicap = member.getHandicap();
 		Set<Proportion> proportions = null;
 		//普通会员与推手会员的返点
-		if (type.equals(SETTLEMENT_TYPE_HAND.getCode())) {
+		if (member.getType()==1) {
 			proportions = member.getProportions();
 			money = getAllMoneyByTime(type,member,last,settleStartTime,settleEndTime);
 		} else {
@@ -487,7 +487,7 @@ public class FinanceController extends BaseController {
 		for (Handicap handicap : handicaps) {
 			Set<Member> members = handicap.getMembers();
 			if(members==null || members.size()==0) continue;
-			for (Member member : members) {
+			for (Member member : members) {				
 				ReturnPointVoByTime vo = getReturnPointVoByTime(req.getSettlementType(), member,req.getSettleStartTime(),req.getSettleEndTime());
 				Finance finance = iFinanceService.add(member,vo.getReturnMoney(),iFinanceService.reckonBalance(member.getId()), type);
 				finance.setModifyUser(getLoginUser());
