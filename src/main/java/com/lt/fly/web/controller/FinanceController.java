@@ -482,14 +482,17 @@ public class FinanceController extends BaseController {
 		List<Finance> fi=Lists.newArrayList();
 		GlobalConstant.FinanceType type = GlobalConstant.FinanceType.getFinanceTypeByCode(req.getSettlementType());
 
-		if(null==req.getHandicapIds()) { handicaps = handicapRepository.findAll();}else {handicaps = handicapRepository.findAllById(req.getHandicapIds());}
+		if(null==req.getHandicapIds()) { handicaps = handicapRepository.findAll();} else {handicaps = handicapRepository.findAllById(req.getHandicapIds());}
 		if(handicaps== null || handicaps.size()==0) throw new ClientErrorException("暂时无任何盘口");
 		for (Handicap handicap : handicaps) {
+			System.out.println("handicapId:"+handicap.getId());
 			Set<Member> members = handicap.getMembers();
 			if(members==null || members.size()==0) continue;
-			for (Member member : members) {				
+			for (Member member : members) {
+				System.out.println("memberId:"+member.getId());
 				ReturnPointVoByTime vo = getReturnPointVoByTime(req.getSettlementType(), member,req.getSettleStartTime(),req.getSettleEndTime());
 				Finance finance = iFinanceService.add(member,vo.getReturnMoney(),iFinanceService.reckonBalance(member.getId()), type);
+				System.out.println("finance:"+finance.getId());
 				finance.setModifyUser(getLoginUser());
 				finance.setModifyTime(System.currentTimeMillis());
 				iFinanceRepository.save(finance);
