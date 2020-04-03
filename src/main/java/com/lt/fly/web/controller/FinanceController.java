@@ -490,9 +490,10 @@ public class FinanceController extends BaseController {
 		for (Handicap handicap : handicaps) {
 			System.out.println("handicapId:"+handicap.getId());			
 			Set<Member> members = handicap.getMembers();
+			List<Member> memberss=new ArrayList<>(members);
 			System.out.println("membersSzie:"+members.size());
 			if(members==null || members.size()==0) continue;
-			for (Member member : members) {
+			for (Member member : memberss) {
 				System.out.println("memberId:"+member.getId());
 				ReturnPointVoByTime vo = getReturnPointVoByTime(req.getSettlementType(), member,req.getSettleStartTime(),req.getSettleEndTime());
 				Finance finance = iFinanceService.add(member,vo.getReturnMoney(),iFinanceService.reckonBalance(member.getId()), type);
