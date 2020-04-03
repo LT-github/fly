@@ -21,7 +21,7 @@ public class MemberAddByClient {
     private String nickname;
 
     //推荐码
-    private String referralCode;
+    private String code;
 
     //确认密码
     private String confirmPassword;

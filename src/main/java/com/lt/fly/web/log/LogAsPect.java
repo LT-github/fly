@@ -57,7 +57,7 @@ public class LogAsPect extends BaseController {
 			insertLog(point,endTime-beginTime);
         } catch (Throwable e) {
             afterThrowing(point, e);
-            return HttpResult.failure(ResultCode.CLIENT_ERROR.getCode(), e.getMessage());
+            return HttpResult.failure(ResultCode.SERVER_ERROR.getCode(), e.getMessage());
         }
         return result;
     }

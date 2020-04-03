@@ -115,7 +115,7 @@ public class ShareCodeUtil {
     }
 
     public static void main(String[] args) {
-        String code = genInviteCode(3645483627874304l,6);
+        String code = genInviteCode(3672329803286528l,6);
 //        Long id = codeToId(code);
         System.out.println(code);
 //        System.out.println(id);
