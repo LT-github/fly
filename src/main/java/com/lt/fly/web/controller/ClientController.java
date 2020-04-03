@@ -16,7 +16,6 @@ import com.lt.fly.utils.gameUtils.GameUtil;
 import com.lt.fly.web.req.*;
 import com.lt.fly.web.resp.ClientShowResp;
 import com.lt.fly.web.vo.FinanceVo;
-import com.lt.fly.web.vo.MemberFinanceVo;
 import com.lt.fly.web.vo.MemberVo;
 import com.lt.fly.web.vo.OrderVo;
 import com.lt.lxc.pojo.OrderDTO;
@@ -30,10 +29,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.lt.fly.utils.GlobalConstant.FinanceType.*;
 
@@ -332,7 +328,10 @@ public class ClientController extends BaseController{
         //获取今日零点时间戳
         long zero = DateUtil.getDayStartTime(System.currentTimeMillis());
 
-        List<Order> orders = iOrderRepository.findByUserAndTime(ContextHolderUtil.getTokenUserId(),zero,now);
+        List<Order> orders = iOrderRepository.findByUser(ContextHolderUtil.getTokenUserId())
+                .stream()
+                .filter(order -> order.getCreateTime()>zero && order.getCreateTime()<now)
+                .collect(Collectors.toList());
         resp.setIssueCount((int)orders.stream().map(Order::getIssueNumber).distinct().count());
 
 

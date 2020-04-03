@@ -367,7 +367,7 @@ public class MemberController extends BaseController{
 				.limit(query.getSize())
 				.collect(Collectors.toList());
 
-		ReportResp resp = new ReportResp(query.getPage(), query.getSize(),(vos.size()+query.getSize()-1)/query.getSize(), (long)vos.size(), memberReportVos,vos);
+		ReportResp resp = new ReportResp(query.getPage(), memberReportVos.size(),(vos.size()+query.getSize()-1)/query.getSize(), (long)vos.size(), memberReportVos,vos);
 
 		return HttpResult.success(resp,"获取会员报表成功");
 	}

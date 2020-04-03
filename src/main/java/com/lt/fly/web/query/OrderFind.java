@@ -24,4 +24,7 @@ public class OrderFind extends DataQueryObjectPage {
 
     @QueryField(name = "createTime",type = QueryType.BEWTEEN )
     private QueryBetween<Long> createTime;
+
+    @QueryField(name = "issueNumber",type = QueryType.EQUAL)
+    private Long issueNumber;
 }

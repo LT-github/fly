@@ -6,6 +6,7 @@ import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.utils.HttpResult;
 import com.lt.fly.web.log.Log;
 import com.lt.fly.web.query.BetReportFind;
+import com.lt.fly.web.query.DetailsFind;
 import com.lt.fly.web.query.OrderFind;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,9 +51,11 @@ public class OrderController extends BaseController {
      * @return
      * @throws ClientErrorException
      */
-    @GetMapping
-    public HttpResult details() throws ClientErrorException{
-        return HttpResult.success();
+    @GetMapping("/details")
+    @UserLoginToken
+    @Log(value = "查询报表详情页")
+    public HttpResult details(DetailsFind query) throws ClientErrorException{
+        return HttpResult.success(iOrderService.details(query),"获取详情页列表成功");
     }
 
 }
