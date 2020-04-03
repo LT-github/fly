@@ -479,7 +479,7 @@ public class FinanceController extends BaseController {
 	public HttpResult<Object> addTime(@Validated @RequestBody HandicapSettlementReq req) throws ClientErrorException {
 
 		List<Handicap> handicaps=Lists.newArrayList();
-		List<Finance> fi=Lists.newArrayList();
+		List<Finance> fi=new ArrayList<>();
 		GlobalConstant.FinanceType type = GlobalConstant.FinanceType.getFinanceTypeByCode(req.getSettlementType());
 
 		if(null==req.getHandicapIds()) { handicaps = handicapRepository.findAll();} else {handicaps = handicapRepository.findAllById(req.getHandicapIds());}
