@@ -105,6 +105,7 @@ public class ClientController extends BaseController{
             security.setId(idWorker.nextId());
             security.setPublicKey(RsaUtils.getPublicKey(initKey));
             security.setPrivateKey(RsaUtils.getPrivateKey(initKey));
+            security.setCreateUser(member);
             member.setSecurity(security);
         } catch (Exception e) {
             e.printStackTrace();
@@ -116,13 +117,13 @@ public class ClientController extends BaseController{
         }
 
         //设置推荐人
-        if (null != obj.getReferralCode() && !obj.getReferralCode().isEmpty()){
-            Member modifyUser = iMemberRepository.findByReferralCode(obj.getReferralCode());
+        if (null != obj.getCode() && !obj.getCode().isEmpty()){
+            Member modifyUser = iMemberRepository.findByReferralCode(obj.getCode());
             if (null == modifyUser){
                 throw new ClientErrorException("邀请码不正确");
             }
             if (!modifyUser.getType().equals(GlobalConstant.MemberType.REFERRER.getCode())){
-                throw new ClientErrorException("邀请码为'"+obj.getReferralCode()+"'的用户不是推手");
+                throw new ClientErrorException("邀请码为'"+obj.getCode()+"'的用户不是推手");
             }
             member.setModifyUser(modifyUser);
         }

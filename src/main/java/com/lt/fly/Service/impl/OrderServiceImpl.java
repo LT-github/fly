@@ -88,6 +88,13 @@ public class OrderServiceImpl extends BaseService implements IOrderService {
     //竞猜报表
     @Override
     public ReportResp findReport(BetReportFind query) throws ClientErrorException {
+        if (null == query.getBefore()){
+            query.setBefore(DateUtil.getDayStartTime(System.currentTimeMillis()));
+        }
+        if (null == query.getAfter()) {
+            query.setAfter(System.currentTimeMillis());
+        }
+
         List<BetReportVo> vos = new ArrayList<>();
         iFinanceRepository.findAll()
                 .stream()

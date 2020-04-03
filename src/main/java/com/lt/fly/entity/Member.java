@@ -1,5 +1,6 @@
 package com.lt.fly.entity;
 
+import com.lt.fly.utils.GlobalConstant;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,11 +28,11 @@ public class Member extends User{
 
     //会员类型 ,1:普通会员.2:推手会员
     @Column
-    private Integer type;
+    private Integer type = GlobalConstant.MemberType.GENERAL.getCode();
 
     //是否存在盘口中   0:不在, 1:在
     @Column
-    private Integer isHaveHandicap;
+    private Integer isHaveHandicap = GlobalConstant.IsHaveHandicap.NOT.getCode();
 
     //邀请码
     @Column
