@@ -488,8 +488,7 @@ public class FinanceController extends BaseController {
 			System.out.println("handicapId:"+handicap);
 		}
 		for (Handicap handicap : handicaps) {
-			System.out.println("handicapId:"+handicap.getId());
-			if(handicap==null) continue;
+			System.out.println("handicapId:"+handicap.getId());			
 			Set<Member> members = handicap.getMembers();
 			System.out.println("membersSzie:"+members.size());
 			if(members==null || members.size()==0) continue;
@@ -502,12 +501,12 @@ public class FinanceController extends BaseController {
 				finance.setModifyTime(System.currentTimeMillis());
 				iFinanceRepository.save(finance);
 				System.out.println("标识1");
-				fi.add(finance);
+				//fi.add(finance);
 				System.out.println("标识2");
 			}
 		}
   
-		return HttpResult.success(FinanceVo.tovo(fi),"按时间结算成功!");
+		return HttpResult.success(null,"按时间结算成功!");
 	}
 
 }
