@@ -23,7 +23,7 @@ public class LogVo {
 
     public LogVo(SysLog obj) {
         MyBeanUtils.copyProperties(obj,this);
-        this.username = obj.getCreateUser().getNickname();
+        this.username = obj.getCreateUser().getUsername();
     }
 
     public static List<LogVo> tovo(List<SysLog> sysLogs){
