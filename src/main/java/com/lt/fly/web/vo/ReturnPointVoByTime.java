@@ -14,7 +14,7 @@ public class ReturnPointVoByTime {
 
     private Long memberId;
 
-    private Long time;
+    private String time;
     
     
 }

@@ -340,10 +340,12 @@ public class FinanceController extends BaseController {
     private double getAllMoney(Integer type, Member member, Finance last) {
         double money = 0;
         List<Member> members = iMemberRepository.findByModifyUser(member);
+        if(members!=null && members.size()!=0) {
         for (Member item :
                 members) {
             money = Arith.add(money, getMoney(type, item, last));
         }
+       }
         return money;
     }
 
@@ -396,16 +398,13 @@ public class FinanceController extends BaseController {
 	/*
 	普通会员按时间的返点金额
 	 */
-	private double getMoneyByTime(Integer type, Member member, Finance last,Long settleTime) throws ClientErrorException {
+	private double getMoneyByTime(Integer type, Member member, Finance last,Long settleStartTime,Long settleEndTime) throws ClientErrorException {
 		double money = 0;
-		List<Finance> finances;
-		if (null != last){
-			finances = iFinanceRepository.findByCreateUserAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(member,last.getCreateTime(),settleTime);
-		}else {
-			finances = iFinanceRepository.findByCreateUserAndCreateTimeBefore(member,settleTime);
+		List<Finance> finances;	
+		finances = iFinanceRepository.findByCreateUserAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(member,settleStartTime,settleEndTime);
+		if(last!=null) {
+		if(last.getCreateTime()>=settleEndTime) throw new ClientErrorException("重复结算");
 		}
-		if(last.getCreateTime()>=settleTime) throw new ClientErrorException("该盘口按时间已结算");
-
 		if (null != finances && 0 != finances.size()){
 			money =  Arith.sub(iFinanceService.getReduce(new HashSet<>(finances), BET_RESULT),
 					Arith.sub(iFinanceService.getReduce(new HashSet<>(finances), BET),iFinanceService.getReduce(new HashSet<>(finances), BET_CANCLE)));
@@ -421,16 +420,18 @@ public class FinanceController extends BaseController {
 	/*
 	推手会员按时间的返点金额
 	 */
-	private double getAllMoneyByTime(Integer type, Member member, Finance last,Long settleTime) throws ClientErrorException{
+	private double getAllMoneyByTime(Integer type, Member member, Finance last,Long settleStartTime,Long settleEndTime) throws ClientErrorException{
 		double money = 0;
 		List<Member> members = iMemberRepository.findByModifyUser(member);
+		if(members!= null && members.size()!=0) {
 		for (Member item :
 				members) {
-			money = Arith.add(money,getMoneyByTime(type,item,last,settleTime));
+			money = Arith.add(money,getMoneyByTime(type,item,last,settleStartTime,settleEndTime));
 		}
+		  }
 		return money;
 	}
-	private ReturnPointVoByTime getReturnPointVoByTime(Integer type, Member member,Long settleTime) throws ClientErrorException{
+	private ReturnPointVoByTime getReturnPointVoByTime(Integer type, Member member,Long settleStartTime,Long settleEndTime) throws ClientErrorException{
 
 		ReturnPointVoByTime vo = new ReturnPointVoByTime();
 		double returnPoint = 0;
@@ -445,9 +446,9 @@ public class FinanceController extends BaseController {
 		//普通会员与推手会员的返点
 		if (type.equals(SETTLEMENT_TYPE_HAND.getCode())) {
 			proportions = member.getProportions();
-			money = getAllMoneyByTime(type,member,last,settleTime);
+			money = getAllMoneyByTime(type,member,last,settleStartTime,settleEndTime);
 		} else {
-			money = getMoneyByTime(type, member, last,settleTime);
+			money = getMoneyByTime(type, member, last,settleStartTime,settleEndTime);
 			if(handicap!=null)
 				proportions = handicap.getProportions();
 		}
@@ -466,8 +467,8 @@ public class FinanceController extends BaseController {
 		vo.setUsername(member.getUsername());
 		vo.setNikename(member.getNickname());
 		vo.setReturnMoney(Arith.mul(money,returnPoint));
-		vo.setMemberId(member.getId());
-		vo.setTime(settleTime);
+		vo.setMemberId(member.getId());		
+		vo.setTime(DateUtil.formatDateTime(settleStartTime)+" 至 "+DateUtil.formatDateTime(settleEndTime));
 		return vo;
 
 
@@ -487,7 +488,7 @@ public class FinanceController extends BaseController {
 			Set<Member> members = handicap.getMembers();
 			if(members==null || members.size()==0) continue;
 			for (Member member : members) {
-				ReturnPointVoByTime vo = getReturnPointVoByTime(req.getSettlementType(), member,req.getSettlementTime());
+				ReturnPointVoByTime vo = getReturnPointVoByTime(req.getSettlementType(), member,req.getSettleStartTime(),req.getSettleEndTime());
 				Finance finance = iFinanceService.add(member,vo.getReturnMoney(),iFinanceService.reckonBalance(member.getId()), type);
 				finance.setModifyUser(getLoginUser());
 				finance.setModifyTime(System.currentTimeMillis());

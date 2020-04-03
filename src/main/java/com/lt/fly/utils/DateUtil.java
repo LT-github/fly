@@ -32,7 +32,6 @@ public class DateUtil {
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         return sdf.format(date);
     }
-
     /**
      * 字符串格式化为时间
      *

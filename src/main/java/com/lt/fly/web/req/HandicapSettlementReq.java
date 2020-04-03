@@ -11,6 +11,9 @@ public class HandicapSettlementReq {
 
 	@NotNull(message = "返点类型不能为空")
 	private Integer settlementType;
-	private Long settlementTime;
+	@NotNull(message="起始时间不能为空")
+	private Long settleStartTime;
+	@NotNull(message="截止时间不能为空")
+	private Long settleEndTime;
 	private List<Long> handicapIds;
 }

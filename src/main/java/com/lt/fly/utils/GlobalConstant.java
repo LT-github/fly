@@ -124,8 +124,8 @@ public class GlobalConstant {
 		SYSTEM_RECHARGE(11,"系统上分"),
 		SYSTEM_DESCEND(12,"系统下分"),
 		TIMELY_LISHUI_CANCLE(13,"实时流水撤销"),
-		SETTLEMENT_TYPE_HAND(14,"推手按时间手动结算"),
-		SETTLEMENT_TYPE_AUTO(15,"推手按时间自动结算");
+		SETTLEMENT_TYPE_HAND(14,"推手时间结算"),
+		SETTLEMENT_TYPE_AUTO(15,"时间结算");
 
 
 		private int code;
