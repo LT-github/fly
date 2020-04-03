@@ -499,6 +499,7 @@ public class FinanceController extends BaseController {
 				finance.setModifyUser(getLoginUser());
 				finance.setModifyTime(System.currentTimeMillis());
 				iFinanceRepository.save(finance);
+				System.out.println("标识1");
 				fi.add(finance);
 			}
 		}
