@@ -479,27 +479,26 @@ public class FinanceController extends BaseController {
 	public HttpResult<Object> addTime(@Validated @RequestBody HandicapSettlementReq req) throws ClientErrorException {
 
 		List<Handicap> handicaps=Lists.newArrayList();
-		List<Finance> fi=Lists.newArrayList();
+		List<Finance> fi=new ArrayList<>();
 		GlobalConstant.FinanceType type = GlobalConstant.FinanceType.getFinanceTypeByCode(req.getSettlementType());
 
 		if(null==req.getHandicapIds()) { handicaps = handicapRepository.findAll();} else {handicaps = handicapRepository.findAllById(req.getHandicapIds());}
-		if(handicaps== null || handicaps.size()==0) throw new ClientErrorException("暂时无任何盘口");
-		for (Handicap handicap : handicaps) {
-			System.out.println("handicapId:"+handicap.getId());
+		if(handicaps== null || handicaps.size()==0) throw new ClientErrorException("暂时无任何盘口");		
+		for (Handicap handicap : handicaps) {					
 			Set<Member> members = handicap.getMembers();
+			List<Member> memberss=new ArrayList<>(members);		
 			if(members==null || members.size()==0) continue;
-			for (Member member : members) {
-				System.out.println("memberId:"+member.getId());
+			for (Member member : memberss) {				
 				ReturnPointVoByTime vo = getReturnPointVoByTime(req.getSettlementType(), member,req.getSettleStartTime(),req.getSettleEndTime());
-				Finance finance = iFinanceService.add(member,vo.getReturnMoney(),iFinanceService.reckonBalance(member.getId()), type);
-				System.out.println("finance:"+finance.getId());
+				Finance finance = iFinanceService.add(member,vo.getReturnMoney(),iFinanceService.reckonBalance(member.getId()), type);			
 				finance.setModifyUser(getLoginUser());
 				finance.setModifyTime(System.currentTimeMillis());
-				iFinanceRepository.save(finance);
+				iFinanceRepository.save(finance);				
 				fi.add(finance);
+				
 			}
 		}
-
+  
 		return HttpResult.success(FinanceVo.tovo(fi),"按时间结算成功!");
 	}
 

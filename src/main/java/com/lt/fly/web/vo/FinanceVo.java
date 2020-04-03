@@ -43,7 +43,9 @@ public class FinanceVo {
         MyBeanUtils.copyProperties(obj,this);
         if (null != obj.getModifyUser())
             this.modifyUsername = obj.getModifyUser().getUsername();
+        if(null != obj.getCreateUser())
         this.createUserId = obj.getCreateUser().getId();
+        if(null != obj.getCreateUser())
         this.createUsername = obj.getCreateUser().getUsername();
         if (null != GlobalConstant.FinanceType.getFinanceTypeByCode(obj.getType())) {
             this.behavior = GlobalConstant.FinanceType.getFinanceTypeByCode(obj.getType()).getMsg();
