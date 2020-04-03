@@ -4,8 +4,6 @@ import com.lt.fly.entity.Order;
 import com.lt.fly.utils.MyBeanUtils;
 import lombok.Getter;
 import lombok.Setter;
-import org.aspectj.weaver.ast.Or;
-import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +32,7 @@ public class OrderVo {
 
     private String betsContent;//竞猜内容
 
-    private Double odds;//赔率
+    private Double betOdd;//赔率
 
     private Double singleBetting;//单注金额
 
@@ -52,6 +50,7 @@ public class OrderVo {
         MyBeanUtils.copyProperties(obj,this);
         this.username = obj.getCreateUser().getUsername();
         this.gameType = obj.getBetGroup().getGameGroup().getName();
+
     }
     public static List<OrderVo> tovo(List<Order> orders){
         List<OrderVo> orderVos = new ArrayList<>();

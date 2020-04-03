@@ -11,8 +11,8 @@ import java.util.List;
 
 public interface IOrderRepository extends BaseRepository<Order, Long> {
 	
-	@Query(nativeQuery = true,value = "select * from t_order where create_user_id = :memberId and create_time between :start and :end")
-	List<Order> findByUserAndTime(Long memberId,Long start,Long end);
+	@Query(nativeQuery = true,value = "select * from t_order where create_user_id = :userId")
+	List<Order> findByUser(Long userId);
 
 	@Modifying
 	@Transactional

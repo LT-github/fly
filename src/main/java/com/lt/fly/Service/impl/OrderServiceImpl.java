@@ -15,6 +15,7 @@ import com.lt.fly.web.query.OrderFind;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.resp.ReportResp;
 import com.lt.fly.web.vo.BetReportVo;
+import com.lt.fly.web.vo.DetailsVo;
 import com.lt.fly.web.vo.OrderVo;
 import com.lt.lxc.pojo.OrderDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,17 +115,38 @@ public class OrderServiceImpl extends BaseService implements IOrderService {
                 .limit(query.getSize())
                 .collect(Collectors.toList());
 
-        ReportResp reportResp = new ReportResp(query.getPage(), query.getSize(),(vos.size()  +  query.getSize() - 1) / query.getSize(), (long)vos.size(), betReportVos,vos);
+        ReportResp reportResp = new ReportResp(query.getPage(), vos.size(),(vos.size()  +  query.getSize() - 1) / query.getSize(), (long)vos.size(), betReportVos,vos);
         return reportResp;
     }
 
     @Override
     public PageResp details(DetailsFind query) throws ClientErrorException {
-        List<Order> orders = iOrderRepository.findAll();
-        Long time = Long.parseLong(query.getTime());
+        //字符串专转成时间
+        Date date = DateUtil.parseDate(query.getTime(),DateUtil.DEFAULT_FORMATS);
+        //时间转时间戳
+        long start = date.getTime();
+        Long end = start + DateUtil.ONE_DAY_TIME;
+
+        List<Order> orders = new ArrayList<>();
+        if (null != query.getUserId()){
+            orders = iOrderRepository.findByUser(query.getUserId());
+        } else {
+            orders = iOrderRepository.findAll();
+        }
+        List<DetailsVo> vos = new ArrayList<>();
         orders.stream()
-                .filter(order -> order.getCreateTime()>time)
-                .collect(Collectors.groupingBy(Order::getIssueNumber));
-        return null;
+                .filter(order -> order.getCreateTime()>start && order.getCreateTime()<end)
+                .collect(Collectors.groupingBy(Order::getIssueNumber))
+                .forEach((aLong, orders1) -> {
+                    vos.add(new DetailsVo(orders1,query.getTime(),aLong));
+                });
+        List<DetailsVo> detailsVos = vos.stream()
+                .sorted(Comparator.comparing(DetailsVo::getIssueNumber))
+                .skip((query.getPage()-1) * query.getSize())//分页
+                .limit(query.getSize())
+                .collect(Collectors.toList());
+
+        PageResp resp = new PageResp(query.getPage(), detailsVos.size(),(vos.size()+query.getSize()-1)/query.getSize(), (long)vos.size(),detailsVos);
+        return resp;
     }
 }
