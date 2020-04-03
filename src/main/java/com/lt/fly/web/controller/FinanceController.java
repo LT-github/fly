@@ -488,6 +488,7 @@ public class FinanceController extends BaseController {
 			if(members==null || members.size()==0) continue;
 			for (Member member : memberss) {				
 				ReturnPointVoByTime vo = getReturnPointVoByTime(req.getSettlementType(), member,req.getSettleStartTime(),req.getSettleEndTime());
+				if(vo.getReturnMoney()==0) continue;
 				Finance finance = iFinanceService.add(member,vo.getReturnMoney(),iFinanceService.reckonBalance(member.getId()), type);			
 				finance.setModifyUser(getLoginUser());
 				finance.setModifyTime(System.currentTimeMillis());
