@@ -5,18 +5,16 @@ import com.lt.fly.Service.IFinanceService;
 import com.lt.fly.Service.IOrderService;
 import com.lt.fly.dao.IFinanceRepository;
 import com.lt.fly.dao.IOrderRepository;
-import com.lt.fly.entity.Finance;
 import com.lt.fly.entity.Order;
 import com.lt.fly.exception.ClientErrorException;
-import com.lt.fly.utils.Arith;
 import com.lt.fly.utils.DateUtil;
 import com.lt.fly.utils.GlobalConstant;
 import com.lt.fly.web.query.BetReportFind;
+import com.lt.fly.web.query.DetailsFind;
 import com.lt.fly.web.query.OrderFind;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.resp.ReportResp;
 import com.lt.fly.web.vo.BetReportVo;
-import com.lt.fly.web.vo.MemberReportVo;
 import com.lt.fly.web.vo.OrderVo;
 import com.lt.lxc.pojo.OrderDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,5 +116,15 @@ public class OrderServiceImpl extends BaseService implements IOrderService {
 
         ReportResp reportResp = new ReportResp(query.getPage(), query.getSize(),(vos.size()  +  query.getSize() - 1) / query.getSize(), (long)vos.size(), betReportVos,vos);
         return reportResp;
+    }
+
+    @Override
+    public PageResp details(DetailsFind query) throws ClientErrorException {
+        List<Order> orders = iOrderRepository.findAll();
+        Long time = Long.parseLong(query.getTime());
+        orders.stream()
+                .filter(order -> order.getCreateTime()>time)
+                .collect(Collectors.groupingBy(Order::getIssueNumber));
+        return null;
     }
 }

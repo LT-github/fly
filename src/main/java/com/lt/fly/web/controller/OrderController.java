@@ -45,4 +45,14 @@ public class OrderController extends BaseController {
         return HttpResult.success(iOrderService.findReport(query),"查询竞猜报表成功");
     }
 
+    /**
+     * 报表详情
+     * @return
+     * @throws ClientErrorException
+     */
+    @GetMapping
+    public HttpResult details() throws ClientErrorException{
+        return HttpResult.success();
+    }
+
 }

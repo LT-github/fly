@@ -14,6 +14,8 @@ public class MemberReportVo extends BetReportVo{
 
     private String nickname;
 
+    private Long id;
+
     public MemberReportVo(String dateTime, List<Finance> finances, Member member) {
         super(dateTime, finances);
         MyBeanUtils.copyProperties(member,this);

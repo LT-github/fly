@@ -3,6 +3,7 @@ package com.lt.fly.Service;
 import com.lt.fly.entity.Order;
 import com.lt.fly.exception.ClientErrorException;
 import com.lt.fly.web.query.BetReportFind;
+import com.lt.fly.web.query.DetailsFind;
 import com.lt.fly.web.query.OrderFind;
 import com.lt.fly.web.resp.ReportResp;
 import com.lt.fly.web.resp.PageResp;
@@ -18,4 +19,7 @@ public interface IOrderService {
     void settle(Map<Long, OrderDTO> map);
 
     ReportResp findReport(BetReportFind query) throws ClientErrorException;
+
+    PageResp details(DetailsFind query) throws ClientErrorException;
+
 }
