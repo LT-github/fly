@@ -461,6 +461,8 @@ public class FinanceController extends BaseController {
 				}
 			}
 		} 
+		System.out.println("money:"+money);
+		System.out.println("returnPoint:"+returnPoint);
 		vo.setMoney(money);
 		vo.setUsername(member.getUsername());
 		vo.setNikename(member.getNickname());
