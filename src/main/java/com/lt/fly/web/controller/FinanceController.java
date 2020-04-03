@@ -489,7 +489,9 @@ public class FinanceController extends BaseController {
 		}
 		for (Handicap handicap : handicaps) {
 			System.out.println("handicapId:"+handicap.getId());
+			if(handicap==null) continue;
 			Set<Member> members = handicap.getMembers();
+			System.out.println("members:"+members.size());
 			if(members==null || members.size()==0) continue;
 			for (Member member : members) {
 				System.out.println("memberId:"+member.getId());
