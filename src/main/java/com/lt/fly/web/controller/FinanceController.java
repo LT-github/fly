@@ -501,6 +501,7 @@ public class FinanceController extends BaseController {
 				iFinanceRepository.save(finance);
 				System.out.println("标识1");
 				fi.add(finance);
+				System.out.println("标识2");
 			}
 		}
   
