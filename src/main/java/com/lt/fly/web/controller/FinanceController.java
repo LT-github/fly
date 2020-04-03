@@ -485,6 +485,9 @@ public class FinanceController extends BaseController {
 		if(null==req.getHandicapIds()) { handicaps = handicapRepository.findAll();} else {handicaps = handicapRepository.findAllById(req.getHandicapIds());}
 		if(handicaps== null || handicaps.size()==0) throw new ClientErrorException("暂时无任何盘口");
 		for (Handicap handicap : handicaps) {
+			System.out.println("handicapId:"+handicap);
+		}
+		for (Handicap handicap : handicaps) {
 			System.out.println("handicapId:"+handicap.getId());
 			Set<Member> members = handicap.getMembers();
 			if(members==null || members.size()==0) continue;
