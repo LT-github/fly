@@ -178,6 +178,7 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 				Finance finance = add(member,vo.getReturnMoney(),reckonBalance(member.getId()), type);			
 				finance.setModifyUser(getLoginUser());
 				finance.setModifyTime(System.currentTimeMillis());
+				finance.setDescription(member.getNickname()+type.getMsg()+vo.getReturnMoney()+"。"+vo.getTime());
 				iFinanceRepository.save(finance);				
 				fi.add(finance);
 				
@@ -244,12 +245,8 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 		}
 		if(proportions!=null) {
 			for (Proportion proportion :
-					proportions) {	
-				if(member.getType()==1) {
-					returnPoint = getReturnPoint(money, proportion, CommonsUtil.RANGE_LIUSHUI_RETURN_POINT);
-				}else {
-					returnPoint = getReturnPoint(money, proportion, CommonsUtil.REFERRAL_LIUSHUI_RETURN_POINT);
-				}
+					proportions) {									
+					returnPoint = getReturnPoint(money, proportion, member.getType()==1?CommonsUtil.RANGE_LIUSHUI_RETURN_POINT:CommonsUtil.REFERRAL_LIUSHUI_RETURN_POINT);				
 				if (returnPoint != 0){
 					break;
 				}
