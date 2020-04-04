@@ -269,8 +269,10 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
      */
     private double getReturnPoint(double money, Proportion proportion, Long returnPointId) {
         double returnPoint = 0;
-        if (proportion.getReturnPoint().getId().equals(returnPointId)) {
-        	System.out.println("proportionReturnId:"+proportion.getReturnPoint().getId());
+        System.out.println("proportionReturnId:"+proportion.getReturnPoint().getId());
+        System.out.println("returnPointId:"+returnPointId);
+        if (proportion.getReturnPoint().getId().equals(returnPointId)) { 
+        	System.out.println("进入");
             String[] range = proportion.getRanges().split("-");
             if (money > Double.parseDouble(range[0]) && money < Double.parseDouble(range[1])) {
                 returnPoint = Arith.div(proportion.getProportionVal(), 100, 2);
