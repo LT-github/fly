@@ -275,7 +275,7 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
             if (money > Double.parseDouble(range[0]) && money < Double.parseDouble(range[1])) {
                 returnPoint = Arith.div(proportion.getProportionVal(), 100, 2);
             }
-        }
+        } 
         return returnPoint;
     }
 }
