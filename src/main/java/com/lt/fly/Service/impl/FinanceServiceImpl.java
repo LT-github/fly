@@ -39,7 +39,11 @@ import static com.lt.fly.utils.GlobalConstant.FinanceType.BET;
 import static com.lt.fly.utils.GlobalConstant.FinanceType.BET_CANCLE;
 import static com.lt.fly.utils.GlobalConstant.FinanceType.BET_RESULT;
 import static com.lt.fly.utils.GlobalConstant.FinanceType.DESCEND;
+import static com.lt.fly.utils.GlobalConstant.FinanceType.RANGE_LIUSHUI;
+import static com.lt.fly.utils.GlobalConstant.FinanceType.RANGE_YINGLI;
 import static com.lt.fly.utils.GlobalConstant.FinanceType.RECHARGE;
+import static com.lt.fly.utils.GlobalConstant.FinanceType.REFERRAL_LIUSHUI;
+import static com.lt.fly.utils.GlobalConstant.FinanceType.REFERRAL_YINGLI;
 
 
 @Service
@@ -70,7 +74,7 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 		finance.setType(type.getCode());
 		finance.setMoney(money);
 		if(user.getNickname()!=null)
-		finance.setDescription(user.getNickname()+type.getMsg()+money+"。");
+		//finance.setDescription(user.getNickname()+type.getMsg()+money+"。");
 		finance.setCreateUser(user);
 		if (null == balance)
 			balance = reckonBalance(user.getId());
@@ -161,12 +165,12 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 
 	@Override
 	public List<Finance> addTime(Integer settlementType, Long settleStartTime, Long settleEndTime,
-			List<Long> handicapIds) throws ClientErrorException{
+			List<Long> handicapIds,Integer types) throws ClientErrorException{
 		List<Handicap> handicaps=Lists.newArrayList();
 		List<Finance> fi=new ArrayList<>();
 		GlobalConstant.FinanceType type = GlobalConstant.FinanceType.getFinanceTypeByCode(settlementType);
 
-		if(null==handicapIds) { handicaps = handicapRepository.findAll();} else {handicaps = handicapRepository.findAllById(handicapIds);}
+		if(null==handicapIds) { handicaps = handicapRepository.findAllBySettlementType(types);} else {handicaps = handicapRepository.findAllByIdAndSettlementType(handicapIds, types);}
 		if(handicaps== null || handicaps.size()==0) throw new ClientErrorException("暂时无任何盘口");		
 		for (Handicap handicap : handicaps) {					
 			Set<Member> members = handicap.getMembers();
@@ -194,7 +198,7 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 		List<Finance> finances;	
 		finances = iFinanceRepository.findByCreateUserAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(member,settleStartTime,settleEndTime);
 		if(last!=null) {
-		if(last.getCreateTime()>=settleEndTime) throw new ClientErrorException("重复结算");
+		if(last.getCreateTime()>=settleEndTime) throw new ClientErrorException(member.getUsername()+"重复结算");
 		}
 		if (null != finances && 0 != finances.size()){
 			money =  Arith.sub(getReduce(new HashSet<>(finances), BET_RESULT),
@@ -235,7 +239,7 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 		Handicap handicap = member.getHandicap();
 		Set<Proportion> proportions = null;
 		//普通会员与推手会员的返点
-		if (member.getType()==1) {
+		if (member.getType()==2) {
 			proportions = member.getProportions();
 			money = getAllMoneyByTime(type,member,last,settleStartTime,settleEndTime);
 		} else {
@@ -246,20 +250,18 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 		if(proportions!=null) {
 			for (Proportion proportion :
 					proportions) {									
-					returnPoint = getReturnPoint(money, proportion, member.getType()==1?CommonsUtil.RANGE_LIUSHUI_RETURN_POINT:CommonsUtil.REFERRAL_LIUSHUI_RETURN_POINT);				
+					returnPoint = getReturnPoint(money, proportion, member.getType()==2?CommonsUtil.REFERRAL_LIUSHUI_RETURN_POINT:CommonsUtil.RANGE_LIUSHUI_RETURN_POINT);				
 				if (returnPoint != 0){
 					break;
 				}
 			}
-		} 
-		System.out.println("money:"+money);
-		System.out.println("returnPoint:"+returnPoint);
+		}		
 		vo.setMoney(money);
 		vo.setUsername(member.getUsername());
 		vo.setNikename(member.getNickname());
 		vo.setReturnMoney(Arith.mul(money,returnPoint));
 		vo.setMemberId(member.getId());		
-		vo.setTime(DateUtil.formatDateTime(settleStartTime)+" 至 "+DateUtil.formatDateTime(settleEndTime));
+		vo.setTime(DateUtil.stampToDate(settleStartTime)+" 至 "+DateUtil.stampToDate(settleEndTime));
 		return vo;
 
 
@@ -268,13 +270,13 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
      * 获取返点比例
      */
     private double getReturnPoint(double money, Proportion proportion, Long returnPointId) {
-        double returnPoint = 0;
-        if (proportion.getReturnPoint().getId().equals(returnPointId)) {
+        double returnPoint = 0;       
+        if (proportion.getReturnPoint().getId().equals(returnPointId)) {         	
             String[] range = proportion.getRanges().split("-");
             if (money > Double.parseDouble(range[0]) && money < Double.parseDouble(range[1])) {
                 returnPoint = Arith.div(proportion.getProportionVal(), 100, 2);
             }
-        }
+        } 
         return returnPoint;
     }
 }

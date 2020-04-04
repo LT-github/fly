@@ -397,7 +397,7 @@ public class FinanceController extends BaseController {
 	@PostMapping("/addByTime")
 	public HttpResult<Object> addTime(@Validated @RequestBody HandicapSettlementReq req) throws ClientErrorException {
 
-		List<Finance> fi = iFinanceService.addTime(req.getSettlementType(), req.getSettleStartTime(), req.getSettleEndTime(), req.getHandicapIds());
+		List<Finance> fi = iFinanceService.addTime(req.getSettlementType(), req.getSettleStartTime(), req.getSettleEndTime(), req.getHandicapIds(),req.getType());
     
 		return HttpResult.success(FinanceVo.tovo(fi),"按时间结算成功!");
 	}
