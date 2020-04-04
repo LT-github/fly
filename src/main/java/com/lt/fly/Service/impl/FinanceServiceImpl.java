@@ -39,7 +39,11 @@ import static com.lt.fly.utils.GlobalConstant.FinanceType.BET;
 import static com.lt.fly.utils.GlobalConstant.FinanceType.BET_CANCLE;
 import static com.lt.fly.utils.GlobalConstant.FinanceType.BET_RESULT;
 import static com.lt.fly.utils.GlobalConstant.FinanceType.DESCEND;
+import static com.lt.fly.utils.GlobalConstant.FinanceType.RANGE_LIUSHUI;
+import static com.lt.fly.utils.GlobalConstant.FinanceType.RANGE_YINGLI;
 import static com.lt.fly.utils.GlobalConstant.FinanceType.RECHARGE;
+import static com.lt.fly.utils.GlobalConstant.FinanceType.REFERRAL_LIUSHUI;
+import static com.lt.fly.utils.GlobalConstant.FinanceType.REFERRAL_YINGLI;
 
 
 @Service
@@ -235,23 +239,29 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 		Handicap handicap = member.getHandicap();
 		Set<Proportion> proportions = null;
 		//普通会员与推手会员的返点
-		if (member.getType()==1) {
-			proportions = member.getProportions();
-			money = getAllMoneyByTime(type,member,last,settleStartTime,settleEndTime);
-		} else {
-			money = getMoneyByTime(type, member, last,settleStartTime,settleEndTime);
-			if(handicap!=null)
-				proportions = handicap.getProportions();
-		}
-		if(proportions!=null) {
-			for (Proportion proportion :
-					proportions) {									
-					returnPoint = getReturnPoint(money, proportion, member.getType()==1?CommonsUtil.RANGE_LIUSHUI_RETURN_POINT:CommonsUtil.REFERRAL_LIUSHUI_RETURN_POINT);				
-				if (returnPoint != 0){
-					break;
-				}
-			}
-		} 
+		if (type.equals(REFERRAL_LIUSHUI.getCode()) || type.equals(REFERRAL_YINGLI.getCode())) {
+            proportions = member.getProportions();
+            money = getAllMoneyByTime(type,member,last,settleStartTime,settleEndTime);
+        } else {
+            money = getMoneyByTime(type,member,last,settleStartTime,settleEndTime);
+            if (null != handicap) {
+                proportions = handicap.getProportions();
+            }
+        }
+
+        if (null != proportions && 0 != proportions.size()) {
+            for (Proportion proportion :
+                    proportions) {
+                if (type.equals(RANGE_LIUSHUI.getCode())) {
+                    returnPoint = getReturnPoint(money, proportion, CommonsUtil.RANGE_LIUSHUI_RETURN_POINT);
+                }               
+                if (returnPoint != 0) {
+                    break;
+                }
+
+            }
+        }
+		
 		System.out.println("money:"+money);
 		System.out.println("returnPoint:"+returnPoint);
 		vo.setMoney(money);
