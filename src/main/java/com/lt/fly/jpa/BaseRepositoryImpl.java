@@ -59,29 +59,29 @@ implements BaseRepository<T, ID>, JpaSpecificationExecutor<T> {
 		}
 	}
 
-	@Override
-	public void batchUpdate(List<T> list) {
-		for (int i = 0; i < list.size(); i++) {
-			entityManager.merge(list.get(i));
-			if(i % 30 == 0){
-				entityManager.flush();
-				entityManager.clear();
-			}
-		}
-		// jdbcTemplate批量更新操作
-//		String sql = "update u_user set status=? where nickname=?";
-//		jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
-//			public void setValues(PreparedStatement ps, int i) throws SQLException {
-//				int status = userList.get(i).getStatus();
-//				String name = userList.get(i).getUserName();
-//				ps.setInt(1, status);
-//				ps.setString(2, name);
+//	@Override
+//	public void batchUpdate(List<T> list) {
+//		for (int i = 0; i < list.size(); i++) {
+//			entityManager.merge(list.get(i));
+//			if(i % 30 == 0){
+//				entityManager.flush();
+//				entityManager.clear();
 //			}
-//			public int getBatchSize() {
-//				return userList.size();
-//			}
-//		});
-	}
+//		}
+//		// jdbcTemplate批量更新操作
+////		String sql = "update u_user set status=? where nickname=?";
+////		jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+////			public void setValues(PreparedStatement ps, int i) throws SQLException {
+////				int status = userList.get(i).getStatus();
+////				String name = userList.get(i).getUserName();
+////				ps.setInt(1, status);
+////				ps.setString(2, name);
+////			}
+////			public int getBatchSize() {
+////				return userList.size();
+////			}
+////		});
+//	}
 
 	@Override
 	public List<T> findAll(DataQueryObject dataQueryObject, Sort sort) {

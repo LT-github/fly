@@ -59,7 +59,6 @@ public class OrderServiceImpl extends BaseService implements IOrderService {
     @Override
     public void settle(Map<Long, OrderDTO> map) {
         Long start =  System.currentTimeMillis();
-        List<Order> orders = new ArrayList<>();
         map.forEach((id, dto) -> {
             try {
                 Order order = isNotNull(iOrderRepository.findById(id),null);
@@ -72,12 +71,11 @@ public class OrderServiceImpl extends BaseService implements IOrderService {
                 order.setLotteryResult(dto.getLotteryResult());
                 order.setResultType(GlobalConstant.ResultType.YES.getCode());
                 order.setStatus(GlobalConstant.OrderStatus.CLEARING.getCode());
-                orders.add(order);
+                iOrderRepository.save(order);
             } catch (ClientErrorException e) {
                 e.printStackTrace();
             }
         });
-        iOrderRepository.batchUpdate(orders);
         Long end = System.currentTimeMillis();
         Long time = end-start;
         System.err.println(""+ LocalDateTime.now()+">>>>>"+map.size()+"组数据结算的时长为:"+time+"ms");

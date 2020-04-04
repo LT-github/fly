@@ -2,11 +2,10 @@ package com.lt.fly.entity;
 
 
 
-import javax.persistence.*;
-
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.*;
 import java.util.Set;
 
 /**
@@ -33,12 +32,12 @@ public class Handicap extends BasicEntity{
 	private Set<Proportion> proportions;
 	
 	// 会员查看流水
-	@ManyToOne(cascade={CascadeType.MERGE,CascadeType.MERGE})
+	@ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name="liushui_id")
 	private DataDictionary liushui;
 	
 	// 会员查看盈亏
-	@ManyToOne(cascade={CascadeType.MERGE,CascadeType.MERGE})
+	@ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name="yingkui_id")
 	private DataDictionary yingkui;
 

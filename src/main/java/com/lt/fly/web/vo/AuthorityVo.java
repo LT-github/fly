@@ -1,14 +1,12 @@
 package com.lt.fly.web.vo;
 
 import com.lt.fly.entity.Authority;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 public class AuthorityVo {
 	
 	private Long id;
