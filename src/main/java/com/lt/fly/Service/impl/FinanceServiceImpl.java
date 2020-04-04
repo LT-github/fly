@@ -1,28 +1,43 @@
 package com.lt.fly.Service.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.lt.fly.dao.IMemberRepository;
 import com.lt.fly.entity.Member;
+import com.lt.fly.entity.Proportion;
 import com.lt.fly.utils.Arith;
+import com.lt.fly.utils.CommonsUtil;
+import com.lt.fly.utils.DateUtil;
 import com.lt.fly.utils.GlobalConstant;
+import com.lt.fly.web.controller.FinanceController;
 import com.lt.fly.web.query.FinanceFind;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.vo.FinanceVo;
+import com.lt.fly.web.vo.ReturnPointVoByTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import com.google.common.collect.Lists;
 import com.lt.fly.Service.BaseService;
 import com.lt.fly.Service.IFinanceService;
 import com.lt.fly.dao.IFinanceRepository;
+import com.lt.fly.dao.IHandicapRepository;
 import com.lt.fly.dao.IOrderRepository;
 import com.lt.fly.dao.IUserRepository;
 import com.lt.fly.entity.Finance;
+import com.lt.fly.entity.Handicap;
 import com.lt.fly.entity.User;
 import com.lt.fly.exception.ClientErrorException;
 
+import static com.lt.fly.utils.GlobalConstant.FinanceType.BET;
+import static com.lt.fly.utils.GlobalConstant.FinanceType.BET_CANCLE;
+import static com.lt.fly.utils.GlobalConstant.FinanceType.BET_RESULT;
 import static com.lt.fly.utils.GlobalConstant.FinanceType.DESCEND;
 import static com.lt.fly.utils.GlobalConstant.FinanceType.RECHARGE;
 
@@ -41,6 +56,9 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 
 	@Autowired
 	private IOrderRepository iOrderRepository;
+	
+	@Autowired
+	private IHandicapRepository handicapRepository;
 
 
 	
@@ -140,4 +158,123 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 				.map(Finance::getMoney)
 				.reduce(0.0, (a, b) -> Arith.add(a, b));
 	}
+
+	@Override
+	public List<Finance> addTime(Integer settlementType, Long settleStartTime, Long settleEndTime,
+			List<Long> handicapIds) throws ClientErrorException{
+		List<Handicap> handicaps=Lists.newArrayList();
+		List<Finance> fi=new ArrayList<>();
+		GlobalConstant.FinanceType type = GlobalConstant.FinanceType.getFinanceTypeByCode(settlementType);
+
+		if(null==handicapIds) { handicaps = handicapRepository.findAll();} else {handicaps = handicapRepository.findAllById(handicapIds);}
+		if(handicaps== null || handicaps.size()==0) throw new ClientErrorException("暂时无任何盘口");		
+		for (Handicap handicap : handicaps) {					
+			Set<Member> members = handicap.getMembers();
+			List<Member> memberss=new ArrayList<>(members);		
+			if(members==null || members.size()==0) continue;
+			for (Member member : memberss) {				
+				ReturnPointVoByTime vo = getReturnPointVoByTime(settlementType, member,settleStartTime,settleEndTime);
+				if(vo.getReturnMoney()==0) continue;
+				Finance finance = add(member,vo.getReturnMoney(),reckonBalance(member.getId()), type);			
+				finance.setModifyUser(getLoginUser());
+				finance.setModifyTime(System.currentTimeMillis());
+				finance.setDescription(member.getNickname()+type.getMsg()+vo.getReturnMoney()+"。"+vo.getTime());
+				iFinanceRepository.save(finance);				
+				fi.add(finance);
+				
+			}
+		}
+		return fi;
+	}
+	/*
+	普通会员按时间的返点金额
+	 */
+	private double getMoneyByTime(Integer type, Member member, Finance last,Long settleStartTime,Long settleEndTime) throws ClientErrorException {
+		double money = 0;
+		List<Finance> finances;	
+		finances = iFinanceRepository.findByCreateUserAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(member,settleStartTime,settleEndTime);
+		if(last!=null) {
+		if(last.getCreateTime()>=settleEndTime) throw new ClientErrorException("重复结算");
+		}
+		if (null != finances && 0 != finances.size()){
+			money =  Arith.sub(getReduce(new HashSet<>(finances), BET_RESULT),
+					Arith.sub(getReduce(new HashSet<>(finances), BET),getReduce(new HashSet<>(finances), BET_CANCLE)));
+			if (money < 0) {
+				return Arith.round(Math.abs(money),2);
+			}
+		}
+
+
+		return 0;
+	}
+
+	/*
+	推手会员按时间的返点金额
+	 */
+	private double getAllMoneyByTime(Integer type, Member member, Finance last,Long settleStartTime,Long settleEndTime) throws ClientErrorException{
+		double money = 0;
+		List<Member> members = iMemberRepository.findByModifyUser(member);
+		if(members!= null && members.size()!=0) {
+		for (Member item :
+				members) {
+			money = Arith.add(money,getMoneyByTime(type,item,last,settleStartTime,settleEndTime));
+		}
+		  }
+		return money;
+	}
+	public ReturnPointVoByTime getReturnPointVoByTime(Integer type, Member member,Long settleStartTime,Long settleEndTime) throws ClientErrorException{
+
+		ReturnPointVoByTime vo = new ReturnPointVoByTime();
+		double returnPoint = 0;
+		double money = 0;
+		//上次结算财务记录
+		Finance last = iFinanceRepository.findNew(type,member.getId());
+		// if(last!=null) {}
+
+		//找到返点值
+		Handicap handicap = member.getHandicap();
+		Set<Proportion> proportions = null;
+		//普通会员与推手会员的返点
+		if (member.getType()==1) {
+			proportions = member.getProportions();
+			money = getAllMoneyByTime(type,member,last,settleStartTime,settleEndTime);
+		} else {
+			money = getMoneyByTime(type, member, last,settleStartTime,settleEndTime);
+			if(handicap!=null)
+				proportions = handicap.getProportions();
+		}
+		if(proportions!=null) {
+			for (Proportion proportion :
+					proportions) {									
+					returnPoint = getReturnPoint(money, proportion, member.getType()==1?CommonsUtil.RANGE_LIUSHUI_RETURN_POINT:CommonsUtil.REFERRAL_LIUSHUI_RETURN_POINT);				
+				if (returnPoint != 0){
+					break;
+				}
+			}
+		} 
+		System.out.println("money:"+money);
+		System.out.println("returnPoint:"+returnPoint);
+		vo.setMoney(money);
+		vo.setUsername(member.getUsername());
+		vo.setNikename(member.getNickname());
+		vo.setReturnMoney(Arith.mul(money,returnPoint));
+		vo.setMemberId(member.getId());		
+		vo.setTime(DateUtil.formatDateTime(settleStartTime)+" 至 "+DateUtil.formatDateTime(settleEndTime));
+		return vo;
+
+
+	}
+	/*
+     * 获取返点比例
+     */
+    private double getReturnPoint(double money, Proportion proportion, Long returnPointId) {
+        double returnPoint = 0;
+        if (proportion.getReturnPoint().getId().equals(returnPointId)) {
+            String[] range = proportion.getRanges().split("-");
+            if (money > Double.parseDouble(range[0]) && money < Double.parseDouble(range[1])) {
+                returnPoint = Arith.div(proportion.getProportionVal(), 100, 2);
+            }
+        }
+        return returnPoint;
+    }
 }

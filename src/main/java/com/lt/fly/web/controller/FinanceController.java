@@ -392,113 +392,13 @@ public class FinanceController extends BaseController {
         }
         return 0l;
     }
-
-	@Autowired
-	private IHandicapRepository handicapRepository;
-	/*
-	普通会员按时间的返点金额
-	 */
-	private double getMoneyByTime(Integer type, Member member, Finance last,Long settleStartTime,Long settleEndTime) throws ClientErrorException {
-		double money = 0;
-		List<Finance> finances;	
-		finances = iFinanceRepository.findByCreateUserAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(member,settleStartTime,settleEndTime);
-		if(last!=null) {
-		if(last.getCreateTime()>=settleEndTime) throw new ClientErrorException("重复结算");
-		}
-		if (null != finances && 0 != finances.size()){
-			money =  Arith.sub(iFinanceService.getReduce(new HashSet<>(finances), BET_RESULT),
-					Arith.sub(iFinanceService.getReduce(new HashSet<>(finances), BET),iFinanceService.getReduce(new HashSet<>(finances), BET_CANCLE)));
-			if (money < 0) {
-				return Arith.round(Math.abs(money),2);
-			}
-		}
-
-
-		return 0;
-	}
-
-	/*
-	推手会员按时间的返点金额
-	 */
-	private double getAllMoneyByTime(Integer type, Member member, Finance last,Long settleStartTime,Long settleEndTime) throws ClientErrorException{
-		double money = 0;
-		List<Member> members = iMemberRepository.findByModifyUser(member);
-		if(members!= null && members.size()!=0) {
-		for (Member item :
-				members) {
-			money = Arith.add(money,getMoneyByTime(type,item,last,settleStartTime,settleEndTime));
-		}
-		  }
-		return money;
-	}
-	private ReturnPointVoByTime getReturnPointVoByTime(Integer type, Member member,Long settleStartTime,Long settleEndTime) throws ClientErrorException{
-
-		ReturnPointVoByTime vo = new ReturnPointVoByTime();
-		double returnPoint = 0;
-		double money = 0;
-		//上次结算财务记录
-		Finance last = iFinanceRepository.findNew(type,member.getId());
-		// if(last!=null) {}
-
-		//找到返点值
-		Handicap handicap = member.getHandicap();
-		Set<Proportion> proportions = null;
-		//普通会员与推手会员的返点
-		if (member.getType()==1) {
-			proportions = member.getProportions();
-			money = getAllMoneyByTime(type,member,last,settleStartTime,settleEndTime);
-		} else {
-			money = getMoneyByTime(type, member, last,settleStartTime,settleEndTime);
-			if(handicap!=null)
-				proportions = handicap.getProportions();
-		}
-		if(proportions!=null) {
-			for (Proportion proportion :
-					proportions) {
-				if (type.equals(RANGE_LIUSHUI.getCode())) {
-					returnPoint = getReturnPoint(money, proportion, CommonsUtil.RANGE_LIUSHUI_RETURN_POINT);
-				}
-				if (returnPoint != 0){
-					break;
-				}
-			}
-		} 
-		vo.setMoney(money);
-		vo.setUsername(member.getUsername());
-		vo.setNikename(member.getNickname());
-		vo.setReturnMoney(Arith.mul(money,returnPoint));
-		vo.setMemberId(member.getId());		
-		vo.setTime(DateUtil.formatDateTime(settleStartTime)+" 至 "+DateUtil.formatDateTime(settleEndTime));
-		return vo;
-
-
-	}
-
-	//手动结算
+		
+	//时间手动结算
 	@PostMapping("/addByTime")
 	public HttpResult<Object> addTime(@Validated @RequestBody HandicapSettlementReq req) throws ClientErrorException {
 
-		List<Handicap> handicaps=Lists.newArrayList();
-		List<Finance> fi=new ArrayList<>();
-		GlobalConstant.FinanceType type = GlobalConstant.FinanceType.getFinanceTypeByCode(req.getSettlementType());
-
-		if(null==req.getHandicapIds()) { handicaps = handicapRepository.findAll();} else {handicaps = handicapRepository.findAllById(req.getHandicapIds());}
-		if(handicaps== null || handicaps.size()==0) throw new ClientErrorException("暂时无任何盘口");		
-		for (Handicap handicap : handicaps) {					
-			Set<Member> members = handicap.getMembers();
-			List<Member> memberss=new ArrayList<>(members);		
-			if(members==null || members.size()==0) continue;
-			for (Member member : memberss) {				
-				ReturnPointVoByTime vo = getReturnPointVoByTime(req.getSettlementType(), member,req.getSettleStartTime(),req.getSettleEndTime());
-				Finance finance = iFinanceService.add(member,vo.getReturnMoney(),iFinanceService.reckonBalance(member.getId()), type);			
-				finance.setModifyUser(getLoginUser());
-				finance.setModifyTime(System.currentTimeMillis());
-				iFinanceRepository.save(finance);				
-				fi.add(finance);
-				
-			}
-		}
-  
+		List<Finance> fi = iFinanceService.addTime(req.getSettlementType(), req.getSettleStartTime(), req.getSettleEndTime(), req.getHandicapIds());
+    
 		return HttpResult.success(FinanceVo.tovo(fi),"按时间结算成功!");
 	}
 

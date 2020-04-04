@@ -9,6 +9,7 @@ import com.lt.fly.web.query.FinanceFind;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.vo.FinanceVo;
 
+import java.util.List;
 import java.util.Set;
 
 
@@ -22,4 +23,6 @@ public interface IFinanceService {
 
 
 	Double getReduce(Set<Finance> finances, GlobalConstant.FinanceType financeType);
+	
+	List<Finance> addTime(Integer settlementType,Long settleStartTime,Long settleEndTime,List<Long> handicapIds)throws ClientErrorException; 
 }
