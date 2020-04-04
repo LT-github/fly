@@ -198,7 +198,7 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 		List<Finance> finances;	
 		finances = iFinanceRepository.findByCreateUserAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(member,settleStartTime,settleEndTime);
 		if(last!=null) {
-		if(last.getCreateTime()>=settleEndTime) throw new ClientErrorException("重复结算");
+		if(last.getCreateTime()>=settleEndTime) throw new ClientErrorException(member.getUsername()+"重复结算");
 		}
 		if (null != finances && 0 != finances.size()){
 			money =  Arith.sub(getReduce(new HashSet<>(finances), BET_RESULT),
