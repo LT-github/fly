@@ -336,6 +336,12 @@ public class MemberController extends BaseController{
 	@UserLoginToken
 	@Log(value = "查询会员报表")
 	public HttpResult memberReport(MemberReportFind query) throws ClientErrorException{
+		if (null == query.getBefore()){
+			query.setBefore(DateUtil.getDayStartTime(System.currentTimeMillis()));
+		}
+		if (null == query.getAfter()) {
+			query.setAfter(System.currentTimeMillis());
+		}
 		List<MemberReportVo> vos = new ArrayList<>();
 		iMemberRepository.findAll(query).forEach(member -> {
 			Map<String, List<Finance>> financeMap = member.getFinances().stream()

@@ -59,27 +59,25 @@ public class OrderServiceImpl extends BaseService implements IOrderService {
     @Override
     public void settle(Map<Long, OrderDTO> map) {
         Long start =  System.currentTimeMillis();
-        Set<Long> issueNumberSet = new HashSet<>();
-
-        //修改betOrder
-        for ( Long key : map.keySet()) {
+        List<Order> orders = new ArrayList<>();
+        map.forEach((id, dto) -> {
             try {
-                iOrderRepository.updateById(map.get(key).getLotteryResult(),map.get(key).getBattleResult(),map.get(key).getExchangeDetail(),key);
-                if (map.get(key).getBattleResult() > 0) {
-                    Order order = isNotNull(iOrderRepository.findById(map.get(key).getId()),"传递的参数没有实体类");
-                    iFinanceService.add(order.getCreateUser(),map.get(key).getBattleResult(),null, GlobalConstant.FinanceType.BET_RESULT);
+                Order order = isNotNull(iOrderRepository.findById(id),null);
+                if (dto.getBattleResult() > 0){
+                    iFinanceService.add(order.getCreateUser(),dto.getBattleResult(),null, GlobalConstant.FinanceType.BET_RESULT);
                 }
-
-                issueNumberSet.add(map.get(key).getIssueNumber());
-            } catch (Exception e) {
+                order.setModifyTime(System.currentTimeMillis());
+                order.setBattleResult(dto.getBattleResult());
+                order.setExchangeDetail(dto.getExchangeDetail());
+                order.setLotteryResult(dto.getLotteryResult());
+                order.setResultType(GlobalConstant.ResultType.YES.getCode());
+                order.setStatus(GlobalConstant.OrderStatus.CLEARING.getCode());
+                orders.add(order);
+            } catch (ClientErrorException e) {
                 e.printStackTrace();
             }
-        }
-        for (Long issueNumber :
-                issueNumberSet) {
-            iOrderRepository.updateResultTypeByIssuNumber(issueNumber);
-            iOrderRepository.updateByIssueNumber(System.currentTimeMillis(),issueNumber);
-        }
+        });
+        iOrderRepository.batchUpdate(orders);
         Long end = System.currentTimeMillis();
         Long time = end-start;
         System.err.println(""+ LocalDateTime.now()+">>>>>"+map.size()+"组数据结算的时长为:"+time+"ms");

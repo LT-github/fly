@@ -28,6 +28,21 @@ public class GlobalConstant {
 	    }
 
 	}
+
+	//是否开奖
+	@Getter
+	public enum ResultType{
+		NOT(0,"未开奖"),
+		YES(1,"已开奖");
+
+		private Integer code;
+		private String msg;
+
+		ResultType(Integer code, String msg) {
+			this.code = code;
+			this.msg = msg;
+		}
+	}
 	
 	//充值财务状态
 	@Getter
