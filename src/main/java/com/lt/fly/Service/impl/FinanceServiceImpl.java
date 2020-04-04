@@ -70,7 +70,7 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 		finance.setType(type.getCode());
 		finance.setMoney(money);
 		if(user.getNickname()!=null)
-		finance.setDescription(user.getNickname()+type.getMsg()+money+"。");
+		//finance.setDescription(user.getNickname()+type.getMsg()+money+"。");
 		finance.setCreateUser(user);
 		if (null == balance)
 			balance = reckonBalance(user.getId());
@@ -270,6 +270,7 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
     private double getReturnPoint(double money, Proportion proportion, Long returnPointId) {
         double returnPoint = 0;
         if (proportion.getReturnPoint().getId().equals(returnPointId)) {
+        	System.out.println("proportionReturnId:"+proportion.getReturnPoint().getId());
             String[] range = proportion.getRanges().split("-");
             if (money > Double.parseDouble(range[0]) && money < Double.parseDouble(range[1])) {
                 returnPoint = Arith.div(proportion.getProportionVal(), 100, 2);
