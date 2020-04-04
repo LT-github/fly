@@ -1,7 +1,6 @@
 package com.lt.fly.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -11,8 +10,7 @@ import java.util.Set;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "discriminator")
 @DiscriminatorValue("User")
-@Getter
-@Setter
+@Data
 public class User extends BasicEntity{
 	
 	// 用户名

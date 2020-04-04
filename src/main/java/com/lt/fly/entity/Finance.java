@@ -1,16 +1,14 @@
 package com.lt.fly.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-import javax.persistence.*;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "t_finance")
-@Getter
-@Setter
+@Data
 public class Finance extends BasicEntity{
 	// 该条财务记录的金额
 	@Column

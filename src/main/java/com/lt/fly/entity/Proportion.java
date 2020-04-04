@@ -1,7 +1,6 @@
 package com.lt.fly.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -16,8 +15,7 @@ import java.util.Set;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "discriminator")
 @DiscriminatorValue("Proportion")
-@Getter
-@Setter
+@Data
 public class Proportion extends BasicEntity{
 	
 	// 返点名称的数据字典
