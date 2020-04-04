@@ -263,7 +263,7 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 		vo.setNikename(member.getNickname());
 		vo.setReturnMoney(Arith.mul(money,returnPoint));
 		vo.setMemberId(member.getId());		
-		vo.setTime(DateUtil.formatDateTime(settleStartTime)+" 至 "+DateUtil.formatDateTime(settleEndTime));
+		vo.setTime(DateUtil.stampToDate(settleStartTime)+" 至 "+DateUtil.stampToDate(settleEndTime));
 		return vo;
 
 
