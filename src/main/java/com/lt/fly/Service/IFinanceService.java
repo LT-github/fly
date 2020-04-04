@@ -24,5 +24,5 @@ public interface IFinanceService {
 
 	Double getReduce(Set<Finance> finances, GlobalConstant.FinanceType financeType);
 	
-	List<Finance> addTime(Integer settlementType,Long settleStartTime,Long settleEndTime,List<Long> handicapIds)throws ClientErrorException; 
+	List<Finance> addTime(Integer settlementType,Long settleStartTime,Long settleEndTime,List<Long> handicapIds,Integer type)throws ClientErrorException; 
 }

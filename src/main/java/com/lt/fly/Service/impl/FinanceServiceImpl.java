@@ -165,12 +165,12 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 
 	@Override
 	public List<Finance> addTime(Integer settlementType, Long settleStartTime, Long settleEndTime,
-			List<Long> handicapIds) throws ClientErrorException{
+			List<Long> handicapIds,Integer types) throws ClientErrorException{
 		List<Handicap> handicaps=Lists.newArrayList();
 		List<Finance> fi=new ArrayList<>();
 		GlobalConstant.FinanceType type = GlobalConstant.FinanceType.getFinanceTypeByCode(settlementType);
 
-		if(null==handicapIds) { handicaps = handicapRepository.findAll();} else {handicaps = handicapRepository.findAllById(handicapIds);}
+		if(null==handicapIds) { handicaps = handicapRepository.findAllBySettlementType(types);} else {handicaps = handicapRepository.findAllByIdAndSettlementType(handicapIds, types);}
 		if(handicaps== null || handicaps.size()==0) throw new ClientErrorException("暂时无任何盘口");		
 		for (Handicap handicap : handicaps) {					
 			Set<Member> members = handicap.getMembers();
@@ -255,9 +255,7 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 					break;
 				}
 			}
-		} 
-		System.out.println("money:"+money);
-		System.out.println("returnPoint:"+returnPoint);
+		}		
 		vo.setMoney(money);
 		vo.setUsername(member.getUsername());
 		vo.setNikename(member.getNickname());
@@ -272,11 +270,8 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
      * 获取返点比例
      */
     private double getReturnPoint(double money, Proportion proportion, Long returnPointId) {
-        double returnPoint = 0;
-        System.out.println("proportionReturnId:"+proportion.getReturnPoint().getId());
-        System.out.println("returnPointId:"+returnPointId);
-        if (proportion.getReturnPoint().getId().equals(returnPointId)) { 
-        	System.out.println("进入");
+        double returnPoint = 0;       
+        if (proportion.getReturnPoint().getId().equals(returnPointId)) {         	
             String[] range = proportion.getRanges().split("-");
             if (money > Double.parseDouble(range[0]) && money < Double.parseDouble(range[1])) {
                 returnPoint = Arith.div(proportion.getProportionVal(), 100, 2);
