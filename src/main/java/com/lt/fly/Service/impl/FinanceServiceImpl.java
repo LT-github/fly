@@ -174,9 +174,21 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 		if(handicaps== null || handicaps.size()==0) throw new ClientErrorException("暂时无任何盘口");		
 		for (Handicap handicap : handicaps) {					
 			Set<Member> members = handicap.getMembers();
-			List<Member> memberss=new ArrayList<>(members);		
+			List<Member> memberss=new ArrayList<>(members);
+			
 			if(members==null || members.size()==0) continue;
-			for (Member member : memberss) {				
+			for (Member member : memberss) {
+				if(handicap.getSettlementType()==1) {
+					//上次结算财务记录
+					Finance last = iFinanceRepository.findNew(settlementType,member.getId());
+					if(last!=null) {
+					settleStartTime=last.getCreateTime();
+					}else {
+						settleStartTime=0l;
+					}
+					settleEndTime=handicap.getSettlementTime();							
+				}
+				
 				ReturnPointVoByTime vo = getReturnPointVoByTime(settlementType, member,settleStartTime,settleEndTime);
 				if(vo.getReturnMoney()==0) continue;
 				Finance finance = add(member,vo.getReturnMoney(),reckonBalance(member.getId()), type);			
@@ -196,9 +208,13 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 	private double getMoneyByTime(Integer type, Member member, Finance last,Long settleStartTime,Long settleEndTime) throws ClientErrorException {
 		double money = 0;
 		List<Finance> finances;	
-		finances = iFinanceRepository.findByCreateUserAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(member,settleStartTime,settleEndTime);
-		if(last!=null) {
-		if(last.getCreateTime()>=settleEndTime) throw new ClientErrorException(member.getUsername()+"重复结算");
+				
+		if(last==null) {		         
+		        finances = iFinanceRepository.findByCreateUser(member);
+		}else {
+			 if(last.getCreateTime()>=settleEndTime) throw new ClientErrorException(member.getUsername()+"重复结算");
+			finances = iFinanceRepository.findByCreateUserAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(member,settleStartTime,settleEndTime);
+			
 		}
 		if (null != finances && 0 != finances.size()){
 			money =  Arith.sub(getReduce(new HashSet<>(finances), BET_RESULT),
@@ -233,7 +249,7 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 		double money = 0;
 		//上次结算财务记录
 		Finance last = iFinanceRepository.findNew(type,member.getId());
-		// if(last!=null) {}
+		
 
 		//找到返点值
 		Handicap handicap = member.getHandicap();
