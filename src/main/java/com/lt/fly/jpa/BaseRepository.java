@@ -37,5 +37,8 @@ public interface BaseRepository<T,ID extends Serializable> extends JpaRepository
 
 	//	排序查询
 	List<T> findAll(DataQueryObjectSort dataQueryObjectSort);
+
+	//根据entityManager批量更新
+	void batchUpdate(List<T> list);
 	
 }

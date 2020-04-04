@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "t_order")
@@ -25,7 +23,7 @@ public class Order extends BasicEntity{
 
 	// 结果类型 0 未开奖 1已开奖
 	@Column(name = "result_type")
-	private Integer resultType;
+	private Integer resultType = GlobalConstant.ResultType.NOT.getCode();
 
 	// 0未结算  1已结算 2已撤销
 	@Column(name = "status")
