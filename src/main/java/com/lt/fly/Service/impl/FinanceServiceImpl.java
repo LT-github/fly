@@ -239,7 +239,7 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 		Handicap handicap = member.getHandicap();
 		Set<Proportion> proportions = null;
 		//普通会员与推手会员的返点
-		if (member.getType()==1) {
+		if (member.getType()==2) {
 			proportions = member.getProportions();
 			money = getAllMoneyByTime(type,member,last,settleStartTime,settleEndTime);
 		} else {
@@ -250,7 +250,7 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 		if(proportions!=null) {
 			for (Proportion proportion :
 					proportions) {									
-					returnPoint = getReturnPoint(money, proportion, member.getType()==1?CommonsUtil.RANGE_LIUSHUI_RETURN_POINT:CommonsUtil.REFERRAL_LIUSHUI_RETURN_POINT);				
+					returnPoint = getReturnPoint(money, proportion, member.getType()==2?CommonsUtil.REFERRAL_LIUSHUI_RETURN_POINT:CommonsUtil.RANGE_LIUSHUI_RETURN_POINT);				
 				if (returnPoint != 0){
 					break;
 				}
