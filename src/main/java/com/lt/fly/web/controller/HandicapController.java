@@ -11,6 +11,7 @@ import com.lt.fly.utils.IdWorker;
 import com.lt.fly.web.log.Log;
 import com.lt.fly.web.query.DataDictionaryFind;
 import com.lt.fly.web.req.HandicapAdd;
+import com.lt.fly.web.req.HandicapQReq;
 import com.lt.fly.web.resp.PageResp;
 import com.lt.fly.web.vo.HandicapVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -185,7 +186,22 @@ public class HandicapController extends BaseController {
         handicapVos.add(handicapVo);
         return HttpResult.success(handicapVos,"查询成功");
     }
-
+    /**
+     * 根据条件查询盘口
+     */
+    @GetMapping("/allQ")
+    @UserLoginToken
+    public HttpResult<List<HandicapVo>> findAllQ(HandicapQReq req){
+    	Page<Handicap> page = iHandicapRepository.findAll(req);
+    	List<HandicapVo> handicapVos = HandicapVo.toVo(page.getContent());
+        HandicapVo handicapVo = new HandicapVo();
+        handicapVo.setId(GlobalConstant.NoMemberHandicap.ID.getCode());
+        handicapVo.setName("未加入盘口");
+        handicapVos.add(handicapVo);
+        return HttpResult.success(handicapVos,"查询成功");
+    }
+    
+    
     /**
      * 盘口列表,需要分页
      * @param query
