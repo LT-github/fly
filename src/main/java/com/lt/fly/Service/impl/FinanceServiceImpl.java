@@ -178,7 +178,7 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 				finance.setDescription(member.getNickname()+type.getMsg()+vo.getReturnMoney()+"。"+vo.getTime());
 				iFinanceRepository.save(finance);				
 				fi.add(finance);
-				
+				 
 			}
 		}
 		return fi;
