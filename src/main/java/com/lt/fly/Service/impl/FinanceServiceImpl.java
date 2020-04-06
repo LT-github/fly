@@ -1,49 +1,29 @@
 package com.lt.fly.Service.impl;
 
-import java.math.BigDecimal;
+import com.google.common.collect.Lists;
+import com.lt.fly.Service.BaseService;
+import com.lt.fly.Service.IFinanceService;
+import com.lt.fly.dao.*;
+import com.lt.fly.entity.*;
+import com.lt.fly.exception.ClientErrorException;
+import com.lt.fly.utils.Arith;
+import com.lt.fly.utils.CommonsUtil;
+import com.lt.fly.utils.DateUtil;
+import com.lt.fly.utils.GlobalConstant;
+import com.lt.fly.web.query.FinanceFind;
+import com.lt.fly.web.resp.PageResp;
+import com.lt.fly.web.vo.FinanceVo;
+import com.lt.fly.web.vo.ReturnPointVoByTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.lt.fly.dao.IMemberRepository;
-import com.lt.fly.entity.Member;
-import com.lt.fly.entity.Proportion;
-import com.lt.fly.utils.Arith;
-import com.lt.fly.utils.CommonsUtil;
-import com.lt.fly.utils.DateUtil;
-import com.lt.fly.utils.GlobalConstant;
-import com.lt.fly.web.controller.FinanceController;
-import com.lt.fly.web.query.FinanceFind;
-import com.lt.fly.web.resp.PageResp;
-import com.lt.fly.web.vo.FinanceVo;
-import com.lt.fly.web.vo.ReturnPointVoByTime;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-
-import com.google.common.collect.Lists;
-import com.lt.fly.Service.BaseService;
-import com.lt.fly.Service.IFinanceService;
-import com.lt.fly.dao.IFinanceRepository;
-import com.lt.fly.dao.IHandicapRepository;
-import com.lt.fly.dao.IOrderRepository;
-import com.lt.fly.dao.IUserRepository;
-import com.lt.fly.entity.Finance;
-import com.lt.fly.entity.Handicap;
-import com.lt.fly.entity.User;
-import com.lt.fly.exception.ClientErrorException;
-
-import static com.lt.fly.utils.GlobalConstant.FinanceType.BET;
-import static com.lt.fly.utils.GlobalConstant.FinanceType.BET_CANCLE;
-import static com.lt.fly.utils.GlobalConstant.FinanceType.BET_RESULT;
-import static com.lt.fly.utils.GlobalConstant.FinanceType.DESCEND;
-import static com.lt.fly.utils.GlobalConstant.FinanceType.RANGE_LIUSHUI;
-import static com.lt.fly.utils.GlobalConstant.FinanceType.RANGE_YINGLI;
-import static com.lt.fly.utils.GlobalConstant.FinanceType.RECHARGE;
-import static com.lt.fly.utils.GlobalConstant.FinanceType.REFERRAL_LIUSHUI;
-import static com.lt.fly.utils.GlobalConstant.FinanceType.REFERRAL_YINGLI;
+import static com.lt.fly.utils.GlobalConstant.FinanceType.*;
 
 
 @Service
@@ -73,8 +53,7 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 		finance.setCreateTime(System.currentTimeMillis());
 		finance.setType(type.getCode());
 		finance.setMoney(money);
-		if(user.getNickname()!=null)
-		//finance.setDescription(user.getNickname()+type.getMsg()+money+"。");
+		finance.setDescription(user.getUsername()+type.getMsg()+money+"。");
 		finance.setCreateUser(user);
 		if (null == balance)
 			balance = reckonBalance(user.getId());
@@ -125,8 +104,6 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 			return balance;
 		}
 		for(Finance item:member.getFinances()){
-			if(item==null || item.getMoney()==null) continue;
-			if(item.getCountType()==null) continue;
 			if(item.getCountType().equals(GlobalConstant.CountType.ADD.getCode())){
 				balance = Arith.add(balance,item.getMoney());
 				if (null != item.getAuditStatus() && !item.getAuditStatus().equals(GlobalConstant.AuditStatus.AUDIT_PASS.getCode())) {
