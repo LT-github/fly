@@ -189,15 +189,13 @@ public class HandicapController extends BaseController {
     /**
      * 根据条件查询盘口
      */
-    @GetMapping("/allQ")
+    @PostMapping("/allQ")
     @UserLoginToken
     public HttpResult<List<HandicapVo>> findAllQ(HandicapQReq req){
-    	Page<Handicap> page = iHandicapRepository.findAll(req);
-    	List<HandicapVo> handicapVos = HandicapVo.toVo(page.getContent());
-        HandicapVo handicapVo = new HandicapVo();
-        handicapVo.setId(GlobalConstant.NoMemberHandicap.ID.getCode());
-        handicapVo.setName("未加入盘口");
-        handicapVos.add(handicapVo);
+    	
+    	List<Handicap> handicaps = iHandicapRepository.findAllBySettlementType(req.getSettlementType());
+    	List<HandicapVo> handicapVos = HandicapVo.toVo(handicaps);
+        
         return HttpResult.success(handicapVos,"查询成功");
     }
     
