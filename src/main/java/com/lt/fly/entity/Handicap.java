@@ -54,7 +54,7 @@ public class Handicap extends BasicEntity{
 	//该盘口按时间结算(时分秒)
 	@Column(name = "settlement_time")
 	private String settlementTime;
-	//该盘口按时间结算类型（0：手动结算 1：自动结算）
+	//该盘口按时间结算类型（0：手动结算 1：自动结算 2:禁用）
 	@Column(name = "settlement_type")
 	private Integer settlementType;
 		
