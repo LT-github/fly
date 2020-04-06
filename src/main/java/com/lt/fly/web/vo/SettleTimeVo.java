@@ -26,7 +26,7 @@ public class SettleTimeVo {
 
 	private Long modifyUserId;
 
-	private Long  settleTimeAll;
+	private String  settleTimeAll;
 	//统一结算的状态（1选中 0未选中）
 	private Integer  status;
 	public SettleTimeVo() {}
