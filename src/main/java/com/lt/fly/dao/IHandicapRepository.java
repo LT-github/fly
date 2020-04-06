@@ -8,6 +8,6 @@ import com.lt.fly.jpa.BaseRepository;
 public interface IHandicapRepository extends BaseRepository<Handicap,Long> {
 
     Handicap findByName(String name);
-    List<Handicap> findAllByIdAndSettlementType(List<Long> ids,Integer settlementType);
+    List<Handicap> findAllByIdsAndSettlementType(List<Long> ids,Integer settlementType);
     List<Handicap> findAllBySettlementType(Integer settlementType);
 }
