@@ -6,7 +6,7 @@ import lombok.Data;
 public class UpdateSettleTimeReq {
 
 	//统一结算的时间		
-	private Long  settleTimeAll;
+	private String  settleTimeAll;
 	//统一结算的状态（1选中 0未选中）
 	private Integer  status;
 }
