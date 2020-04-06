@@ -84,8 +84,11 @@ public class HandicapController extends BaseController {
             objSave.setId(idWorker.nextId());
             objSave.setCreateTime(System.currentTimeMillis());
             objSave.setCreateUser(getLoginUser());
+           
         }
 
+        objSave.setSettlementType(obj.getSettlementType());
+        objSave.setSettlementTime(obj.getSettlementTime());
         objSave.setName(obj.getName());
         objSave.setModifyTime(System.currentTimeMillis());
         objSave.setModifyUser(getLoginUser());

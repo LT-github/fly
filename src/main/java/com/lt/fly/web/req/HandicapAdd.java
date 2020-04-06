@@ -27,4 +27,9 @@ public class HandicapAdd {
     private Long yinkunId;
 
     private List<Long> memberIds = new ArrayList<>();
+    
+    private String settlementTime;
+    
+    @NotNull(message = "请选择结算类型")
+    private Integer settlementType;
 }
