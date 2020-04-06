@@ -23,6 +23,7 @@ public class HandicapVo {
     private List<MemberVo> memberVos;
     private DataDictionaryVo liushui;
     private DataDictionaryVo yinkui;
+    private Integer settlementType;
 
     public HandicapVo() {
         super();
@@ -41,6 +42,7 @@ public class HandicapVo {
         if(null != obj.getMembers()){
             this.memberVos = MemberVo.toVo(new ArrayList<>(obj.getMembers()));
         }
+        this.settlementType=obj.getSettlementType();
     }
 
     public static List<HandicapVo> toVo(List<Handicap> list){
