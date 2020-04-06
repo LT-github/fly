@@ -28,7 +28,9 @@ public interface IFinanceRepository extends BaseRepository<Finance, Long> {
 
 
     List<Finance> findByCreateUserAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(User user,Long start,Long end);
-
+    
+    List<Finance> findByCreateUserAndTypeAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(User user,Integer type,Long start,Long end);
+    
     List<Finance> findByCreateUserAndCreateTimeBefore(User user,Long createTime);
     
     List<Finance> findByTypeOrderByCreateTimeDesc(Integer type);

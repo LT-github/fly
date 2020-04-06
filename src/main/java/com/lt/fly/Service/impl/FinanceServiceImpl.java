@@ -178,9 +178,13 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 			
 			if(members==null || members.size()==0) continue;
 			for (Member member : memberss) {
+				//上次结算财务记录
+				Finance last = iFinanceRepository.findNew(settlementType,member.getId());
+								
+				List<Finance> f = iFinanceRepository.findByCreateUserAndTypeAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(member, settlementType, settleStartTime, settleEndTime);
+				  if(f!=null) continue;
 				if(handicap.getSettlementType()==1) {
-					//上次结算财务记录
-					Finance last = iFinanceRepository.findNew(settlementType,member.getId());
+					
 					if(last!=null) {
 					settleStartTime=last.getCreateTime();
 					}else {
@@ -212,7 +216,7 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 		if(last==null) {		         
 		        finances = iFinanceRepository.findByCreateUser(member);
 		}else {
-			 if(last.getCreateTime()>=settleEndTime) throw new ClientErrorException(member.getUsername()+"重复结算");
+			 
 			finances = iFinanceRepository.findByCreateUserAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(member,settleStartTime,settleEndTime);
 			
 		}
