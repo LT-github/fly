@@ -88,7 +88,8 @@ public class HandicapController extends BaseController {
         }
 
         objSave.setSettlementType(obj.getSettlementType());
-        objSave.setSettlementTime(obj.getSettlementTime());
+        if(obj.getSettlementType()==1)
+          objSave.setSettlementTime(obj.getSettlementTime());
         objSave.setName(obj.getName());
         objSave.setModifyTime(System.currentTimeMillis());
         objSave.setModifyUser(getLoginUser());
