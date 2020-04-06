@@ -191,7 +191,7 @@ public class HandicapController extends BaseController {
      */
     @PostMapping("/allQ")
     @UserLoginToken
-    public HttpResult<List<HandicapVo>> findAllQ(HandicapQReq req){
+    public HttpResult<List<HandicapVo>> findAllQ(@RequestBody HandicapQReq req){
     	
     	List<Handicap> handicaps = iHandicapRepository.findAllBySettlementType(req.getSettlementType());
     	List<HandicapVo> handicapVos = HandicapVo.toVo(handicaps);
