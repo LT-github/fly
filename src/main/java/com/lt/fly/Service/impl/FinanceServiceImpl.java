@@ -158,8 +158,8 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 				//上次结算财务记录
 				Finance last = iFinanceRepository.findNew(settlementType,member.getId());
 								
-				List<Finance> f = iFinanceRepository.findByCreateUserAndTypeAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(member, settlementType, settleStartTime, settleEndTime);
-				  if(f!=null) continue;
+				List<Finance> f = iFinanceRepository.findByCreateUserAndTypeAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(member, type.getCode(), settleStartTime, settleEndTime);
+				  if(f!=null) throw new ClientErrorException("用户~"+member.getUsername()+"~重复结算");
 				if(handicap.getSettlementType()==1) {
 					
 					if(last!=null) {
@@ -167,7 +167,11 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 					}else {
 						settleStartTime=0l;
 					}
-					settleEndTime=handicap.getSettlementTime();							
+					//settleEndTime=handicap.getSettlementTime();
+					String timeString = handicap.getSettlementTime();
+					
+					
+					
 				}
 				
 				ReturnPointVoByTime vo = getReturnPointVoByTime(settlementType, member,settleStartTime,settleEndTime);
@@ -176,11 +180,13 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 				finance.setModifyUser(getLoginUser());
 				finance.setModifyTime(System.currentTimeMillis());
 				finance.setDescription(member.getNickname()+type.getMsg()+vo.getReturnMoney()+"。"+vo.getTime());
-				iFinanceRepository.save(finance);				
+				//iFinanceRepository.save(finance);				
 				fi.add(finance);
 				 
-			}
+			}					
 		}
+		iFinanceRepository.saveAll(fi);
+		
 		return fi;
 	}
 	/*
