@@ -147,7 +147,7 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 		List<Finance> fi=new ArrayList<>();
 		GlobalConstant.FinanceType type = GlobalConstant.FinanceType.getFinanceTypeByCode(settlementType);
 
-		if(null==handicapIds) { handicaps = handicapRepository.findAllBySettlementType(types);} else {handicaps = handicapRepository.findAllByIdAndSettlementType(handicapIds, types);}
+		if(null==handicapIds) { handicaps = handicapRepository.findAllBySettlementType(types);} else {handicaps = handicapRepository.findAllByIdInAndSettlementType(handicapIds, types);}
 		System.out.println("handicaps:"+handicaps);
 		if(handicaps== null || handicaps.size()==0) throw new ClientErrorException("暂时无任何盘口");		
 		for (Handicap handicap : handicaps) {					
