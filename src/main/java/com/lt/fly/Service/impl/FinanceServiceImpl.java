@@ -158,9 +158,9 @@ public class FinanceServiceImpl extends BaseService implements IFinanceService {
 				//上次结算财务记录
 				Finance last = iFinanceRepository.findNew(settlementType,member.getId());
 								
-				List<Finance> f = iFinanceRepository.findByCreateUserAndTypeAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(member, type.getCode(), settleStartTime, settleEndTime);	
-				f.forEach(System.out::println);
-				  if(f.size()>0) throw new ClientErrorException("用户~"+member.getUsername()+"~重复结算");
+//				List<Finance> f = iFinanceRepository.findByCreateUserAndTypeAndCreateTimeGreaterThanEqualAndCreateTimeLessThan(member, type.getCode(), settleStartTime, settleEndTime);	
+//				f.forEach(System.out::println);
+//				  if(f.size()>0) throw new ClientErrorException("用户~"+member.getUsername()+"~重复结算");
 				if(handicap.getSettlementType()==1) {
 					
 					if(last!=null) {
